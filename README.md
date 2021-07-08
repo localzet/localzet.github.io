@@ -1,5 +1,5 @@
-- 👋 Привет! Мой ник -  @localzet
+- 👋 Привет! Мой ник -  [@localzet](https://github.com/localzet)
 - 👀 Меня интересует full stack веб-разработка
-- 🌱 Сейчас я изучаю такие языки, как PHP, JS, Python
+- 🌱 Сейчас я изучаю такие языки, как PHP, JS, TS, Python
 - 💞️ Мои основные проекты - MixNetwork и Aquamarine
 - 📫 Связаться со мной можно по электронной почте creator@localzet.ru
