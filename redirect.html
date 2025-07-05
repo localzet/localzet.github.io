@@ -42,7 +42,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('https://static.zorin.space/assets/media/bg-white.jpg');
+            background-image: url('https://static.zorin.space/assets/media/img19.jpg');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -106,7 +106,7 @@
             }
 
             if (redirectTo) {
-                setTimeout(() => { window.location.href = redirectTo; }, 5000);
+                setTimeout(() => { window.location.href = redirectTo; }, 1000);
             } else {
                 alert('Не указана ссылка для перенаправления.');
             }
@@ -116,7 +116,7 @@
 <body>
     <div class="container">
         <a id="redirectLink" class="button" href="#" target="_blank">Нажмите сюда, чтобы продолжить</a>
-        <p id="instructions">Переадресация произойдёт автоматически в течение 5 секунд.<br>Если этого не произошло, нажмите на кнопку выше</p>
+        <p id="instructions">Переадресация произойдёт автоматически.<br>Если этого не произошло, нажмите на кнопку выше</p>
     </div>
 </body>
 </html>
