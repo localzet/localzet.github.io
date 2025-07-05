@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переадрисация</title>
+    <style>
+        /* Импорт шрифта */
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;600&display=swap');
+
+        /* Основные стили для тела */
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Светлая тема */
+        body.light {
+            background-color: #F5F5F5;
+            color: #333;
+        }
+
+        /* Темная тема */
+        body.dark {
+            background-color: #161b22;
+            color: #ddd;
+        }
+
+        /* Фон с текстурой */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://static.zorin.space/assets/media/bg-white.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 14px;
+            margin-top: 20px;
+            color: #888;
+        }
+
+        a.button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #ffffff;
+            background: #0b7285;
+            background-size: 400% 400%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: gradientAnimation 5s ease-in-out infinite;
+        }
+
+        a.button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentURL = window.location.href;
+            let redirectTo = decodeURIComponent(currentURL.split('redirect_to=')[1] || '');
+
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.add('light');
+            }
+
+            if (redirectTo) {
+                setTimeout(() => { window.location.href = redirectTo; }, 5000);
+            } else {
+                alert('Не указана ссылка для перенаправления.');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a id="redirectLink" class="button" href="#" target="_blank">Нажмите сюда, чтобы продолжить</a>
+        <p id="instructions">Переадресация произойдёт автоматически в течение 5 секунд.<br>Если этого не произошло, нажмите на кнопку выше</p>
+    </div>
+</body>
+</html>
