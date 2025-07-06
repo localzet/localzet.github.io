@@ -109,7 +109,7 @@
             if (redirectTo) {
                 setTimeout(() => { window.location.href = redirectTo; }, 1000);
             } else {
-                alert('Не указана ссылка для перенаправления.');
+                setTimeout(() => { alert('Не указана ссылка для перенаправления.'); }, 1000);
             }
         });
     </script>
