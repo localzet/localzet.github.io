@@ -46,21 +46,23 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
-            opacity: 0.2;
             pointer-events: none;
             z-index: 1;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.2);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            border-radius: 10px;
             max-width: 400px;
             width: 90%;
             position: relative;
             z-index: 2;
+            background: rgb(35 35 35 / 0.75);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgb(255 255 255 / 10%);
         }
 
         h1 {
@@ -71,7 +73,6 @@
         p {
             font-size: 14px;
             margin-top: 20px;
-            color: #888;
         }
 
         a.button {
@@ -82,7 +83,7 @@
             border-radius: 50px;
             text-decoration: none;
             color: #ffffff;
-            background: #0b7285;
+            background: #1eacff;
             background-size: 400% 400%;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: gradientAnimation 5s ease-in-out infinite;
