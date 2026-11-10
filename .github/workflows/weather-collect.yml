@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: localzet-weather-collect
+  group: localzet-weather-data-writes
   cancel-in-progress: false
 
 jobs:
@@ -32,5 +32,6 @@ jobs:
           git add weather/archive/
           if ! git diff --cached --quiet; then
             git commit -m "data(weather): archive operational forecast snapshots"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
