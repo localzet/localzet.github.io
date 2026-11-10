@@ -6,6 +6,7 @@ on:
     paths:
       - 'weather/index.html'
       - 'weather/data/accuracy.json'
+      - 'weather/data/historical.json'
       - '.github/workflows/weather-pages.yml'
   schedule:
     - cron: '59 */6 * * *'
@@ -32,8 +33,10 @@ jobs:
           mkdir -p public/weather/data
           cp weather/index.html public/weather/index.html
           cp weather/data/accuracy.json public/weather/data/accuracy.json
+          cp weather/data/historical.json public/weather/data/historical.json
           test -s public/weather/index.html
           test -s public/weather/data/accuracy.json
+          test -s public/weather/data/historical.json
       - uses: actions/upload-pages-artifact@v4
         with:
           path: public
