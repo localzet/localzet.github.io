@@ -28,7 +28,7 @@ jobs:
           node-version: '22'
       - name: Python syntax and independent verification tests
         run: |
-          python -m py_compile weather/scripts/collect.py weather/scripts/bench.py
+          python -m py_compile weather/scripts/collect.py weather/scripts/bench.py weather/scripts/historical.py
           python -m unittest discover -s weather/tests -p 'test_*.py' -v
       - name: Check embedded dashboard JavaScript syntax
         run: |
@@ -63,6 +63,9 @@ jobs:
           data=json.loads(Path("weather/data/accuracy.json").read_text())
           assert data["schema_version"] == 1
           assert len(data["cities"]) == 5
+          historical=json.loads(Path("weather/data/historical.json").read_text())
+          assert historical["schema_version"] == 1
+          assert historical["kind"] == "previous_runs_historical"
           for city in data["cities"].values():
               assert set(city["horizons"]) == {"24","48","72"}
           PY
