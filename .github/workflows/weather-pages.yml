@@ -1,0 +1,50 @@
+name: Deploy Localzet Weather to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'weather/index.html'
+      - 'weather/data/accuracy.json'
+      - '.github/workflows/weather-pages.yml'
+  schedule:
+    - cron: '59 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: localzet-weather-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Assemble public weather site
+        run: |
+          mkdir -p public/weather/data
+          cp weather/index.html public/weather/index.html
+          cp weather/data/accuracy.json public/weather/data/accuracy.json
+          test -s public/weather/index.html
+          test -s public/weather/data/accuracy.json
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+    steps:
+      - name: Publish to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
