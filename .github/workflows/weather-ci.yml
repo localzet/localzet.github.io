@@ -1,0 +1,68 @@
+name: Test Localzet Weather
+
+on:
+  push:
+    paths:
+      - 'weather/**'
+      - '.github/workflows/weather-*.yml'
+  pull_request:
+    paths:
+      - 'weather/**'
+      - '.github/workflows/weather-*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Python syntax and independent verification tests
+        run: |
+          python -m py_compile weather/scripts/collect.py weather/scripts/bench.py
+          python -m unittest discover -s weather/tests -p 'test_*.py' -v
+      - name: Check embedded dashboard JavaScript syntax
+        run: |
+          python - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class Scripts(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.active=False
+                  self.scripts=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=="script" and not dict(attrs).get("src"):
+                      self.active=True
+                      self.scripts.append("")
+              def handle_data(self,data):
+                  if self.active:
+                      self.scripts[-1]+=data
+              def handle_endtag(self,tag):
+                  if tag=="script": self.active=False
+          p=Scripts()
+          p.feed(Path("weather/index.html").read_text())
+          assert p.scripts, "No local JavaScript found"
+          Path("/tmp/localzet-weather.js").write_text("\n".join(p.scripts))
+          PY
+          node --check /tmp/localzet-weather.js
+      - name: Validate public accuracy schema
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("weather/data/accuracy.json").read_text())
+          assert data["schema_version"] == 1
+          assert len(data["cities"]) == 5
+          for city in data["cities"].values():
+              assert set(city["horizons"]) == {"24","48","72"}
+          PY
