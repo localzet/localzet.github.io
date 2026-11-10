@@ -20,7 +20,7 @@
 <main class="main"><header class="top"><span>LOCALZET WEATHER / РОССИЯ</span><div class="top-right"><span id="status">Загрузка данных…</span><button type="button" class="refresh" id="refresh" aria-label="Обновить прогноз">↻</button></div></header><nav id="mobileCities" class="mobile-cities" aria-label="Выбор города"></nav>
 <div class="section-tabs"><button class="tab active" id="showWeather">Прогноз</button><button class="tab" id="showAccuracy">Точность</button></div>
 <section id="forecast"><div class="intro"><div><span class="eyebrow">ПОГОДА В ВАШЕМ ГОРОДЕ</span><h1 id="title">Ростов-на-Дону<span>.</span></h1><p id="region">Ростовская область · Россия</p></div><div class="local-time" id="localDate"></div></div><div class="error" id="error" hidden role="alert"></div><div class="hero"><div class="hero-tag" id="updated">ТЕКУЩИЕ УСЛОВИЯ</div><div class="hero-number"><div class="temp" id="temperature">—</div><div class="condition"><span id="weatherSymbol">☀</span><div id="condition">Загружаем прогноз</div><small id="feelsLike">Ощущается как —</small></div></div><div class="range" id="highLow">Макс. — / Мин. —</div></div><div class="cards"><div class="card"><span>ВЕТЕР</span><strong id="wind">—</strong><small id="windDir">Направление —</small></div><div class="card"><span>ВЛАЖНОСТЬ</span><strong id="humidity">—</strong><small id="cloud">Облачность —</small></div><div class="card"><span>ВЕРОЯТНОСТЬ ОСАДКОВ</span><strong id="rain">—</strong><small id="rainSum">За сутки —</small></div><div class="card"><span>ВОСХОД И ЗАКАТ</span><strong id="sunrise">—</strong><small id="sunset">Закат —</small></div></div><div class="panel"><div class="panel-head"><div><span class="sub">БЛИЖАЙШИЕ ЧАСЫ</span><h2>Температура и осадки</h2></div><div class="panel-note">Зелёная линия — температура · Синие столбики — осадки</div></div><div class="chart" id="chart"><div class="skeleton">Загружаем почасовые данные…</div></div><div class="hours" id="hours"></div></div><div class="panel"><div class="panel-head"><div><span class="sub">СЛЕДУЮЩИЕ 7 ДНЕЙ</span><h2>Прогноз на неделю</h2></div><span class="panel-note">Местное время города</span></div><div class="daily" id="days"><div class="skeleton">Загружаем прогноз на неделю…</div></div></div><div class="info">ⓘ <div>Прогноз предоставлен <b>Open-Meteo</b>, основан на численных моделях. Это ещё не собственная исправленная модель Localzet, и точность для этих городов пока не измерена. <a href="#accuracy" id="methodLink">Как будем сравнивать →</a></div></div></section>
-<section class="method" id="accuracy" hidden><span class="eyebrow">ВЕРИФИКАЦИЯ ПОГОДНЫХ МОДЕЛЕЙ</span><h2>Точность — это<br>измеряемая величина.</h2><p>Мы не публикуем фиктивные оценки. Для сравнения ECMWF, ICON, GFS и нашего будущего ансамбля необходимы архивы прогнозов с временем выпуска и независимые наблюдения метеостанций.</p><div class="method-card"><strong>Бэктест ещё не выполнен</strong><p>Текущий сайт показывает настоящий прогноз Open-Meteo. Исторические ошибки, модельная коррекция и рейтинг по городам появятся только после верификации.</p></div><p><b>Принцип:</b> сохраняем <code>captured_at / valid_at</code>, сопоставляем с проверенными наблюдениями, оцениваем MAE, Bias, RMSE, P95 и надёжность вероятностей осадков. Для всех моделей — одинаковые периоды; для обучения — отдельно от тестового набора.</p><div id="accuracyReport" class="method-card accuracy-report" aria-live="polite">Загружаем результаты независимой проверки…</div></section>
+<section class="method" id="accuracy" hidden><span class="eyebrow">ВЕРИФИКАЦИЯ ПОГОДНЫХ МОДЕЛЕЙ</span><h2>Точность — это<br>измеряемая величина.</h2><p>Мы не публикуем фиктивные оценки. Для сравнения ECMWF, ICON, GFS и нашего будущего ансамбля необходимы архивы прогнозов с временем выпуска и независимые наблюдения метеостанций.</p><div class="method-card"><strong>Бэктест выполняется по мере доступности независимых измерений</strong><p>Текущий сайт показывает прогноз Open-Meteo, а не собственную модель коррекции. Исторические ошибки публикуются только для городов и горизонтов с достаточной проверенной выборкой.</p></div><p><b>Принцип:</b> сохраняем <code>captured_at / valid_at</code>, сопоставляем с проверенными наблюдениями, оцениваем MAE, Bias, RMSE, P95 и надёжность вероятностей осадков. Для всех моделей — одинаковые периоды; для обучения — отдельно от тестового набора.</p><div id="historicalReport" class="method-card accuracy-report" aria-live="polite">Проверяем архивные прогнозы по независимым измерениям…</div><div id="accuracyReport" class="method-card accuracy-report" aria-live="polite">Загружаем результаты независимой проверки…</div></section>
 <footer class="foot"><span>LOCALZET WEATHER / v0.1 · ОТКРЫТЫЙ ПРОТОТИП</span><span>Данные: <a href="https://open-meteo.com/" rel="noopener noreferrer" target="_blank">Open-Meteo</a> · <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer" target="_blank">CC BY 4.0</a></span></footer></main></div>
 <script>
 "use strict";
@@ -31,7 +31,7 @@ const icon=c=>c===0?"☀":[1,2].includes(c)?"⛅":c===3?"☁":[45,48].includes(c
 const dirs=["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"];let active="rostov",request=0,controller=null;
 try{const c=new URLSearchParams(location.search).get("city")||localStorage.getItem("lw.city");if(CITIES.some(x=>x[0]===c))active=c}catch{}
 function nav(){for(const id of ["cities","mobileCities"]){$(id).replaceChildren();for(const c of CITIES){const b=document.createElement("button");b.type="button";b.className=(id==="cities"?"city":"")+(c[0]===active?" selected":"");b.textContent=c[1];if(id==="cities"){const s=document.createElement("small");s.textContent=c[2];b.append(s)}b.addEventListener("click",()=>select(c[0]));$(id).append(b)}}}
-function select(id){if(!CITIES.some(c=>c[0]===id))return;active=id;try{localStorage.setItem("lw.city",id)}catch{};const u=new URL(location.href);u.searchParams.set("city",id);history.replaceState(null,"",u);nav();paintAccuracy();load();window.scrollTo(0,0)}
+function select(id){if(!CITIES.some(c=>c[0]===id))return;active=id;try{localStorage.setItem("lw.city",id)}catch{};const u=new URL(location.href);u.searchParams.set("city",id);history.replaceState(null,"",u);nav();paintAccuracy();paintHistorical();load();window.scrollTo(0,0)}
 function view(which){const a=which==="accuracy";$("forecast").hidden=a;$("accuracy").hidden=!a;$("showWeather").classList.toggle("active",!a);$("showAccuracy").classList.toggle("active",a);history.replaceState(null,"",location.pathname+location.search+(a?"#accuracy":""))}
 $("showWeather").onclick=()=>view("forecast");$("showAccuracy").onclick=()=>view("accuracy");$("methodLink").onclick=e=>{e.preventDefault();view("accuracy");window.scrollTo(0,0)};$("refresh").onclick=()=>load(true);onhashchange=()=>view(location.hash==="#accuracy"?"accuracy":"forecast");
 function render(d,fetched,cache=false){const c=d.current,days=d.daily,h=d.hourly;const city=CITIES.find(x=>x[0]===active);$("title").textContent=city[1]+".";$("region").textContent=city[2]+" · Россия";const dayLabel=new Intl.DateTimeFormat("ru-RU",{timeZone:city[5],day:"numeric",month:"long",weekday:"long"}).format(new Date());$("localDate").textContent=dayLabel+" · "+(city[5]==="Europe/Moscow"?"МСК":"ЕКБ");$("updated").textContent="ТЕКУЩИЙ ПРОГНОЗ · "+clock(c.time);$("temperature").textContent=deg(c.temperature_2m);$("weatherSymbol").textContent=icon(c.weather_code);$("condition").textContent=kind(c.weather_code);$("feelsLike").textContent="Ощущается как "+deg(c.apparent_temperature);$("highLow").textContent="Макс. "+deg(days.temperature_2m_max[0])+" / Мин. "+deg(days.temperature_2m_min[0]);$("wind").textContent=(Number.isFinite(c.wind_speed_10m)?c.wind_speed_10m.toFixed(1):"—")+" м/с";$("windDir").textContent="Направление: "+(Number.isFinite(c.wind_direction_10m)?dirs[Math.round(c.wind_direction_10m/45)%8]:"—");$("humidity").textContent=fmt(c.relative_humidity_2m)+" %";$("cloud").textContent="Облачность: "+fmt(c.cloud_cover)+" %";let start=h.time.findIndex(t=>t.slice(0,13)>=c.time.slice(0,13));if(start<0)start=0;const count=Math.min(12,h.time.length-start),currentRain=h.precipitation_probability?.[start];$("rain").textContent=fmt(currentRain)+" %";$("rainSum").textContent="За сутки: "+(Number.isFinite(days.precipitation_sum?.[0])?days.precipitation_sum[0].toFixed(1):"—")+" мм";$("sunrise").textContent=clock(days.sunrise?.[0]);$("sunset").textContent="Закат: "+clock(days.sunset?.[0]);renderChart(h,start,count);renderDays(days);const mins=Math.floor((Date.now()-fetched)/60000);$("status").textContent=cache?"Кэш · "+mins+" мин":"Обновлено только что";$("error").hidden=true}
@@ -99,5 +99,65 @@ async function fetchAccuracy(){
   paintAccuracy();
 }
 
-nav();view(location.hash==="#accuracy"?"accuracy":"forecast");load();fetchAccuracy();
+
+let historicalData=null;
+function paintHistorical(){
+  const root=$("historicalReport");
+  if(!root)return;
+  root.replaceChildren();
+  const heading=document.createElement("h3");
+  heading.textContent="Исторический бэктест · 90 дней";
+  root.append(heading);
+  const info=document.createElement("p");
+  info.className="quality-summary";
+  if(!historicalData){
+    info.textContent="Архивные оценки пока недоступны. Результаты не подменяются расчётной погодой.";
+    root.append(info);
+    return;
+  }
+  const city=historicalData.cities?.[active];
+  const station=city?.station;
+  const from=historicalData.start_date||"—",to=historicalData.end_date||"—";
+  info.textContent="Период: "+from+" — "+to+". Наблюдения: "+(station?.name||"пока не найдены")
+    +" (ВМО "+(station?.wmo_id||"—")+"). Источник: NOAA GHCNh.";
+  root.append(info);
+  const wrapper=document.createElement("div");wrapper.className="accuracy-scroll";
+  const table=document.createElement("table");table.className="accuracy-table";
+  const head=document.createElement("tr");
+  for(const label of ["Горизонт","Модель","MAE · °C","RMSE · °C","Наблюдений"]){
+    const th=document.createElement("th");th.textContent=label;head.append(th);
+  }
+  const thead=document.createElement("thead");thead.append(head);table.append(thead);
+  const body=document.createElement("tbody");
+  for(const horizon of [24,48,72]){
+    const group=city?.horizons?.[String(horizon)];
+    for(const [code,name] of Object.entries(accuracyModels)){
+      const score=group?.models?.[code];
+      const row=document.createElement("tr");
+      for(const value of [horizon+" ч",name+(group?.best_model===code?" · лучший":""),
+        score?.status==="verified"?Number(score.mae_c).toFixed(2):"—",
+        score?.status==="verified"?Number(score.rmse_c).toFixed(2):"—",
+        score?.samples??0]){
+        const cell=document.createElement("td");cell.textContent=String(value);row.append(cell);
+      }
+      body.append(row);
+    }
+  }
+  table.append(body);wrapper.append(table);root.append(wrapper);
+  const note=document.createElement("p");note.className="accuracy-note";
+  note.textContent="Архив Open-Meteo Previous Runs: модели сравниваются при фиксированной заблаговременности и на общих моментах измерений. Порог публикации — 100 совпадений и 20 различных дней. Станция может находиться вне городской застройки. Прочерки означают недостаток достоверных данных.";
+  root.append(note);
+}
+async function fetchHistorical(){
+  try{
+    const response=await fetch("./data/historical.json",{cache:"no-cache"});
+    if(!response.ok)throw new Error("HTTP "+response.status);
+    const data=await response.json();
+    if(data?.kind!=="previous_runs_historical"||!data?.cities)throw new Error("Invalid historical report");
+    historicalData=data;
+  }catch(error){console.warn("Historical skill unavailable:",error);historicalData=null}
+  paintHistorical();
+}
+
+nav();view(location.hash==="#accuracy"?"accuracy":"forecast");load();fetchAccuracy();fetchHistorical();
 </script></body></html>
