@@ -82,6 +82,7 @@ def main():
     cities={}
     problems=[]
     successful_forecast_requests=0
+    stations_with_observations=0
     for city in CITIES:
         station=stations.get(city)
         if station is None:
@@ -97,6 +98,7 @@ def main():
                 problems.append(f"{city}: NOAA {year}: {exc}")
         forecasts={}
         if measurements:
+            stations_with_observations+=1
             for model in MODELS:
                 try:
                     forecasts[model]=fetch_forecast(city,model,start,end)
@@ -109,7 +111,7 @@ def main():
     verified=any(city["horizons"][h]["best_model"] is not None
                  for city in cities.values() for h in ("24","48","72"))
     # External model API outage must never erase an existing, verified report.
-    if successful_forecast_requests==0 and (ROOT/"weather/data/historical.json").exists():
+    if stations_with_observations>0 and successful_forecast_requests==0 and (ROOT/"weather/data/historical.json").exists():
         raise RuntimeError("No historical forecasts fetched; preserving previous report")
     report={"schema_version":1,"kind":"previous_runs_historical",
             "generated_at":now.isoformat(timespec="seconds"),"start_date":str(start),"end_date":str(end),
