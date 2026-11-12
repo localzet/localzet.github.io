@@ -30,11 +30,11 @@ const d = win.ATLAS_DATA;
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
-assert(d.lessons.length >= 107, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 110, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=76);
+assert(Object.keys(levels.junior).length>=78);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
@@ -44,9 +44,10 @@ for(const c of d.courses){
  assert(levels.courses[c.id].future.length>=3);
  for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
 }
-assert.equal(d.lessons.filter(l=>l.course==='linux').length,20);
+assert(d.lessons.filter(l=>l.course==='linux').length>=23);
 assert.equal(levels.minimum['linux-systemd'],0);
-for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&chapter.body.includes('## Самостоятельная работа'),'Linux editorial depth: '+id);}
+for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups','linux-journal']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&chapter.body.includes('## Самостоятельная работа'),'Linux editorial depth: '+id);}
+for(const id of ['linux-signals','linux-capstone']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&levels.minimum[id]===0,'Linux practice: '+id);}
 const editorial=win.ATLAS_EDITORIAL;
 assert(editorial && win.ATLAS_REFERENCE, 'Editorial and reference data missing');
 assert.equal(Object.keys(editorial).length,d.lessons.length,'Editorial coverage must match published chapters');
