@@ -149,6 +149,28 @@ const base='http://127.0.0.1:8765/academy/';
     await editor.locator('[data-merge-editor]').fill('port=9090\ntimeout=45\nmode=demo');await editor.locator('[data-merge-action="check-editor"]').click();assert.equal(await editor.locator('[data-merge-feedback]').getAttribute('data-result'),'correct');
     await editor.locator('[data-merge-action="reset-editor"]').click();assert((await editor.locator('[data-merge-editor]').inputValue()).includes('<<<<<<<'));await checkWidth();
     for(const id of ['git-merge','git-merge-lab','git-conflicts']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > .teach-panel').first().waitFor();await checkWidth();}
+    await page.goto(base+'#/lesson/git-remotes/junior');
+    const remoteMap=page.locator('.reader > .prose > [data-teach="git-remote-map"]');await remoteMap.waitFor();await checkWidth();
+    await page.goto(base+'#/lesson/git-fetch-push-lab/junior');
+    const remoteWalk=page.locator('.reader > .prose > [data-teach="git-remote-walk"]');
+    for(let i=0;i<3;i++)await remoteWalk.locator('[data-remote-action="next"]').click();
+    assert((await remoteWalk.locator('[data-remote-feedback]').textContent()).includes('рабочий файл остаются на A'));
+    await remoteWalk.locator('[data-remote-action="next"]').click();
+    assert((await remoteWalk.locator('[data-remote-feedback]').textContent()).includes('main догоняет B'));
+    const remoteRace=page.locator('.reader > .prose > [data-teach="git-remote-race"]');
+    await remoteRace.locator('[data-remote-action="push"]').click();
+    assert((await remoteRace.locator('[data-remote-feedback]').textContent()).includes('Push отклонён'));
+    await remoteRace.locator('[data-remote-action="check"]').click();assert.equal(await remoteRace.locator('[data-remote-feedback]').getAttribute('data-result'),'retry');
+    for(const action of ['fetch','merge','test','push','check'])await remoteRace.locator('[data-remote-action="'+action+'"]').click();
+    assert.equal(await remoteRace.locator('[data-remote-feedback]').getAttribute('data-result'),'correct');await checkWidth();
+    await page.goto(base+'#/lesson/git-team-review/junior');
+    const gate=page.locator('.reader > .prose > [data-teach="git-review-gate"]');
+    await gate.locator('[data-remote-action="test"]').click();assert.equal(await gate.locator('[data-remote-feedback]').getAttribute('data-result'),'retry');
+    await gate.locator('[data-remote-action="integrate"]').click();assert.equal(await gate.locator('[data-remote-feedback]').getAttribute('data-result'),'retry');
+    await gate.locator('[data-remote-action="fix"]').click();
+    await gate.locator('[data-remote-action="test"]').click();assert.equal(await gate.locator('[data-remote-feedback]').getAttribute('data-result'),'correct');
+    await gate.locator('[data-remote-action="integrate"]').click();assert((await gate.locator('[data-remote-gate]').textContent()).includes('Main обновлена'));await checkWidth();
+    for(const id of ['git-remotes','git-fetch-push-lab','git-team-review']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > .teach-panel').first().waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
