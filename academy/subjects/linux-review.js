@@ -413,7 +413,7 @@ L.juniorQuestions["linux-memory"]=["Равно ли VmSize расходу RAM?",
 for(const [id,body] of Object.entries(data.juniorAdditions)){if(!L.junior[id])throw Error("Missing Junior "+id);L.junior[id]={...L.junior[id],body:L.junior[id].body+"\n\n"+body};}
 D.sources.kernelmaintainers.url="https://github.com/torvalds/linux/blob/master/MAINTAINERS";
 D.sources.kernelmaintainers.title="Linux MAINTAINERS";
-for(const [key,url] of [["awkmanual","https://man7.org/linux/man-pages/man1/gawk.1.html"],["grubmanual","https://sources.debian.org/src/grub2/2.14-4/docs/grub.texi"]]){const s=D.sources[key];s.upstreamUrl=s.url;s.url=url;}
+for(const [key,url] of [["awkmanual","https://man7.org/linux/man-pages/man1/gawk.1.html"],["grubmanual","https://www.gnu.org/software/grub/manual/grub/grub.html"]]){const s=D.sources[key];if(s.url!==url){s.upstreamUrl=s.url;s.url=url;}}
 for(const [key,cmd] of [["findmanual","find"],["grepmanual","grep"],["sedmanual","sed"]]){const s=D.sources[key];s.upstreamUrl=s.url;s.url="https://man7.org/linux/man-pages/man1/"+cmd+".1.html";}
 L.minimum["linux-cgroups"]=1;
 L.order.linux=data.order;
