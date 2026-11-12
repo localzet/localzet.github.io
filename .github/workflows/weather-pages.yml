@@ -1,10 +1,11 @@
-name: Deploy Localzet Weather to GitHub Pages
+name: Deploy Localzet Weather and Atlas to GitHub Pages
 
 on:
   push:
     branches: [main]
     paths:
       - 'weather/index.html'
+      - 'academy/**'
       - 'weather/data/accuracy.json'
       - 'weather/data/historical.json'
       - '.github/workflows/weather-pages.yml'
@@ -31,10 +32,15 @@ jobs:
       - name: Assemble public weather site
         run: |
           mkdir -p public/weather/data
+          mkdir -p public/academy
           cp weather/index.html public/weather/index.html
+          cp -R academy/. public/academy/
           cp weather/data/accuracy.json public/weather/data/accuracy.json
           cp weather/data/historical.json public/weather/data/historical.json
           test -s public/weather/index.html
+          test -s public/academy/index.html
+          test -s public/academy/assets/app.js
+          test -s public/academy/content.js
           test -s public/weather/data/accuracy.json
           test -s public/weather/data/historical.json
       - uses: actions/upload-pages-artifact@v4
