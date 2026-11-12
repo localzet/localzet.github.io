@@ -12,12 +12,24 @@ for (const path of ['content.js', ...subjects.map(name => 'subjects/' + name + '
 }
 new vm.Script(load('assets/app.js'), { filename: 'assets/app.js' });
 new vm.Script(load('assets/theme.js'), { filename: 'assets/theme.js' });
-for (const path of ['editorial.js', 'reference.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
+for (const path of ['editorial.js', 'reference.js', 'levels.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 7, 'The seven requested directions must be available');
 assert(d.lessons.length >= 57, 'Unexpectedly low number of published chapters');
 const ids = new Set();
+const levels=win.ATLAS_LEVELS;
+assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
+assert(Object.keys(levels.junior).length>=28);
+assert(Object.keys(levels.advanced).length>=7);
+for(const c of d.courses){
+ const ls=d.lessons.filter(l=>l.course===c.id);
+ assert.equal(levels.order[c.id].length,ls.length,'Incomplete order '+c.id);
+ assert.equal(new Set(levels.order[c.id]).size,ls.length,'Duplicate order '+c.id);
+ assert(ls.every(l=>levels.order[c.id].includes(l.id)),'Missing order '+c.id);
+ assert(levels.courses[c.id].future.length>=3);
+ for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
+}
 const editorial=win.ATLAS_EDITORIAL;
 assert(editorial && win.ATLAS_REFERENCE, 'Editorial and reference data missing');
 assert.equal(Object.keys(editorial).length,d.lessons.length,'Editorial coverage must match published chapters');
@@ -36,6 +48,9 @@ for (const lesson of d.lessons) {
   ids.add(lesson.id);
   assert(courseIds.has(lesson.course), 'Unknown course: ' + lesson.id);
   assert(lesson.title && lesson.summary && lesson.body, 'Incomplete lesson: ' + lesson.id);
+  const min=levels.minimum[lesson.id];
+  assert(Number.isInteger(min)&&min>=0&&min<=2,'Missing minimum '+lesson.id);
+  if(min===0){const j=levels.junior[lesson.id];assert(j?.title&&j.body.includes('## '),'Missing junior text '+lesson.id);assert(j.body.split(/\s+/).length>=100,'Short junior variant '+lesson.id);}
   const e=editorial[lesson.id];
   assert(e && e.intro && e.terms.length>=3 && e.diagram.steps.length>=2 && e.questions.length,'Missing learning apparatus: '+lesson.id);
   for(const [term,meaning] of e.terms)assert(term&&meaning,'Empty glossary definition: '+lesson.id);
