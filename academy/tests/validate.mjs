@@ -28,7 +28,7 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','subjects/git-teaching-reset.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching.js'),{filename:'assets/teaching.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-start.js'),{filename:'assets/teaching-start.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-history.js'),{filename:'assets/teaching-history.js'}).runInNewContext({window:win});
@@ -36,6 +36,7 @@ new vm.Script(load('assets/teaching-branches.js'),{filename:'assets/teaching-bra
 new vm.Script(load('assets/teaching-merge.js'),{filename:'assets/teaching-merge.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-remotes.js'),{filename:'assets/teaching-remotes.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-safety.js'),{filename:'assets/teaching-safety.js'}).runInNewContext({window:win});
+new vm.Script(load('assets/teaching-reset.js'),{filename:'assets/teaching-reset.js'}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 for(const id of win.ATLAS_GUIDED_IDS){const l=d.lessons.find(x=>x.id===id);for(const body of [l.body,...(win.ATLAS_LEVELS.minimum[id]===0?[win.ATLAS_LEVELS.junior[id].body]:[])]){
  const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);assert(markers.length>=3&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Guided lesson '+id);
@@ -82,6 +83,12 @@ assert(linuxReference.filter(e=>e.options?.length).length>=94);
 for(const e of linuxReference)for(const option of e.options||[])assert(option.length===2&&option.every(Boolean),'Malformed option '+e.name);
 for(const id of ['git-lab-config','git-diff-status','git-commit-quality','git-history-reading']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===0&&levels.junior[id].body.split(/\s+/).length>=170,'Git fundamentals: '+id);}
 assert.equal(levels.order.git.length,48);
+const juniorGit=Array.from(levels.juniorOrder.git);
+assert.equal(juniorGit.length,20);
+assert.equal(new Set(juniorGit).size,20);
+assert.deepEqual([...juniorGit].sort(),Array.from(levels.order.git).filter(id=>levels.minimum[id]===0).sort());
+assert(juniorGit.every(id=>win.ATLAS_GUIDED_IDS.includes(id)),'All Junior Git chapters have guided editions');
+assert(juniorGit.indexOf('git-team-review')<juniorGit.indexOf('git-revert-lab')&&juniorGit.indexOf('git-revert-lab')<juniorGit.indexOf('git-stash-lab'),'Continuous project prerequisites');
 for(const [id,min] of [["git-hooks-lab",1],["git-signatures-lab",1],["git-dependencies-lab",1],["git-attributes-lab",1],["git-maintenance-lab",2],["git-repository-security",0],["git-team-review",0]]){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===min,'Git team: '+id);if(min===0)assert(levels.junior[id].body.split(/\s+/).length>=170,'Git Junior: '+id);}
 for(const [before,after] of [["git-tags-mirror","git-hooks-lab"],["git-hooks-lab","git-signatures-lab"],["git-signatures-lab","git-dependencies-lab"],["git-dependencies-lab","git-attributes-lab"],["git-attributes-lab","git-maintenance-lab"],["git-maintenance-lab","git-repository-security"],["git-repository-security","git-team-review"]])assert(levels.order.git.indexOf(before)<levels.order.git.indexOf(after),'Git prerequisite '+before+' / '+after);
 for(const [id,min] of [["git-fetch-push-lab",0],["git-refspec-lab",1],["git-push-lease",1],["git-transport-v2",2],["git-shallow-partial",2],["git-tags-mirror",1]]){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===min,'Git remotes: '+id);if(min===0)assert(levels.junior[id].body.split(/\s+/).length>=170,'Git Junior: '+id);}
