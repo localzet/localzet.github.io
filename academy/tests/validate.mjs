@@ -28,8 +28,14 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+new vm.Script(load('assets/teaching.js'),{filename:'assets/teaching.js'}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
+for(const body of [d.lessons.find(l=>l.id==='git-index').body,win.ATLAS_LEVELS.junior['git-index'].body]){
+ assert(body.split(/\s+/).length>=600,'Teaching pilot depth');
+ const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);
+ assert(markers.length>=5&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Missing teaching blocks');
+}
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
