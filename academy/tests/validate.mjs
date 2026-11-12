@@ -51,6 +51,8 @@ for (const lesson of d.lessons) {
   const min=levels.minimum[lesson.id];
   assert(Number.isInteger(min)&&min>=0&&min<=2,'Missing minimum '+lesson.id);
   if(min===0){const j=levels.junior[lesson.id];assert(j?.title&&j.body.includes('## '),'Missing junior text '+lesson.id);assert(j.body.split(/\s+/).length>=100,'Short junior variant '+lesson.id);}
+  if(min===0){assert(levels.juniorDiagrams[lesson.id]?.steps.length>=2,'Missing junior diagram '+lesson.id);assert(levels.juniorQuestions[lesson.id]?.length===2,'Missing junior question '+lesson.id);}
+  if(levels.advanced[lesson.id])assert(levels.advancedDiagrams[lesson.id]?.steps.length>=2,'Missing senior diagram '+lesson.id);
   const e=editorial[lesson.id];
   assert(e && e.intro && e.terms.length>=3 && e.diagram.steps.length>=2 && e.questions.length,'Missing learning apparatus: '+lesson.id);
   for(const [term,meaning] of e.terms)assert(term&&meaning,'Empty glossary definition: '+lesson.id);
@@ -76,7 +78,7 @@ assert(html.includes('src="./assets/theme.js"'),'Early theme initialization miss
 assert(!load('assets/app.js').includes('closest("[data-theme]")'),'Theme toggle must not match the document root');
 assert(html.indexOf('src="./assets/theme.js"')<html.indexOf('rel="stylesheet"'),'Theme must initialize before CSS');
 assert(html.indexOf('src="./content.js"') < html.indexOf('src="./subjects/linux.js"'), 'Invalid script load order');
-assert(html.indexOf('src="./subjects/cryptography.js"') < html.indexOf('src="./assets/app.js"'), 'App runs before lesson data');
+assert(html.indexOf('src="./subjects/cryptography.js"') < html.indexOf('src="./assets/app.js'), 'App runs before lesson data');
 const roadmapTopics = d.courses.reduce((n, c) => n + c.roadmap.reduce((k, g) => k + g.topics.length, 0), 0);
 assert(roadmapTopics >= 300, 'Lost roadmap topics');
 console.log('Editorial: %d chapters; command index: %d entries.',Object.keys(editorial).length,refCount);
