@@ -80,6 +80,21 @@ const base='http://127.0.0.1:8765/academy/';
     for(const id of ['linux-elf','linux-special-fs','linux-mount-overlay','linux-packet-diagnostics']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader h1').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-memory/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Оперативная'));await checkWidth();
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
+    // Exhaustive Linux lesson navigation in one desktop context; other views
+    // still exercise all course routes and representative lessons.
+    if(view.width===1440&&scheme==='light'){
+      const routes=await page.evaluate(()=>{const L=window.ATLAS_LEVELS,D=window.ATLAS_DATA;return ['junior','middle','senior'].flatMap((level,n)=>L.order.linux.filter(id=>L.minimum[id]<=n).map(id=>({id,level,title:n===0?L.junior[id].title:D.lessons.find(l=>l.id===id).title})));});
+      assert.equal(routes.length,132);
+      for(const r of routes){
+        await page.goto(base+'#/lesson/'+r.id+'/'+r.level);
+        await page.locator('.reader h1').waitFor();
+        assert.equal(await page.locator('.reader h1').textContent(),r.title,r.id+' '+r.level);
+        assert.equal(await page.locator('.source-section a').first().count(),1,r.id+' source');
+        assert.equal(await page.locator('[data-complete]').count(),1,r.id+' progress');
+        await checkWidth();
+      }
+      console.log('PASS: all 132 Linux Junior/Middle/Senior lesson routes');
+    }
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();
    }

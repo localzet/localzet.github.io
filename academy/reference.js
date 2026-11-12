@@ -11,7 +11,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "pwd",
             "description": "Текущий каталог",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/pwd-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/pwd.1.html",
             "specific": true,
             "options": [
               [
@@ -22,7 +22,8 @@ window.ATLAS_REFERENCE=[
                 "-L",
                 "Логический путь согласно окружению."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/pwd-invocation.html"
           },
           {
             "name": "ls",
@@ -101,14 +102,15 @@ window.ATLAS_REFERENCE=[
           {
             "name": "readlink",
             "description": "Разрешение ссылок",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/readlink-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/readlink.1.html",
             "specific": true,
             "options": [
               [
                 "-f",
                 "Канонизировать путь; последний компонент может отсутствовать."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/readlink-invocation.html"
           },
           {
             "name": "basename",
@@ -131,7 +133,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "cp",
             "description": "Копирование",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/cp-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/cp.1.html",
             "specific": true,
             "options": [
               [
@@ -150,12 +152,13 @@ window.ATLAS_REFERENCE=[
                 "--",
                 "Конец опций перед именами файлов."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/cp-invocation.html"
           },
           {
             "name": "mv",
             "description": "Перемещение",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/mv.1.html",
             "specific": true,
             "options": [
               [
@@ -166,7 +169,8 @@ window.ATLAS_REFERENCE=[
                 "-n",
                 "Не перезаписывать существующий файл; проверяйте семантику версии."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html"
           },
           {
             "name": "rm",
@@ -191,7 +195,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "mkdir",
             "description": "Создание каталогов",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/mkdir-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/mkdir.1.html",
             "specific": true,
             "options": [
               [
@@ -202,7 +206,8 @@ window.ATLAS_REFERENCE=[
                 "-m MODE",
                 "Задать права создаваемого каталога."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/mkdir-invocation.html"
           },
           {
             "name": "rmdir",
@@ -213,7 +218,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "ln",
             "description": "Создание ссылок",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/ln.1.html",
             "specific": true,
             "options": [
               [
@@ -224,7 +229,8 @@ window.ATLAS_REFERENCE=[
                 "-T",
                 "Рассматривать назначение как обычный путь, не каталог (GNU)."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html"
           },
           {
             "name": "touch",
@@ -245,14 +251,15 @@ window.ATLAS_REFERENCE=[
           {
             "name": "truncate",
             "description": "Изменение длины файла",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/truncate-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/truncate.1.html",
             "specific": true,
             "options": [
               [
                 "-s SIZE",
                 "Изменить размер; сокращение уничтожает данные после новой границы."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/truncate-invocation.html"
           },
           {
             "name": "install",
@@ -303,7 +310,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "find",
             "description": "Поиск по дереву",
-            "url": "https://www.gnu.org/software/findutils/manual/html_mono/find.html",
+            "url": "https://man7.org/linux/man-pages/man1/find.1.html",
             "specific": true,
             "options": [
               [
@@ -326,12 +333,13 @@ window.ATLAS_REFERENCE=[
                 "-exec COMMAND {} +",
                 "Передать группы найденных имён команде."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/findutils/manual/html_mono/find.html"
           },
           {
             "name": "xargs",
             "description": "Построение argv из ввода",
-            "url": "https://www.gnu.org/software/findutils/manual/html_mono/find.html",
+            "url": "https://man7.org/linux/man-pages/man1/xargs.1.html",
             "specific": true,
             "options": [
               [
@@ -346,7 +354,8 @@ window.ATLAS_REFERENCE=[
                 "-n N",
                 "Ограничить число аргументов за вызов."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/findutils/manual/html_mono/find.html"
           },
           {
             "name": "locate",
@@ -626,7 +635,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "grep",
             "description": "Поиск шаблонов",
-            "url": "https://www.gnu.org/software/grep/manual/grep.html",
+            "url": "https://man7.org/linux/man-pages/man1/grep.1.html",
             "specific": true,
             "options": [
               [
@@ -653,12 +662,13 @@ window.ATLAS_REFERENCE=[
                 "-q",
                 "Не выводить строки; проверять код выхода."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/grep/manual/grep.html"
           },
           {
             "name": "sed",
             "description": "Потоковое редактирование",
-            "url": "https://www.gnu.org/software/sed/manual/sed.html",
+            "url": "https://man7.org/linux/man-pages/man1/sed.1.html",
             "specific": true,
             "options": [
               [
@@ -677,7 +687,8 @@ window.ATLAS_REFERENCE=[
                 "-i[SUFFIX]",
                 "Редактировать файлы на месте; сначала проверить без -i."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/sed/manual/sed.html"
           },
           {
             "name": "awk",
@@ -901,7 +912,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "rsync",
             "description": "Синхронизация файлов",
-            "url": "https://download.samba.org/pub/rsync/rsync.1",
+            "url": "https://man7.org/linux/man-pages/man1/rsync.1.html",
             "specific": true,
             "options": [
               [
@@ -920,7 +931,8 @@ window.ATLAS_REFERENCE=[
                 "--delete",
                 "Удалять лишнее в назначении; сначала -n и проверка путей."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://download.samba.org/pub/rsync/rsync.1"
           },
           {
             "name": "scp",
@@ -956,7 +968,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "id",
             "description": "Идентификаторы",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/id.1.html",
             "specific": true,
             "options": [
               [
@@ -971,7 +983,8 @@ window.ATLAS_REFERENCE=[
                 "-G",
                 "Все группы."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html"
           },
           {
             "name": "groups",
@@ -1022,7 +1035,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "chown",
             "description": "Владелец и группа",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/chown-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/chown.1.html",
             "specific": true,
             "options": [
               [
@@ -1033,7 +1046,8 @@ window.ATLAS_REFERENCE=[
                 "--reference=FILE",
                 "Взять владельца и группу с указанного файла."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/chown-invocation.html"
           },
           {
             "name": "chgrp",
@@ -1512,7 +1526,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "du",
             "description": "Занятые блоки дерева",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/du.1.html",
             "specific": true,
             "options": [
               [
@@ -1527,7 +1541,8 @@ window.ATLAS_REFERENCE=[
                 "-x",
                 "Не пересекать границу ФС."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html"
           },
           {
             "name": "lsblk",
@@ -2860,7 +2875,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "cpio",
             "description": "Архивы cpio",
-            "url": "https://www.gnu.org/software/cpio/manual/cpio.html",
+            "url": "https://manpages.debian.org/bookworm/cpio/cpio.1.en.html",
             "options": [
               [
                 "-o -H newc",
@@ -2875,7 +2890,8 @@ window.ATLAS_REFERENCE=[
                 "Читать NUL-разделённые имена."
               ]
             ],
-            "specific": true
+            "specific": true,
+            "upstreamUrl": "https://www.gnu.org/software/cpio/manual/cpio.html"
           }
         ]
       }
