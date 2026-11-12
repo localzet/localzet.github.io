@@ -45,6 +45,8 @@ jobs:
         run: node academy/tests/git-teaching-history.mjs
       - name: Verify guided Git ignore, undo and branch history
         run: node academy/tests/git-teaching-branches.mjs
+      - name: Verify guided Git merges and conflict resolution
+        run: node academy/tests/git-teaching-merge.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
