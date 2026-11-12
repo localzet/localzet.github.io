@@ -1,0 +1,1 @@
+window.ATLAS_EDITORIAL={};
