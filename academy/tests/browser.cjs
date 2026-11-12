@@ -323,6 +323,26 @@ const base='http://127.0.0.1:8765/academy/';
     const trust=page.locator('.reader > .prose > [data-teach="git-signature-trust"]');await trust.locator('[data-release-action="trust-revoked"]').click();assert((await trust.locator('[data-release-view]').textContent()).includes('Не принимает'));
     const rewrite=page.locator('.reader > .prose > [data-teach="git-signature-rewrite"]');await rewrite.locator('[data-release-action="rewrite-signed"]').click();assert((await rewrite.locator('[data-release-view]').textContent()).includes('C · прежний объект'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-dependencies-lab/middle');
+    const pin=page.locator('.reader > .prose > [data-teach="git-dependency-pin"]');await pin.waitFor();
+    await pin.locator('[data-dep-action="switch"]').click();assert.equal(await pin.locator('[data-dep-view] .teach-file.index .teach-file-content').textContent(),'L1');
+    for(const a of ['edit','add','commit'])await pin.locator('[data-dep-action="'+a+'"]').click();
+    assert.equal(await pin.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'L2');
+    assert((await pin.locator('[data-dep-feedback]').textContent()).includes('незакоммиченные байты'));
+    const available=page.locator('.reader > .prose > [data-teach="git-dependency-availability"]');
+    await available.locator('[data-dep-action="checkout"]').click();assert((await available.locator('[data-dep-feedback]').textContent()).includes('FAIL'));
+    await available.locator('[data-dep-action="publish"]').click();await available.locator('[data-dep-action="checkout"]').click();assert((await available.locator('[data-dep-feedback]').textContent()).includes('PASS'));await checkWidth();
+    await page.goto(base+'#/lesson/git-attributes-lab/middle');
+    const eol=page.locator('.reader > .prose > [data-teach="git-attribute-eol"]');
+    await eol.locator('[data-dep-action="eol-crlf"]').click();assert.equal(await eol.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'6f 6e 65 0a');
+    await eol.locator('[data-dep-action="eol-binary"]').click();assert.equal(await eol.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'6f 6e 65 0d 0a');
+    const norm=page.locator('.reader > .prose > [data-teach="git-attribute-renormalize"]');
+    await norm.locator('[data-dep-action="rule"]').click();await norm.locator('[data-dep-action="renorm"]').click();
+    assert.equal(await norm.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'CRLF');assert.equal(await norm.locator('[data-dep-view] .teach-file.index .teach-file-content').textContent(),'LF');
+    await norm.locator('[data-dep-action="commit"]').click();assert.equal(await norm.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'LF');
+    const filter=page.locator('.reader > .prose > [data-teach="git-attribute-filter"]');await filter.locator('[data-dep-action="filter-fail"]').click();assert((await filter.locator('[data-dep-feedback]').textContent()).includes('add отказал'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
