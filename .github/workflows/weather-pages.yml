@@ -29,7 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: Assemble public weather site
+      - name: Verify engineering atlas content
+        run: node academy/tests/validate.mjs
+      - name: Assemble public weather and atlas sites
         run: |
           mkdir -p public/weather/data
           mkdir -p public/academy
