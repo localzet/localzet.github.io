@@ -419,6 +419,25 @@ const base='http://127.0.0.1:8765/academy/';
     for(const a of ['commit','remove'])await life.locator('[data-wt-action="'+a+'"]').click();
     assert((await life.locator('[data-wt-feedback]').textContent()).includes('ветка experiment'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-transport-v2/senior');
+    const pkt=page.locator('.reader > .prose > [data-teach="git-wire-pkt"]');await pkt.waitFor();
+    await pkt.locator('[data-wire-action="pkt-utf"]').click();assert.equal(await pkt.locator('.teach-file.index .teach-file-content').textContent(),'0007');
+    await pkt.locator('[data-wire-action="pkt-empty"]').click();assert.equal(await pkt.locator('.teach-file.index .teach-file-content').textContent(),'0004');
+    await pkt.locator('[data-wire-action="pkt-flush"]').click();assert((await pkt.locator('[data-wire-view]').textContent()).includes('0000'));
+    const wire=page.locator('.reader > .prose > [data-teach="git-wire-negotiate"]');
+    for(const a of ['want','have','pack','ref'])await wire.locator('[data-wire-action="'+a+'"]').click();
+    assert((await wire.locator('[data-wire-feedback]').textContent()).includes('HEAD остаётся B'));await checkWidth();
+    await page.goto(base+'#/lesson/git-shallow-partial/senior');
+    const depth=page.locator('.reader > .prose > [data-teach="git-clone-depth"]');await depth.waitFor();
+    await depth.locator('[data-wire-action="depth-3"]').click();assert((await depth.locator('[data-wire-feedback]').textContent()).includes('A4'));
+    const clone=page.locator('.reader > .prose > [data-teach="git-clone-lazy"]');
+    for(const a of ['filter','sparse','offline','read'])await clone.locator('[data-wire-action="'+a+'"]').click();
+    assert((await clone.locator('[data-wire-feedback]').textContent()).includes('FAIL'));
+    for(const a of ['offline','read'])await clone.locator('[data-wire-action="'+a+'"]').click();
+    assert((await clone.locator('[data-wire-feedback]').textContent()).includes('PASS'));
+    assert((await clone.locator('.teach-file.work .teach-file-content').textContent()).includes('app + корневые'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();

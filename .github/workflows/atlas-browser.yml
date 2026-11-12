@@ -77,6 +77,8 @@ jobs:
         run: node academy/tests/git-teaching-storage.mjs
       - name: Verify guided Git rerere cache and worktree isolation
         run: node academy/tests/git-teaching-worktrees.mjs
+      - name: Verify guided Git wire protocol and clone boundaries
+        run: node academy/tests/git-teaching-transport.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
