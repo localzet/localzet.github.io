@@ -330,82 +330,82 @@ window.ATLAS_LEVELS={
   },
   "order": {
     "linux": [
-      "linux-lab-start",
       "linux-history",
+      "linux-lab-start",
       "linux-shell",
       "linux-vfs",
       "linux-permissions",
       "linux-packages",
       "linux-processes",
       "linux-boot",
+      "linux-memory",
       "linux-systemd",
-      "linux-cli-atlas",
-      "linux-memory"
+      "linux-cli-atlas"
     ],
     "git": [
       "git-origins",
       "git-setup",
+      "git-objects",
       "git-index",
+      "git-revisions",
       "git-merge",
       "git-remotes",
-      "git-objects",
-      "git-revisions",
       "git-recovery",
       "git-command-atlas"
     ],
     "docker": [
       "docker-origin",
+      "docker-isolation",
+      "docker-images",
       "docker-runtime",
       "docker-volumes",
       "dockerfile-complete",
       "docker-compose",
-      "docker-images",
-      "docker-command-atlas",
-      "docker-isolation"
+      "docker-command-atlas"
     ],
     "devops": [
       "devops-history",
       "devops-cicd",
-      "devops-observability",
-      "devops-backups",
-      "devops-slo",
       "devops-iac",
+      "devops-observability",
+      "devops-slo",
+      "devops-backups",
       "devops-k8s"
     ],
     "architecture": [
       "arch-purpose",
       "arch-contracts",
-      "arch-transactions",
       "arch-monolith",
       "arch-ddd",
-      "arch-performance",
-      "arch-distributed"
+      "arch-transactions",
+      "arch-distributed",
+      "arch-performance"
     ],
     "assembly": [
       "asm-history",
       "asm-binary",
       "asm-first",
-      "asm-control-flow",
       "asm-instructions",
+      "asm-control-flow",
       "asm-stack",
       "asm-performance"
     ],
     "internet": [
       "internet-history",
-      "internet-network",
-      "internet-tcp",
-      "internet-dns",
-      "internet-http3",
-      "crypto-foundations",
       "internet-governance",
       "internet-rirs",
+      "internet-network",
       "internet-cidr-lab",
-      "crypto-rsa-dh",
-      "crypto-aes",
-      "internet-tls",
+      "internet-tcp",
+      "internet-dns",
       "internet-dnssec",
+      "crypto-foundations",
+      "crypto-rsa-dh",
       "crypto-math",
-      "crypto-signatures"
+      "crypto-aes",
+      "crypto-signatures",
+      "internet-tls",
+      "internet-http3"
     ]
   },
   "juniorDiagrams": {

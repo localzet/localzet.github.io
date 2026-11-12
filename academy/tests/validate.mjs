@@ -12,7 +12,7 @@ for (const path of ['content.js', ...subjects.map(name => 'subjects/' + name + '
 }
 new vm.Script(load('assets/app.js'), { filename: 'assets/app.js' });
 new vm.Script(load('assets/theme.js'), { filename: 'assets/theme.js' });
-for (const path of ['editorial.js', 'reference.js', 'levels.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
+for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 7, 'The seven requested directions must be available');
@@ -50,7 +50,7 @@ for (const lesson of d.lessons) {
   assert(lesson.title && lesson.summary && lesson.body, 'Incomplete lesson: ' + lesson.id);
   const min=levels.minimum[lesson.id];
   assert(Number.isInteger(min)&&min>=0&&min<=2,'Missing minimum '+lesson.id);
-  if(min===0){const j=levels.junior[lesson.id];assert(j?.title&&j.body.includes('## '),'Missing junior text '+lesson.id);assert(j.body.split(/\s+/).length>=100,'Short junior variant '+lesson.id);}
+  if(min===0){const j=levels.junior[lesson.id];assert(j?.title&&j.body.includes('## '),'Missing junior text '+lesson.id);assert(j.body.split(/\s+/).length>=100,'Short junior variant '+lesson.id);assert((j.body.match(/~~~/g)||[]).length%2===0,'Unclosed junior code fence '+lesson.id);assert(levels.juniorTerms[lesson.id]?.length>=3,'Missing beginner glossary '+lesson.id);}
   if(min===0){assert(levels.juniorDiagrams[lesson.id]?.steps.length>=2,'Missing junior diagram '+lesson.id);assert(levels.juniorQuestions[lesson.id]?.length===2,'Missing junior question '+lesson.id);}
   if(levels.advanced[lesson.id])assert(levels.advancedDiagrams[lesson.id]?.steps.length>=2,'Missing senior diagram '+lesson.id);
   const e=editorial[lesson.id];
@@ -79,6 +79,9 @@ assert(!load('assets/app.js').includes('closest("[data-theme]")'),'Theme toggle 
 assert(html.indexOf('src="./assets/theme.js"')<html.indexOf('rel="stylesheet"'),'Theme must initialize before CSS');
 assert(html.indexOf('src="./content.js"') < html.indexOf('src="./subjects/linux.js"'), 'Invalid script load order');
 assert(html.indexOf('src="./subjects/cryptography.js"') < html.indexOf('src="./assets/app.js'), 'App runs before lesson data');
+assert(Object.keys(win.ATLAS_FIGURES).length>=15,'Missing vector diagrams');
+for(const id of Object.keys(win.ATLAS_FIGURES))assert(ids.has(id.replace(/^junior-/,'')),'Orphan SVG '+id);
+console.log('Learning levels: %d Junior editions, %d Senior expansions; %d SVG diagrams.',Object.keys(levels.junior).length,Object.keys(levels.advanced).length,Object.keys(win.ATLAS_FIGURES).length);
 const roadmapTopics = d.courses.reduce((n, c) => n + c.roadmap.reduce((k, g) => k + g.topics.length, 0), 0);
 assert(roadmapTopics >= 300, 'Lost roadmap topics');
 console.log('Editorial: %d chapters; command index: %d entries.',Object.keys(editorial).length,refCount);
