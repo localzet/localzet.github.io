@@ -49,6 +49,8 @@ jobs:
         run: node academy/tests/git-teaching-merge.mjs
       - name: Verify guided Git remotes and review workflow
         run: node academy/tests/git-teaching-remotes.mjs
+      - name: Verify guided Git stash, security and reflog
+        run: node academy/tests/git-teaching-safety.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
