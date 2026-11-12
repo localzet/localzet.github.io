@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+      - name: Check browser test syntax
+        run: node --check academy/tests/browser.cjs
       - name: Verify editorial and source integrity
         run: node academy/tests/validate.mjs
       - name: Verify Git fundamentals in disposable repositories
@@ -61,6 +63,8 @@ jobs:
         run: node academy/tests/git-teaching-index.mjs
       - name: Verify guided Git rebase, todo and cherry-pick
         run: node academy/tests/git-teaching-rewrite.mjs
+      - name: Verify guided Git bisect, refspec and explicit lease
+        run: node academy/tests/git-teaching-diagnostics.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
