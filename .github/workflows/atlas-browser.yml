@@ -1,0 +1,31 @@
+name: Atlas browser regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'academy/**'
+      - '.github/workflows/atlas-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-browser-main
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify editorial and source integrity
+        run: node academy/tests/validate.mjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
+      - name: Install Chromium
+        run: "$RUNNER_TEMP/atlas-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Test desktop, tablet and phone in both themes
+        run: NODE_PATH="$RUNNER_TEMP/atlas-browser/node_modules" node academy/tests/browser.cjs
