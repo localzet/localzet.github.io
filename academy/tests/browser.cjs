@@ -438,6 +438,21 @@ const base='http://127.0.0.1:8765/academy/';
     assert((await clone.locator('[data-wire-feedback]').textContent()).includes('PASS'));
     assert((await clone.locator('.teach-file.work .teach-file-content').textContent()).includes('app + корневые'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-maintenance-lab/senior');
+    const structure=page.locator('.reader > .prose > [data-teach="git-maint-structures"]');await structure.waitFor();
+    await structure.locator('[data-maint-action="struct-midx"]').click();assert((await structure.locator('[data-maint-view]').textContent()).includes('OID → pack + offset'));
+    const bits=page.locator('.reader > .prose > [data-teach="git-maint-bitmap"]');
+    await bits.locator('[data-maint-action="bits-union"]').click();assert.equal(await bits.locator('.maint-bits .on').count(),8);
+    await bits.locator('[data-maint-action="bits-intersection"]').click();assert.equal(await bits.locator('.maint-bits .on').count(),4);
+    await bits.locator('[data-maint-action="bits-difference"]').click();assert.equal(await bits.locator('.maint-bits .on').count(),2);
+    const measure=page.locator('.reader > .prose > [data-teach="git-maint-measure"]');
+    await measure.locator('[data-maint-action="measure-repeat"]').click();assert((await measure.locator('[data-maint-feedback]').textContent()).includes('Медианы равны'));
+    const ret=page.locator('.reader > .prose > [data-teach="git-maint-retention"]');
+    await ret.locator('[data-maint-action="maintain"]').click();assert((await ret.locator('[data-maint-feedback]').textContent()).includes('Сначала проверьте'));
+    for(const a of ['inspect','rescue','backup','maintain'])await ret.locator('[data-maint-action="'+a+'"]').click();
+    assert((await ret.locator('[data-maint-feedback]').textContent()).includes('refs и снимки совпадают'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();

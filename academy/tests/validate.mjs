@@ -28,7 +28,7 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','subjects/git-teaching-reset.js','subjects/git-junior-project.js','subjects/git-teaching-objects.js','subjects/git-teaching-index.js','subjects/git-teaching-rewrite.js','subjects/git-teaching-diagnostics.js','subjects/git-teaching-release.js','subjects/git-teaching-dependencies.js','subjects/git-middle-project.js','subjects/git-teaching-review.js','subjects/git-teaching-storage.js','subjects/git-teaching-worktrees.js','subjects/git-teaching-transport.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','subjects/git-teaching-reset.js','subjects/git-junior-project.js','subjects/git-teaching-objects.js','subjects/git-teaching-index.js','subjects/git-teaching-rewrite.js','subjects/git-teaching-diagnostics.js','subjects/git-teaching-release.js','subjects/git-teaching-dependencies.js','subjects/git-middle-project.js','subjects/git-teaching-review.js','subjects/git-teaching-storage.js','subjects/git-teaching-worktrees.js','subjects/git-teaching-transport.js','subjects/git-teaching-maintenance.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching.js'),{filename:'assets/teaching.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-start.js'),{filename:'assets/teaching-start.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-history.js'),{filename:'assets/teaching-history.js'}).runInNewContext({window:win});
@@ -49,6 +49,7 @@ new vm.Script(load('assets/teaching-review.js'),{filename:'assets/teaching-revie
 new vm.Script(load('assets/teaching-storage.js'),{filename:'assets/teaching-storage.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-worktrees.js'),{filename:'assets/teaching-worktrees.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-transport.js'),{filename:'assets/teaching-transport.js'}).runInNewContext({window:win});
+new vm.Script(load('assets/teaching-maintenance.js'),{filename:'assets/teaching-maintenance.js'}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 for(const id of win.ATLAS_GUIDED_IDS){const l=d.lessons.find(x=>x.id===id);for(const body of [l.body,...(win.ATLAS_LEVELS.minimum[id]===0?[win.ATLAS_LEVELS.junior[id].body]:[])]){
  const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);assert(markers.length>=3&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Guided lesson '+id);
@@ -105,6 +106,7 @@ assert.deepEqual(middleGit.slice(0,21),Array.from(levels.juniorOrder.git));
 assert.equal(middleGit.at(-2),'git-command-atlas');
 assert.equal(middleGit.at(-1),'git-middle-project');
 assert(middleGit.every(id=>win.ATLAS_GUIDED_IDS.includes(id)),'All Middle Git chapters have guided editions');
+assert(levels.order.git.every(id=>win.ATLAS_GUIDED_IDS.includes(id)),'Every existing Git chapter has a guided edition');
 const juniorGit=Array.from(levels.juniorOrder.git);
 assert.equal(juniorGit.length,21);
 assert.equal(juniorGit.at(-1),'git-junior-project');
