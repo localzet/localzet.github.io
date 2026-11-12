@@ -76,6 +76,9 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-service-dependencies/middle');await page.locator('[data-unit-after]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('только A'));await page.locator('[data-unit-wants]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('B → A'));await checkWidth();
     await page.goto(base+'#/lesson/linux-storage-lab/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();
     await page.goto(base+'#/lesson/linux-senior-project/senior');await page.locator('.reader h1').waitFor();await checkWidth();
+    await page.goto(base+'#/reference');await page.locator('[data-reference-search]').fill('readelf');const refItem=page.locator('[data-ref-item]:visible').filter({hasText:'readelf'}).first();await refItem.locator('.ref-options summary').click();assert((await refItem.textContent()).includes('-lW'));await checkWidth();
+    for(const id of ['linux-elf','linux-special-fs','linux-mount-overlay','linux-packet-diagnostics']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader h1').waitFor();await checkWidth();}
+    await page.goto(base+'#/lesson/linux-memory/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Оперативная'));await checkWidth();
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();

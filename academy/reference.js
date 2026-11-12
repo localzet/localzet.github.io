@@ -12,13 +12,41 @@ window.ATLAS_REFERENCE=[
             "name": "pwd",
             "description": "Текущий каталог",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/pwd-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-P",
+                "Физический путь без символических ссылок."
+              ],
+              [
+                "-L",
+                "Логический путь согласно окружению."
+              ]
+            ]
           },
           {
             "name": "ls",
             "description": "Список файлов",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/ls-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-l",
+                "Подробный формат."
+              ],
+              [
+                "-a",
+                "Включить скрытые имена, в том числе . и .."
+              ],
+              [
+                "-h",
+                "Человекочитаемые размеры вместе с -l или -s."
+              ],
+              [
+                "-d",
+                "Показать сами каталоги, а не их содержимое."
+              ]
+            ]
           },
           {
             "name": "dir",
@@ -36,13 +64,33 @@ window.ATLAS_REFERENCE=[
             "name": "stat",
             "description": "Метаданные",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/stat-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-c FORMAT",
+                "Вывести указанный формат метаданных."
+              ],
+              [
+                "-L",
+                "Следовать символической ссылке."
+              ]
+            ]
           },
           {
             "name": "file",
             "description": "Определение формата",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-b",
+                "Не выводить имя файла."
+              ],
+              [
+                "-L",
+                "Следовать символическим ссылкам."
+              ]
+            ]
           },
           {
             "name": "realpath",
@@ -54,7 +102,13 @@ window.ATLAS_REFERENCE=[
             "name": "readlink",
             "description": "Разрешение ссылок",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/readlink-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-f",
+                "Канонизировать путь; последний компонент может отсутствовать."
+              ]
+            ]
           },
           {
             "name": "basename",
@@ -78,25 +132,77 @@ window.ATLAS_REFERENCE=[
             "name": "cp",
             "description": "Копирование",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/cp-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-a",
+                "Архивный режим с сохранением атрибутов по правилам GNU cp."
+              ],
+              [
+                "-i",
+                "Запросить подтверждение перед перезаписью."
+              ],
+              [
+                "--reflink=auto",
+                "Попробовать CoW-копирование, иначе обычная копия."
+              ],
+              [
+                "--",
+                "Конец опций перед именами файлов."
+              ]
+            ]
           },
           {
             "name": "mv",
             "description": "Перемещение",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/mv-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-i",
+                "Запросить подтверждение перезаписи."
+              ],
+              [
+                "-n",
+                "Не перезаписывать существующий файл; проверяйте семантику версии."
+              ]
+            ]
           },
           {
             "name": "rm",
             "description": "Удаление",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/rm-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-i",
+                "Запрашивать подтверждение."
+              ],
+              [
+                "-r",
+                "Рекурсивное удаление; применять только к известному каталогу."
+              ],
+              [
+                "--",
+                "Конец опций; не заменяет проверку пути."
+              ]
+            ]
           },
           {
             "name": "mkdir",
             "description": "Создание каталогов",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/mkdir-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-p",
+                "Создать недостающих родителей."
+              ],
+              [
+                "-m MODE",
+                "Задать права создаваемого каталога."
+              ]
+            ]
           },
           {
             "name": "rmdir",
@@ -108,19 +214,45 @@ window.ATLAS_REFERENCE=[
             "name": "ln",
             "description": "Создание ссылок",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/ln-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-s",
+                "Создать символическую ссылку."
+              ],
+              [
+                "-T",
+                "Рассматривать назначение как обычный путь, не каталог (GNU)."
+              ]
+            ]
           },
           {
             "name": "touch",
             "description": "Временные метки",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/touch-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-c",
+                "Не создавать отсутствующий файл."
+              ],
+              [
+                "-t STAMP",
+                "Задать время в формате команды."
+              ]
+            ]
           },
           {
             "name": "truncate",
             "description": "Изменение длины файла",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/truncate-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-s SIZE",
+                "Изменить размер; сокращение уничтожает данные после новой границы."
+              ]
+            ]
           },
           {
             "name": "install",
@@ -132,7 +264,17 @@ window.ATLAS_REFERENCE=[
             "name": "mktemp",
             "description": "Безопасный временный объект",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/mktemp-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-d",
+                "Создать временный каталог."
+              ],
+              [
+                "-p DIR",
+                "Выбрать родительский каталог (GNU)."
+              ]
+            ]
           },
           {
             "name": "mkfifo",
@@ -162,13 +304,49 @@ window.ATLAS_REFERENCE=[
             "name": "find",
             "description": "Поиск по дереву",
             "url": "https://www.gnu.org/software/findutils/manual/html_mono/find.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-type f",
+                "Обычные файлы."
+              ],
+              [
+                "-name PATTERN",
+                "Шаблон имени, обычно заключают в кавычки."
+              ],
+              [
+                "-maxdepth N",
+                "Ограничить глубину обхода."
+              ],
+              [
+                "-print0",
+                "Вывести имена, разделённые NUL."
+              ],
+              [
+                "-exec COMMAND {} +",
+                "Передать группы найденных имён команде."
+              ]
+            ]
           },
           {
             "name": "xargs",
             "description": "Построение argv из ввода",
             "url": "https://www.gnu.org/software/findutils/manual/html_mono/find.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-0",
+                "Читать NUL-разделённые элементы."
+              ],
+              [
+                "-r",
+                "Не запускать команду на пустом вводе (GNU)."
+              ],
+              [
+                "-n N",
+                "Ограничить число аргументов за вызов."
+              ]
+            ]
           },
           {
             "name": "locate",
@@ -185,7 +363,17 @@ window.ATLAS_REFERENCE=[
             "name": "cat",
             "description": "Объединение потоков",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/cat-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n",
+                "Нумеровать строки."
+              ],
+              [
+                "-A",
+                "Показать управляющие символы в отображаемой форме (GNU)."
+              ]
+            ]
           },
           {
             "name": "tac",
@@ -227,31 +415,93 @@ window.ATLAS_REFERENCE=[
             "name": "head",
             "description": "Начало",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n N",
+                "Первые N строк."
+              ],
+              [
+                "-c N",
+                "Первые N байт."
+              ]
+            ]
           },
           {
             "name": "tail",
             "description": "Конец",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n N",
+                "Последние N строк."
+              ],
+              [
+                "-f",
+                "Следить за ростом файла."
+              ],
+              [
+                "-F",
+                "Следить по имени с повторными попытками (GNU)."
+              ]
+            ]
           },
           {
             "name": "sort",
             "description": "Сортировка",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/sort-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n",
+                "Числовой порядок."
+              ],
+              [
+                "-r",
+                "Обратный порядок."
+              ],
+              [
+                "-k KEY",
+                "Выбрать ключ сортировки."
+              ],
+              [
+                "-u",
+                "Вывести по одному элементу для равных ключей."
+              ]
+            ]
           },
           {
             "name": "uniq",
             "description": "Соседние дубликаты",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/uniq-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-c",
+                "Добавить число повторов."
+              ],
+              [
+                "-d",
+                "Вывести повторяющиеся соседние строки."
+              ]
+            ]
           },
           {
             "name": "cut",
             "description": "Выбор полей",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/cut-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-d DELIM",
+                "Разделитель полей."
+              ],
+              [
+                "-f LIST",
+                "Номера полей."
+              ]
+            ]
           },
           {
             "name": "paste",
@@ -275,19 +525,49 @@ window.ATLAS_REFERENCE=[
             "name": "tr",
             "description": "Преобразование символов",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/tr-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-d SET",
+                "Удалить символы из набора."
+              ],
+              [
+                "-s SET",
+                "Сжать последовательности выбранных символов."
+              ]
+            ]
           },
           {
             "name": "wc",
             "description": "Подсчёт",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/wc-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-l",
+                "Количество переводов строки."
+              ],
+              [
+                "-w",
+                "Количество слов."
+              ],
+              [
+                "-c",
+                "Количество байт."
+              ]
+            ]
           },
           {
             "name": "tee",
             "description": "Дублирование потока",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/tee-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-a",
+                "Добавить в файл, а не перезаписать."
+              ]
+            ]
           },
           {
             "name": "split",
@@ -347,31 +627,105 @@ window.ATLAS_REFERENCE=[
             "name": "grep",
             "description": "Поиск шаблонов",
             "url": "https://www.gnu.org/software/grep/manual/grep.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n",
+                "Номера строк."
+              ],
+              [
+                "-i",
+                "Игнорировать регистр."
+              ],
+              [
+                "-E",
+                "Расширенные регулярные выражения."
+              ],
+              [
+                "-F",
+                "Искать фиксированные строки."
+              ],
+              [
+                "-r",
+                "Рекурсивный поиск."
+              ],
+              [
+                "-q",
+                "Не выводить строки; проверять код выхода."
+              ]
+            ]
           },
           {
             "name": "sed",
             "description": "Потоковое редактирование",
             "url": "https://www.gnu.org/software/sed/manual/sed.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n",
+                "Не печатать строки автоматически."
+              ],
+              [
+                "-E",
+                "Расширенные регулярные выражения."
+              ],
+              [
+                "-e SCRIPT",
+                "Добавить сценарий обработки."
+              ],
+              [
+                "-i[SUFFIX]",
+                "Редактировать файлы на месте; сначала проверить без -i."
+              ]
+            ]
           },
           {
             "name": "awk",
             "description": "Обработка записей",
             "url": "https://www.gnu.org/software/gawk/manual/gawk.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-F SEP",
+                "Разделитель полей."
+              ],
+              [
+                "-v NAME=VALUE",
+                "Установить переменную до выполнения."
+              ],
+              [
+                "-f FILE",
+                "Прочитать программу из файла."
+              ]
+            ]
           },
           {
             "name": "diff",
             "description": "Различия",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-u",
+                "Унифицированный diff."
+              ],
+              [
+                "-r",
+                "Рекурсивно сравнить каталоги."
+              ]
+            ]
           },
           {
             "name": "cmp",
             "description": "Побайтовое сравнение",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-s",
+                "Только код результата, без обычного вывода."
+              ]
+            ]
           },
           {
             "name": "patch",
@@ -460,13 +814,53 @@ window.ATLAS_REFERENCE=[
             "name": "tar",
             "description": "Архивирование",
             "url": "https://www.gnu.org/software/tar/manual/tar.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-c",
+                "Создать архив."
+              ],
+              [
+                "-t",
+                "Перечислить содержимое."
+              ],
+              [
+                "-x",
+                "Извлечь в проверенный каталог."
+              ],
+              [
+                "-z",
+                "Использовать gzip."
+              ],
+              [
+                "-f FILE",
+                "Путь архива."
+              ],
+              [
+                "-C DIR",
+                "Изменить каталог для операции."
+              ]
+            ]
           },
           {
             "name": "gzip",
             "description": "Сжатие gzip",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-c",
+                "Писать результат в stdout."
+              ],
+              [
+                "-d",
+                "Распаковать."
+              ],
+              [
+                "-t",
+                "Проверить целостность потока."
+              ]
+            ]
           },
           {
             "name": "gunzip",
@@ -508,13 +902,45 @@ window.ATLAS_REFERENCE=[
             "name": "rsync",
             "description": "Синхронизация файлов",
             "url": "https://download.samba.org/pub/rsync/rsync.1",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-a",
+                "Архивный режим."
+              ],
+              [
+                "-n",
+                "Пробный запуск без изменений."
+              ],
+              [
+                "-v",
+                "Подробности."
+              ],
+              [
+                "--delete",
+                "Удалять лишнее в назначении; сначала -n и проверка путей."
+              ]
+            ]
           },
           {
             "name": "scp",
             "description": "Копирование через SSH",
             "url": "https://man.openbsd.org/scp",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-P PORT",
+                "Порт SSH (заглавная P)."
+              ],
+              [
+                "-r",
+                "Копировать каталоги рекурсивно."
+              ],
+              [
+                "-i FILE",
+                "Ключ клиента."
+              ]
+            ]
           },
           {
             "name": "sftp",
@@ -531,7 +957,21 @@ window.ATLAS_REFERENCE=[
             "name": "id",
             "description": "Идентификаторы",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/id-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-u",
+                "Числовой UID."
+              ],
+              [
+                "-g",
+                "Основной GID."
+              ],
+              [
+                "-G",
+                "Все группы."
+              ]
+            ]
           },
           {
             "name": "groups",
@@ -567,13 +1007,33 @@ window.ATLAS_REFERENCE=[
             "name": "chmod",
             "description": "Биты прав",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-R",
+                "Рекурсивно изменить права; опасно без проверки дерева."
+              ],
+              [
+                "--reference=FILE",
+                "Взять mode с указанного файла (GNU)."
+              ]
+            ]
           },
           {
             "name": "chown",
             "description": "Владелец и группа",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/chown-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-R",
+                "Рекурсивно изменить владельца; только проверенное дерево."
+              ],
+              [
+                "--reference=FILE",
+                "Взять владельца и группу с указанного файла."
+              ]
+            ]
           },
           {
             "name": "chgrp",
@@ -615,7 +1075,17 @@ window.ATLAS_REFERENCE=[
             "name": "getent",
             "description": "Запрос NSS",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "passwd USER",
+                "Запрос учётной записи через NSS."
+              ],
+              [
+                "group GROUP",
+                "Запрос группы через NSS."
+              ]
+            ]
           },
           {
             "name": "namei",
@@ -669,7 +1139,21 @@ window.ATLAS_REFERENCE=[
             "name": "sudo",
             "description": "Выполнение по политике",
             "url": "https://www.sudo.ws/docs/man/sudo.man/",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-l",
+                "Показать разрешённые действия по политике."
+              ],
+              [
+                "-u USER",
+                "Запуск от указанного пользователя при наличии разрешения."
+              ],
+              [
+                "-n",
+                "Не запрашивать пароль интерактивно."
+              ]
+            ]
           },
           {
             "name": "su",
@@ -692,19 +1176,57 @@ window.ATLAS_REFERENCE=[
             "name": "ps",
             "description": "Снимок процессов",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-p PID",
+                "Выбрать PID."
+              ],
+              [
+                "-o FORMAT",
+                "Задать поля вывода."
+              ],
+              [
+                "-e",
+                "Выбрать все процессы."
+              ]
+            ]
           },
           {
             "name": "top",
             "description": "Интерактивный мониторинг",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-b",
+                "Пакетный режим."
+              ],
+              [
+                "-n N",
+                "Число обновлений."
+              ],
+              [
+                "-p PID",
+                "Наблюдать выбранные PID."
+              ]
+            ]
           },
           {
             "name": "pgrep",
             "description": "Поиск PID",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-a",
+                "Показать PID и командную строку."
+              ],
+              [
+                "-x",
+                "Точное совпадение имени."
+              ]
+            ]
           },
           {
             "name": "pkill",
@@ -716,7 +1238,21 @@ window.ATLAS_REFERENCE=[
             "name": "kill",
             "description": "Отправка сигнала",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-TERM PID",
+                "Запрос штатного завершения."
+              ],
+              [
+                "-0 PID",
+                "Проверить возможность сигнализации без доставки сигнала."
+              ],
+              [
+                "-l",
+                "Список сигналов."
+              ]
+            ]
           },
           {
             "name": "killall",
@@ -728,7 +1264,13 @@ window.ATLAS_REFERENCE=[
             "name": "nice",
             "description": "Приоритет запуска",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/nice-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-n N",
+                "Добавить значение к nice запускаемой программы."
+              ]
+            ]
           },
           {
             "name": "renice",
@@ -758,7 +1300,17 @@ window.ATLAS_REFERENCE=[
             "name": "timeout",
             "description": "Ограничение времени",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/timeout-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-s SIGNAL",
+                "Сигнал при истечении времени."
+              ],
+              [
+                "-k DURATION",
+                "Дополнительное время до KILL; применять осознанно."
+              ]
+            ]
           },
           {
             "name": "time",
@@ -800,19 +1352,53 @@ window.ATLAS_REFERENCE=[
             "name": "free",
             "description": "Статистика памяти",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-h",
+                "Человекочитаемые единицы."
+              ],
+              [
+                "-s N",
+                "Повтор через N секунд."
+              ],
+              [
+                "-c N",
+                "Число повторов."
+              ]
+            ]
           },
           {
             "name": "vmstat",
             "description": "Статистика VM/CPU/I/O",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-w",
+                "Широкий формат."
+              ],
+              [
+                "DELAY COUNT",
+                "Интервал и число отчётов; первый может быть средним с загрузки."
+              ]
+            ]
           },
           {
             "name": "iostat",
             "description": "Статистика устройств",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-x",
+                "Расширенные метрики устройства."
+              ],
+              [
+                "-y",
+                "Пропустить первый отчёт при интервальном выводе."
+              ]
+            ]
           },
           {
             "name": "pidstat",
@@ -836,13 +1422,49 @@ window.ATLAS_REFERENCE=[
             "name": "strace",
             "description": "Системные вызовы",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-f",
+                "Следовать потомкам."
+              ],
+              [
+                "-c",
+                "Агрегировать статистику."
+              ],
+              [
+                "-e trace=LIST",
+                "Выбрать вызовы."
+              ],
+              [
+                "-o FILE",
+                "Сохранить трассировку; проверять её на секреты."
+              ],
+              [
+                "-T",
+                "Показывать длительность вызова."
+              ]
+            ]
           },
           {
             "name": "perf",
             "description": "Измерение производительности",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "stat -e EVENT -- COMMAND",
+                "Счётчики выбранной команды."
+              ],
+              [
+                "record -- COMMAND",
+                "Записать профиль при доступности."
+              ],
+              [
+                "report",
+                "Просмотреть записанный профиль."
+              ]
+            ]
           },
           {
             "name": "pmap",
@@ -871,19 +1493,61 @@ window.ATLAS_REFERENCE=[
             "name": "df",
             "description": "Статистика файловых систем",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/df-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-h",
+                "Человекочитаемый размер."
+              ],
+              [
+                "-T",
+                "Тип файловой системы."
+              ],
+              [
+                "-i",
+                "Статистика inode."
+              ]
+            ]
           },
           {
             "name": "du",
             "description": "Занятые блоки дерева",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-s",
+                "Итог по аргументу."
+              ],
+              [
+                "-h",
+                "Человекочитаемый размер."
+              ],
+              [
+                "-x",
+                "Не пересекать границу ФС."
+              ]
+            ]
           },
           {
             "name": "lsblk",
             "description": "Блочные устройства",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-f",
+                "Поля файловых систем."
+              ],
+              [
+                "-o LIST",
+                "Явно выбрать столбцы."
+              ],
+              [
+                "-J",
+                "JSON-представление."
+              ]
+            ]
           },
           {
             "name": "blkid",
@@ -895,13 +1559,45 @@ window.ATLAS_REFERENCE=[
             "name": "findmnt",
             "description": "Смонтированные ФС",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-t TYPES",
+                "Фильтр по типам ФС."
+              ],
+              [
+                "-o LIST",
+                "Выбрать столбцы."
+              ],
+              [
+                "--verify",
+                "Проверить таблицу монтирования."
+              ],
+              [
+                "--tab-file FILE",
+                "Использовать указанный файл таблицы."
+              ]
+            ]
           },
           {
             "name": "mount",
             "description": "Монтирование",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-t TYPE",
+                "Тип ФС."
+              ],
+              [
+                "-o OPTIONS",
+                "Параметры монтирования; сверять с ФС."
+              ],
+              [
+                "--bind",
+                "Дополнительное представление существующего пути."
+              ]
+            ]
           },
           {
             "name": "umount",
@@ -943,7 +1639,21 @@ window.ATLAS_REFERENCE=[
             "name": "e2fsck",
             "description": "Проверка ext2/3/4",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-f",
+                "Принудительная проверка."
+              ],
+              [
+                "-n",
+                "Открыть только для чтения, отвечать «нет»."
+              ],
+              [
+                "-p",
+                "Автоматическое исправление допустимых проблем; не на смонтированном диске."
+              ]
+            ]
           },
           {
             "name": "tune2fs",
@@ -991,7 +1701,21 @@ window.ATLAS_REFERENCE=[
             "name": "unshare",
             "description": "Новые пространства имён",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "--mount",
+                "Новое mount namespace."
+              ],
+              [
+                "--net",
+                "Новое network namespace."
+              ],
+              [
+                "--propagation private",
+                "Изменить распространение mount-событий в новом пространстве."
+              ]
+            ]
           },
           {
             "name": "nsenter",
@@ -1008,7 +1732,21 @@ window.ATLAS_REFERENCE=[
             "name": "uname",
             "description": "Сведения о ядре",
             "url": "https://www.gnu.org/software/coreutils/manual/html_node/uname-invocation.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-r",
+                "Версия работающего ядра."
+              ],
+              [
+                "-m",
+                "Архитектура машины."
+              ],
+              [
+                "-a",
+                "Основная сводка."
+              ]
+            ]
           },
           {
             "name": "arch",
@@ -1038,7 +1776,17 @@ window.ATLAS_REFERENCE=[
             "name": "modinfo",
             "description": "Информация о модуле",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-F FIELD",
+                "Вывести одно поле метаданных."
+              ],
+              [
+                "-k VERSION",
+                "Искать модуль для выбранной версии ядра."
+              ]
+            ]
           },
           {
             "name": "modprobe",
@@ -1062,19 +1810,89 @@ window.ATLAS_REFERENCE=[
             "name": "systemctl",
             "description": "Управление unit",
             "url": "https://www.freedesktop.org/software/systemd/man/latest/systemctl.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "status UNIT",
+                "Состояние unit и часть журнала."
+              ],
+              [
+                "show UNIT -p PROPERTY",
+                "Свойство менеджера."
+              ],
+              [
+                "cat UNIT",
+                "Основной файл и drop-in."
+              ],
+              [
+                "--user",
+                "Обращаться к пользовательскому менеджеру."
+              ],
+              [
+                "daemon-reload",
+                "Перечитать конфигурацию unit."
+              ],
+              [
+                "enable --now UNIT",
+                "Настроить активацию и запустить; изменение состояния."
+              ]
+            ]
           },
           {
             "name": "journalctl",
             "description": "Журнал",
             "url": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-b",
+                "Текущая загрузка."
+              ],
+              [
+                "-b -1",
+                "Предыдущая загрузка, если сохранена."
+              ],
+              [
+                "-u UNIT",
+                "Журнал указанного unit."
+              ],
+              [
+                "-k",
+                "Сообщения ядра."
+              ],
+              [
+                "-p warning",
+                "Предупреждения и более серьёзные уровни."
+              ],
+              [
+                "--since TIME",
+                "Начало интервала."
+              ],
+              [
+                "--no-pager",
+                "Вывод без pager."
+              ]
+            ]
           },
           {
             "name": "systemd-analyze",
             "description": "Диагностика systemd",
             "url": "https://www.freedesktop.org/software/systemd/man/latest/systemd-analyze.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "verify FILE",
+                "Статическая проверка unit."
+              ],
+              [
+                "calendar EXPR",
+                "Разбор календарного выражения."
+              ],
+              [
+                "critical-chain",
+                "Критическая цепочка активации."
+              ]
+            ]
           },
           {
             "name": "systemd-run",
@@ -1110,31 +1928,93 @@ window.ATLAS_REFERENCE=[
             "name": "apt-get",
             "description": "APT операции",
             "url": "https://manpages.debian.org/stable/apt/apt-get.8.en.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-s install PACKAGE",
+                "Симуляция установки."
+              ],
+              [
+                "update",
+                "Обновить индексы, не пакеты."
+              ],
+              [
+                "upgrade",
+                "Обновить по правилам команды; проверить план."
+              ]
+            ]
           },
           {
             "name": "apt-cache",
             "description": "APT метаданные",
             "url": "https://manpages.debian.org/stable/apt/apt-cache.8.en.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "policy PACKAGE",
+                "Версии и приоритеты."
+              ],
+              [
+                "depends PACKAGE",
+                "Зависимости."
+              ]
+            ]
           },
           {
             "name": "dpkg",
             "description": "Debian-пакеты",
             "url": "https://manpages.debian.org/stable/dpkg/dpkg.1.en.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-l",
+                "Список известных пакетов."
+              ],
+              [
+                "-L PACKAGE",
+                "Файлы установленного пакета."
+              ],
+              [
+                "-s PACKAGE",
+                "Состояние пакета."
+              ]
+            ]
           },
           {
             "name": "dnf",
             "description": "Fedora/RHEL: пакеты",
             "url": "https://dnf.readthedocs.io/en/latest/command_ref.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "--cacheonly",
+                "Использовать имеющийся кэш."
+              ],
+              [
+                "repoquery --installed PACKAGE",
+                "Запрос установленных пакетов при поддержке версии."
+              ]
+            ]
           },
           {
             "name": "rpm",
             "description": "RPM-пакеты",
             "url": "https://rpm.org/docs/",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-q PACKAGE",
+                "Запрос установленного пакета."
+              ],
+              [
+                "-ql PACKAGE",
+                "Список файлов."
+              ],
+              [
+                "-qR PACKAGE",
+                "Требования."
+              ]
+            ]
           },
           {
             "name": "pacman",
@@ -1157,19 +2037,61 @@ window.ATLAS_REFERENCE=[
             "name": "ip",
             "description": "Адреса, интерфейсы, маршруты",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-br addr",
+                "Краткий вывод адресов."
+              ],
+              [
+                "route get ADDRESS",
+                "Решение маршрутизации для адреса."
+              ],
+              [
+                "-n NAME link",
+                "Интерфейсы выбранного netns."
+              ],
+              [
+                "-s link",
+                "Счётчики интерфейсов."
+              ]
+            ]
           },
           {
             "name": "ss",
             "description": "Сокеты",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-lnt",
+                "Слушающие TCP-сокеты, числовые адреса."
+              ],
+              [
+                "-tan",
+                "Все TCP-состояния."
+              ],
+              [
+                "-tin",
+                "Доступная внутренняя TCP-информация."
+              ],
+              [
+                "-p",
+                "Процессы при наличии прав."
+              ]
+            ]
           },
           {
             "name": "tc",
             "description": "Управление очередями трафика",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-s qdisc show dev IFACE",
+                "Очереди и счётчики интерфейса."
+              ]
+            ]
           },
           {
             "name": "bridge",
@@ -1181,7 +2103,21 @@ window.ATLAS_REFERENCE=[
             "name": "ethtool",
             "description": "Параметры сетевого устройства",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-i IFACE",
+                "Сведения о драйвере."
+              ],
+              [
+                "-k IFACE",
+                "Возможности offload."
+              ],
+              [
+                "-S IFACE",
+                "Счётчики драйвера."
+              ]
+            ]
           },
           {
             "name": "nstat",
@@ -1193,7 +2129,17 @@ window.ATLAS_REFERENCE=[
             "name": "ping",
             "description": "ICMP echo",
             "url": "https://man7.org/linux/man-pages/",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-c N",
+                "Ограничить число запросов."
+              ],
+              [
+                "-W SEC",
+                "Время ожидания ответа по правилам iputils."
+              ]
+            ]
           },
           {
             "name": "tracepath",
@@ -1217,7 +2163,21 @@ window.ATLAS_REFERENCE=[
             "name": "dig",
             "description": "DNS-запросы",
             "url": "https://bind9.readthedocs.io/en/latest/manpages.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "+short",
+                "Краткий ответ."
+              ],
+              [
+                "@SERVER",
+                "Выбрать DNS-сервер."
+              ],
+              [
+                "-x ADDRESS",
+                "Обратный DNS-запрос."
+              ]
+            ]
           },
           {
             "name": "host",
@@ -1241,7 +2201,33 @@ window.ATLAS_REFERENCE=[
             "name": "curl",
             "description": "HTTP и другие протоколы",
             "url": "https://curl.se/docs/manpage.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "--fail",
+                "Ненулевой статус при HTTP-ошибке."
+              ],
+              [
+                "--max-time SEC",
+                "Предел длительности операции."
+              ],
+              [
+                "-I",
+                "HEAD для HTTP."
+              ],
+              [
+                "-v",
+                "Диагностика; может содержать секреты."
+              ],
+              [
+                "-o FILE",
+                "Сохранить ответ."
+              ],
+              [
+                "-w FORMAT",
+                "Вывести выбранные метрики."
+              ]
+            ]
           },
           {
             "name": "wget",
@@ -1259,13 +2245,53 @@ window.ATLAS_REFERENCE=[
             "name": "ssh",
             "description": "SSH-клиент",
             "url": "https://man.openbsd.org/ssh",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-p PORT",
+                "Порт SSH."
+              ],
+              [
+                "-i FILE",
+                "Путь ключа."
+              ],
+              [
+                "-G",
+                "Вывести конфигурацию без подключения."
+              ],
+              [
+                "-F FILE",
+                "Отдельный конфигурационный файл."
+              ],
+              [
+                "-v",
+                "Диагностика подключения."
+              ]
+            ]
           },
           {
             "name": "ssh-keygen",
             "description": "SSH-ключи",
             "url": "https://man.openbsd.org/ssh-keygen",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-t TYPE",
+                "Тип ключа."
+              ],
+              [
+                "-f FILE",
+                "Путь ключа."
+              ],
+              [
+                "-l -f FILE",
+                "Отпечаток ключа."
+              ],
+              [
+                "-y -f FILE",
+                "Получить публичный ключ из приватного."
+              ]
+            ]
           },
           {
             "name": "ssh-agent",
@@ -1283,13 +2309,49 @@ window.ATLAS_REFERENCE=[
             "name": "tcpdump",
             "description": "Захват пакетов",
             "url": "https://www.tcpdump.org/manpages/tcpdump.1.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "-i IFACE",
+                "Интерфейс захвата."
+              ],
+              [
+                "-nn",
+                "Без преобразования адресов и портов в имена."
+              ],
+              [
+                "-c N",
+                "Ограничить число пакетов."
+              ],
+              [
+                "-w FILE",
+                "Записать pcap."
+              ],
+              [
+                "-r FILE",
+                "Читать pcap."
+              ]
+            ]
           },
           {
             "name": "nft",
             "description": "Netfilter ruleset",
             "url": "https://netfilter.org/projects/nftables/manpage.html",
-            "specific": true
+            "specific": true,
+            "options": [
+              [
+                "list ruleset",
+                "Прочитать правила текущего network namespace."
+              ],
+              [
+                "-c -f FILE",
+                "Проверить транзакцию без применения."
+              ],
+              [
+                "-f FILE",
+                "Применить файл правил; только с планом отката."
+              ]
+            ]
           },
           {
             "name": "iptables",
@@ -1384,7 +2446,17 @@ window.ATLAS_REFERENCE=[
             "name": "read",
             "description": "Чтение строки",
             "url": "https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-r",
+                "Не обрабатывать обратный слеш как экранирование."
+              ],
+              [
+                "-p PROMPT",
+                "Показать приглашение в Bash."
+              ]
+            ]
           },
           {
             "name": "mapfile",
@@ -1396,7 +2468,13 @@ window.ATLAS_REFERENCE=[
             "name": "printf",
             "description": "Форматированный вывод",
             "url": "https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "FORMAT ARG...",
+                "Форматированный вывод; не используйте недоверенные данные как формат."
+              ]
+            ]
           },
           {
             "name": "echo",
@@ -1426,7 +2504,21 @@ window.ATLAS_REFERENCE=[
             "name": "set",
             "description": "Опции и позиционные параметры",
             "url": "https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "-u",
+                "Ошибка при раскрытии многих неустановленных переменных."
+              ],
+              [
+                "-e",
+                "Выход при некоторых ошибках; имеются исключения."
+              ],
+              [
+                "-o pipefail",
+                "Статус конвейера учитывает ошибки его команд."
+              ]
+            ]
           },
           {
             "name": "shopt",
@@ -1498,7 +2590,17 @@ window.ATLAS_REFERENCE=[
             "name": "trap",
             "description": "Обработчики сигналов",
             "url": "https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html",
-            "specific": false
+            "specific": false,
+            "options": [
+              [
+                "COMMAND EXIT",
+                "Действие при завершении оболочки."
+              ],
+              [
+                "COMMAND TERM",
+                "Обработчик SIGTERM по правилам shell."
+              ]
+            ]
           },
           {
             "name": "source",
@@ -1553,6 +2655,227 @@ window.ATLAS_REFERENCE=[
             "description": "Настройка завершений",
             "url": "https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html",
             "specific": false
+          }
+        ]
+      },
+      {
+        "title": "Дополнительные интерфейсы Linux",
+        "entries": [
+          {
+            "name": "readelf",
+            "description": "Структура ELF",
+            "url": "https://sourceware.org/binutils/docs/binutils/readelf.html",
+            "options": [
+              [
+                "-h",
+                "Заголовок ELF."
+              ],
+              [
+                "-lW",
+                "Сегменты без сокращения строк."
+              ],
+              [
+                "-dW",
+                "Динамические записи."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "nm",
+            "description": "Символы объектного файла",
+            "url": "https://sourceware.org/binutils/docs/binutils/nm.html",
+            "options": [
+              [
+                "-D",
+                "Динамические символы."
+              ],
+              [
+                "-C",
+                "Деманглировать имена при поддержке."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "losetup",
+            "description": "Управление loop-устройствами",
+            "url": "https://man7.org/linux/man-pages/man8/losetup.8.html",
+            "options": [
+              [
+                "-a",
+                "Список loop-устройств."
+              ],
+              [
+                "--find --show FILE",
+                "Подключить образ; только в выделенной VM."
+              ],
+              [
+                "-d DEVICE",
+                "Отсоединить точно известное устройство."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "mdadm",
+            "description": "Программный RAID",
+            "url": "https://man7.org/linux/man-pages/man8/mdadm.8.html",
+            "options": [
+              [
+                "--detail DEVICE",
+                "Состояние массива."
+              ],
+              [
+                "--examine DEVICE",
+                "Метаданные компонента."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "pvs",
+            "description": "Физические тома LVM",
+            "url": "https://man7.org/linux/man-pages/man8/pvs.8.html",
+            "options": [
+              [
+                "-o LIST",
+                "Выбрать поля."
+              ],
+              [
+                "--devices LIST",
+                "Ограничить список устройств при поддержке."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "vgs",
+            "description": "Группы LVM",
+            "url": "https://man7.org/linux/man-pages/man8/vgs.8.html",
+            "options": [
+              [
+                "-o LIST",
+                "Выбрать поля."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "lvs",
+            "description": "Логические тома LVM",
+            "url": "https://man7.org/linux/man-pages/man8/lvs.8.html",
+            "options": [
+              [
+                "-a",
+                "Включить внутренние тома."
+              ],
+              [
+                "-o LIST",
+                "Выбрать поля."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "cryptsetup",
+            "description": "Шифрованные отображения",
+            "url": "https://man7.org/linux/man-pages/man8/cryptsetup.8.html",
+            "options": [
+              [
+                "luksDump DEVICE",
+                "Читать метаданные LUKS."
+              ],
+              [
+                "status NAME",
+                "Состояние отображения."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "debugfs",
+            "description": "Инспекция ext2/3/4",
+            "url": "https://man7.org/linux/man-pages/man8/debugfs.8.html",
+            "options": [
+              [
+                "-R COMMAND",
+                "Выполнить команду."
+              ],
+              [
+                "-w",
+                "Разрешить запись; только собственная несмонтированная ФС."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "dpkg-query",
+            "description": "Запрос локальной базы dpkg",
+            "url": "https://manpages.debian.org/unstable/dpkg/dpkg-query.1.en.html",
+            "options": [
+              [
+                "-W PACKAGE",
+                "Сведения об установленном пакете."
+              ],
+              [
+                "-L PACKAGE",
+                "Список файлов."
+              ],
+              [
+                "-f FORMAT",
+                "Формат вывода."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "setpriv",
+            "description": "Контекст запуска процесса",
+            "url": "https://man7.org/linux/man-pages/man1/setpriv.1.html",
+            "options": [
+              [
+                "--no-new-privs",
+                "Запрет приобретения новых привилегий через exec."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "udevadm",
+            "description": "Инспекция udev",
+            "url": "https://www.freedesktop.org/software/systemd/man/latest/udevadm.html",
+            "options": [
+              [
+                "info --query=all --name=DEVICE",
+                "Сведения об устройстве."
+              ],
+              [
+                "settle",
+                "Ожидать обработку текущей очереди событий."
+              ]
+            ],
+            "specific": true
+          },
+          {
+            "name": "cpio",
+            "description": "Архивы cpio",
+            "url": "https://www.gnu.org/software/cpio/manual/cpio.html",
+            "options": [
+              [
+                "-o -H newc",
+                "Создать архив newc."
+              ],
+              [
+                "-it",
+                "Перечислить содержимое."
+              ],
+              [
+                "--null",
+                "Читать NUL-разделённые имена."
+              ]
+            ],
+            "specific": true
           }
         ]
       }
