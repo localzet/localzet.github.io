@@ -25,16 +25,16 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
-assert(d.lessons.length >= 127, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 135, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=81);
+assert(Object.keys(levels.junior).length>=83);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
@@ -44,12 +44,13 @@ for(const c of d.courses){
  assert(levels.courses[c.id].future.length>=3);
  for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
 }
-assert(d.lessons.filter(l=>l.course==='linux').length>=40);
+assert(d.lessons.filter(l=>l.course==='linux').length>=48);
 assert.equal(levels.minimum['linux-systemd'],0);
 for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups','linux-journal','linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-encryption','linux-block-io','linux-mmu','linux-mmap-cow','linux-reclaim','linux-syscalls','linux-event-io','linux-io-uring']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&/## (?:Практика и )?[Сс]амостоятельная работа/.test(chapter.body),'Linux editorial depth: '+id);}
 for(const id of ['linux-signals','linux-capstone']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&levels.minimum[id]===0,'Linux practice: '+id);}
 for(const id of ['linux-firmware','linux-initramfs','linux-service-dependencies','linux-timers','linux-package-trust','linux-recovery']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=340&&l.body.includes('## Самостоятельная работа'),'Linux boot and maintenance: '+id);}
 assert.equal(levels.minimum['linux-boot'],0);
+for(const id of ['linux-netns','linux-sockets','linux-netfilter','linux-ssh-admin','linux-capabilities','linux-lsm','linux-seccomp-landlock','linux-security-basics']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=330&&l.body.includes('## Самостоятельная работа'),'Linux networking and security: '+id);}
 const editorial=win.ATLAS_EDITORIAL;
 assert(editorial && win.ATLAS_REFERENCE, 'Editorial and reference data missing');
 assert.equal(Object.keys(editorial).length,d.lessons.length,'Editorial coverage must match published chapters');

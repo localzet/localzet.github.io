@@ -26,11 +26,15 @@ jobs:
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio libseccomp-dev nftables iproute2 iputils-ping openssh-client
       - name: Compile and execute Linux memory examples from published chapters
         run: node academy/tests/linux-memory.mjs
       - name: Verify published Linux boot and maintenance examples
         run: node academy/tests/linux-boot.mjs
+      - name: Verify Linux networking and security exercises
+        env:
+          ATLAS_NETWORK_VM: '1'
+        run: node academy/tests/linux-security.mjs
       - name: Install isolated browser test dependency
         run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
       - name: Install Chromium
