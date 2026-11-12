@@ -259,7 +259,7 @@ Docker CLI — клиент; часть флагов обрабатывает к
 - §docker network connect NET ID§ — подключить контейнер к сети.
 - §docker volume ls§ / §docker volume inspect VOLUME§ — реестр и свойства томов.
 - §docker system df -v§ — оценка дискового использования.
-- §docker system prune --dry-run§ — **не универсальная поддерживаемая комбинация**; не полагайся на dry-run без проверки help. Команды prune могут удалить объекты, нужные для расследования.
+- §docker system prune§ — удаление неиспользуемых ресурсов. В обычной CLI нет универсального dry-run: сначала изучите docker system df и списки объектов; проверьте последствия конкретных опций.
 - §docker context ls§ / §docker context use NAME§ — выбор engine endpoint.
 
 ## Compose

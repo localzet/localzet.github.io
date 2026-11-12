@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 
 const root = new URL('../', import.meta.url);
-const subjects = ['linux', 'git', 'docker', 'devops', 'architecture', 'assembly', 'internet', 'cryptography', 'commands'];
+const subjects = ['linux', 'git', 'docker', 'devops', 'architecture', 'assembly', 'internet', 'cryptography', 'commands', 'deepening'];
 const load = path => readFileSync(new URL(path, root), 'utf8');
 const win = {};
 for (const path of ['content.js', ...subjects.map(name => 'subjects/' + name + '.js')]) {

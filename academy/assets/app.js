@@ -1,7 +1,7 @@
 (function academyApp(){
 "use strict";
 const D=window.ATLAS_DATA; const E=window.ATLAS_EDITORIAL||{}; const $=s=>document.querySelector(s); const root=$("#app"); if(!D){root.innerHTML="Ошибка загрузки курса";return;}
-const courses=D.courses, lessons=D.lessons; const routeCourse=id=>"#/course/"+id; const routeLesson=id=>"#/lesson/"+id;
+const courses=D.courses, lessons=D.lessons;const order=window.ATLAS_LESSON_ORDER||{}; const original=new Map(lessons.map((l,i)=>[l.id,i])); const courseIndex=new Map();for(const l of lessons){const n=courseIndex.get(l.course)||0;courseIndex.set(l.course,n+1);if(!(l.id in order))order[l.id]=n;}lessons.sort((a,b)=>courses.findIndex(c=>c.id===a.course)-courses.findIndex(c=>c.id===b.course)||(order[a.id]-order[b.id])||(original.get(a.id)-original.get(b.id))); const routeCourse=id=>"#/course/"+id; const routeLesson=id=>"#/lesson/"+id;
 const theme=window.ATLAS_THEME;
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const completed=()=>{try{return JSON.parse(localStorage.getItem("atlas-done-v1")||"[]")}catch{return []}};

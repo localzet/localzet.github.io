@@ -171,7 +171,6 @@ services:
     ports:
       - "127.0.0.1:8080:80"
     restart: unless-stopped
-    read_only: true
   worker:
     image: busybox:stable
     command: ["sh", "-c", "sleep 3600"]
