@@ -21,7 +21,7 @@ const parseInline=s=>{
 const figure=diagram=>{
  if(!diagram)return "";
  const {title,caption,steps,kind="flow"}=diagram;
- return '<figure class="diagram" aria-label="'+safe(title)+'"><div class="diagram-title">'+safe(title)+'</div><ol class="diagram-steps '+(kind==="stack"?"stack":"")+'">'+steps.map((step,i)=>'<li><span class="diagram-number">'+String(i+1).padStart(2,"0")+'</span><div><strong>'+safe(step[0])+'</strong><span>'+safe(step[1])+'</span></div></li>').join("")+'</ol><figcaption>'+safe(caption)+'</figcaption></figure>';
+ return '<figure class="diagram" aria-label="'+safe(title)+'"><div class="diagram-title">'+safe(title)+'</div><ol class="diagram-steps '+ (kind==="stack"?"stack":kind==="compare"?"compare":"") +'">'+steps.map((step,i)=>'<li><span class="diagram-number">'+String(i+1).padStart(2,"0")+'</span><div><strong>'+safe(step[0])+'</strong><span>'+safe(step[1])+'</span></div></li>').join("")+'</ol><figcaption>'+safe(caption)+'</figcaption></figure>';
 };
 const study=l=>{
  const e=E[l.id];if(!e)return "";
