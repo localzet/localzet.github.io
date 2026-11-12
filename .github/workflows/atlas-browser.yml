@@ -25,6 +25,10 @@ jobs:
         run: node academy/tests/validate.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
+      - name: Install Linux exercise dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev
+      - name: Compile and execute Linux memory examples from published chapters
+        run: node academy/tests/linux-memory.mjs
       - name: Install isolated browser test dependency
         run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
       - name: Install Chromium

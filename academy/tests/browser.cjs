@@ -64,6 +64,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-systemd/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('службами'));await checkWidth();
     await page.goto(base+'#/lesson/linux-scheduler/senior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Планировщик'));await checkWidth();
     for(const id of ['linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-block-io']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
+    for(const id of ['linux-mmu','linux-mmap-cow','linux-syscalls','linux-io-uring']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();
