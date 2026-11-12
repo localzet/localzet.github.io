@@ -13,7 +13,7 @@ const preferred=id=>{const n=levelNumber(preferences[id]);return n<0?0:n};
 const setLevel=(id,n)=>{preferences[id]=levelKeys[n];try{localStorage.setItem("atlas-levels-v1",JSON.stringify(preferences))}catch{}};
 const routeCourse=(id,n=preferred(id))=>"#/course/"+id+"/"+levelKeys[n];
 const routeLesson=(id,n)=>{const l=lessons.find(x=>x.id===id);return "#/lesson/"+id+"/"+levelKeys[Math.max(n??preferred(l.course),minLevel(l))]};
-const visibleLessons=(id,n)=>{const list=lessons.filter(l=>l.course===id&&minLevel(l)<=n),order=n===0?L.juniorOrder?.[id]:null;return order?list.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id)):list;};
+const visibleLessons=(id,n)=>{const list=lessons.filter(l=>l.course===id&&minLevel(l)<=n),order=n===0?L.juniorOrder?.[id]:n===1?L.middleOrder?.[id]:null;return order?list.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id)):list;};
 const titleFor=(l,n)=>n===0&&L.junior[l.id]?L.junior[l.id].title:l.title;
 const bodyFor=(l,n)=>n===0&&L.junior[l.id]?L.junior[l.id].body:l.body+(n>=2&&L.advanced[l.id]?"\n\n"+L.advanced[l.id]:"");
 const countText=(n,forms=["глава","главы","глав"])=>n+" "+forms[n%100>=11&&n%100<=14?2:n%10===1?0:n%10>=2&&n%10<=4?1:2];

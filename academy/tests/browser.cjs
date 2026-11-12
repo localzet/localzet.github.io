@@ -356,6 +356,29 @@ const base='http://127.0.0.1:8765/academy/';
     const proNav=await page.locator('.reader-nav a').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
     assert(proNav.at(-1).includes('git-middle-project'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-revisions/middle');
+    const reviewNav=await page.locator('.reader-nav a').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
+    assert.equal(reviewNav.length,43);assert(reviewNav[20].includes('git-junior-project'));assert(reviewNav[21].includes('git-objects'));assert(reviewNav[42].includes('git-middle-project'));
+    const selector=page.locator('.reader > .prose > [data-teach="git-selector-types"]');await selector.waitFor();
+    await selector.locator('[data-review-action="select-index"]').click();assert((await selector.locator('[data-review-view]').textContent()).includes('Blob: staged'));
+    const pathspec=page.locator('.reader > .prose > [data-teach="git-selector-paths"]');await pathspec.locator('[data-review-action="path-literal"]').click();assert((await pathspec.locator('[data-review-feedback]').textContent()).includes('1 / 5'));
+    await pathspec.locator('[data-review-action="path-recursive"]').click();assert((await pathspec.locator('[data-review-feedback]').textContent()).includes('5 / 5'));await checkWidth();
+    await page.goto(base+'#/lesson/git-recovery/middle');
+    const incident=page.locator('.reader > .prose > [data-teach="git-incident-reach"]');
+    await incident.locator('[data-review-action="rescue"]').click();assert((await incident.locator('[data-review-feedback]').textContent()).includes('Сначала проверьте'));
+    await incident.locator('[data-review-action="inspect"]').click();await incident.locator('[data-review-action="rescue"]').click();
+    assert.equal(await incident.locator('[data-review-view] .teach-file.index .teach-file-content').textContent(),'C');
+    const integrity=page.locator('.reader > .prose > [data-teach="git-incident-integrity"]');await integrity.locator('[data-review-action="integrity-missing"]').click();assert((await integrity.locator('[data-review-feedback]').textContent()).includes('ошибка связности'));await checkWidth();
+    await page.goto(base+'#/lesson/git-command-atlas/middle');
+    const choice=page.locator('.reader > .prose > [data-teach="git-atlas-choice"]');
+    await choice.locator('[data-review-action="choose-1"]').click();assert.equal(await choice.locator('[data-review-feedback]').getAttribute('data-result'),'retry');
+    for(const [i,answer] of [0,1,2,0,1].entries()){
+      if(i>0)await choice.locator('[data-review-action="next"]').click();
+      await choice.locator('[data-review-action="choose-'+answer+'"]').click();assert.equal(await choice.locator('[data-review-feedback]').getAttribute('data-result'),'correct');
+    }
+    assert((await choice.locator('[data-review-progress]').textContent()).includes('решено 5 / 5'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
