@@ -343,6 +343,19 @@ const base='http://127.0.0.1:8765/academy/';
     await norm.locator('[data-dep-action="commit"]').click();assert.equal(await norm.locator('[data-dep-view] .teach-file.head .teach-file-content').textContent(),'LF');
     const filter=page.locator('.reader > .prose > [data-teach="git-attribute-filter"]');await filter.locator('[data-dep-action="filter-fail"]').click();assert((await filter.locator('[data-dep-feedback]').textContent()).includes('add отказал'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-middle-project/middle');
+    const pro=page.locator('.reader > .prose > [data-teach="git-pro-checklist"]');await pro.waitFor();
+    await pro.locator('[data-pro-task="0"]').check();
+    assert((await pro.locator('[data-pro-progress]').textContent()).includes('1 / 7'));
+    await pro.locator('[data-pro-task="0"]').uncheck();
+    assert((await pro.locator('[data-pro-progress]').textContent()).includes('0 / 7'));
+    const proHint=page.locator('.reader > .prose > [data-teach="git-pro-hints"] details').first();await proHint.locator('summary').click();assert(await proHint.locator('a').isVisible());
+    const proLink=page.locator('.reader > .prose > [data-teach="git-pro-checker"] a');
+    assert.equal(await proLink.getAttribute('href'),'./exercises/check-git-middle.sh');
+    const proNav=await page.locator('.reader-nav a').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
+    assert(proNav.at(-1).includes('git-middle-project'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();

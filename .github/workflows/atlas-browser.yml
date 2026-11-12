@@ -69,6 +69,8 @@ jobs:
         run: node academy/tests/git-teaching-release.mjs
       - name: Verify guided Git dependencies and canonical file bytes
         run: node academy/tests/git-teaching-dependencies.mjs
+      - name: Verify Middle Git capstone and negative acceptance cases
+        run: node academy/tests/git-middle-project.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
