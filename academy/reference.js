@@ -28,7 +28,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "ls",
             "description": "Список файлов",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/ls-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/ls.1.html",
             "specific": true,
             "options": [
               [
@@ -47,7 +47,8 @@ window.ATLAS_REFERENCE=[
                 "-d",
                 "Показать сами каталоги, а не их содержимое."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/ls-invocation.html"
           },
           {
             "name": "dir",
@@ -270,7 +271,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "mktemp",
             "description": "Безопасный временный объект",
-            "url": "https://www.gnu.org/software/coreutils/manual/html_node/mktemp-invocation.html",
+            "url": "https://man7.org/linux/man-pages/man1/mktemp.1.html",
             "specific": true,
             "options": [
               [
@@ -281,7 +282,8 @@ window.ATLAS_REFERENCE=[
                 "-p DIR",
                 "Выбрать родительский каталог (GNU)."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/coreutils/manual/html_node/mktemp-invocation.html"
           },
           {
             "name": "mkfifo",
@@ -693,7 +695,7 @@ window.ATLAS_REFERENCE=[
           {
             "name": "awk",
             "description": "Обработка записей",
-            "url": "https://www.gnu.org/software/gawk/manual/gawk.html",
+            "url": "https://man7.org/linux/man-pages/man1/gawk.1.html",
             "specific": true,
             "options": [
               [
@@ -708,7 +710,8 @@ window.ATLAS_REFERENCE=[
                 "-f FILE",
                 "Прочитать программу из файла."
               ]
-            ]
+            ],
+            "upstreamUrl": "https://www.gnu.org/software/gawk/manual/gawk.html"
           },
           {
             "name": "diff",

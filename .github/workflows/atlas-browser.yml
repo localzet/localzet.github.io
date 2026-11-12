@@ -23,6 +23,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify editorial and source integrity
         run: node academy/tests/validate.mjs
+      - name: Verify Git fundamentals in disposable repositories
+        run: node academy/tests/git-foundations.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies

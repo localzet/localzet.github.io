@@ -28,16 +28,16 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
-assert(d.lessons.length >= 150, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 154, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=84);
+assert(Object.keys(levels.junior).length>=88);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
@@ -65,6 +65,8 @@ const linuxReference=win.ATLAS_REFERENCE.find(x=>x.id==='linux').groups.flatMap(
 assert.equal(new Set(linuxReference.map(e=>e.name)).size,linuxReference.length,'Duplicate Linux reference names');
 assert(linuxReference.filter(e=>e.options?.length).length>=94);
 for(const e of linuxReference)for(const option of e.options||[])assert(option.length===2&&option.every(Boolean),'Malformed option '+e.name);
+for(const id of ['git-lab-config','git-diff-status','git-commit-quality','git-history-reading']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===0&&levels.junior[id].body.split(/\s+/).length>=170,'Git fundamentals: '+id);}
+assert.equal(levels.order.git.length,16);
 const editorial=win.ATLAS_EDITORIAL;
 assert(editorial && win.ATLAS_REFERENCE, 'Editorial and reference data missing');
 assert.equal(Object.keys(editorial).length,d.lessons.length,'Editorial coverage must match published chapters');
