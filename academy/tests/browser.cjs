@@ -37,7 +37,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.locator('[data-search]').click();await page.locator('.search-field').fill('DNSSEC');await page.locator('.search-result').first().waitFor();await page.locator('.search-field').press('Escape');assert.equal(await page.locator('.search-modal').count(),0);assert.equal(await theme(),changed);
     await page.goto(base+'#/reference');await page.locator('[data-reference-search]').fill('rebase');assert(await page.locator('.ref-item:visible').count()>0);await checkWidth();
     // Cumulative route coverage and independent course preferences.
-    for(const course of ['linux','git','docker','devops','architecture','assembly','internet']){
+    for(const course of ['linux','git','docker','devops','architecture','assembly','internet','python','shell','php','ai-engineering']){
       let previous=[];
       for(const level of ['junior','middle','senior','god']){
         await page.goto(base+'#/course/'+course+'/'+level);
@@ -58,6 +58,8 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/git-index/junior');await page.locator('.atlas-lab').waitFor();await page.locator('[data-lab-action="edit"]').click();await page.locator('[data-lab-action="add"]').click();await page.locator('[data-lab-action="edit"]').click();await page.locator('[data-lab-action="commit"]').click();assert.equal(await page.locator('[data-git-head]').textContent(),'V1');assert.equal(await page.locator('[data-git-work]').textContent(),'V2');await checkWidth();
     await page.goto(base+'#/lesson/internet-cidr-lab/middle');await page.locator('[data-ip]').fill('192.0.2.130');await page.locator('[data-prefix]').fill('26');assert((await page.locator('[data-ip-results]').textContent()).includes('192.0.2.128/26'));await page.locator('[data-prefix]').fill('33');assert((await page.locator('[data-ip-results]').textContent()).includes('Ошибка'));await checkWidth();
     await page.goto(base+'#/lesson/internet-tcp/junior');await page.locator('[data-lab-action="next"]').click();await page.locator('[data-lab-action="drop"]').click();assert((await page.locator('[data-tcp-message]').textContent()).includes('потерян'));await page.locator('[data-lab-action="next"]').click();for(let i=0;i<6;i++)await page.locator('[data-lab-action="next"]').click();assert.equal(await page.locator('[data-tcp-client]').textContent(),'ESTABLISHED');assert((await page.locator('[data-tcp-message]').textContent()).includes('105'));await checkWidth();
+    await page.goto(base+'#/articles');await page.locator('.article-card').first().waitFor();assert.equal(await page.locator('.article-card').count(),8);await checkWidth();await page.locator('.article-card[href="#/article/choose-database"]').click();await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('базу данных'));await checkWidth();
+    await page.goto(base+'#/lesson/python-start/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Python'));await checkWidth();
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();

@@ -25,14 +25,16 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
+assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
-assert.equal(d.courses.length, 7, 'The seven requested directions must be available');
-assert(d.lessons.length >= 78, 'Unexpectedly low number of published chapters');
+assert.equal(d.courses.length, 11, 'All eleven directions must be available');
+assert(d.lessons.length >= 97, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=49);
+assert(Object.keys(levels.junior).length>=68);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
