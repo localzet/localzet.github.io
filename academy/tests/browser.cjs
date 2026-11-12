@@ -82,6 +82,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     for(const id of ['git-lab-config','git-diff-status','git-commit-quality','git-history-reading']){await page.goto(base+'#/lesson/'+id+'/junior');await page.locator('.reader h1').waitFor();await checkWidth();await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,level] of [["git-object-bytes","middle"],["git-ref-model","middle"],["git-index-format","middle"],["git-pack-storage","senior"],["git-plumbing-commit","senior"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
+    for(const [id,level] of [["git-branch-lab","junior"],["git-branch-lab","middle"],["git-merge-lab","junior"],["git-merge-lab","middle"],["git-conflict-index-lab","middle"],["git-rebase-lab","middle"],["git-interactive-rebase","middle"],["git-cherry-pick-lab","middle"],["git-rerere-lab","senior"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const id of ['git-diff-status','git-commit-quality']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.

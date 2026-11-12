@@ -28,12 +28,12 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
-assert(d.lessons.length >= 159, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 166, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
@@ -66,7 +66,9 @@ assert.equal(new Set(linuxReference.map(e=>e.name)).size,linuxReference.length,'
 assert(linuxReference.filter(e=>e.options?.length).length>=94);
 for(const e of linuxReference)for(const option of e.options||[])assert(option.length===2&&option.every(Boolean),'Malformed option '+e.name);
 for(const id of ['git-lab-config','git-diff-status','git-commit-quality','git-history-reading']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===0&&levels.junior[id].body.split(/\s+/).length>=170,'Git fundamentals: '+id);}
-assert.equal(levels.order.git.length,21);
+assert.equal(levels.order.git.length,28);
+for(const [id,min] of [["git-branch-lab",0],["git-merge-lab",0],["git-conflict-index-lab",1],["git-rebase-lab",1],["git-interactive-rebase",1],["git-cherry-pick-lab",1],["git-rerere-lab",2]]){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===min,'Git branching: '+id);if(min===0)assert(levels.junior[id].body.split(/\s+/).length>=170,'Git Junior: '+id);}
+for(const [before,after] of [["git-undo","git-branch-lab"],["git-merge","git-merge-lab"],["git-conflicts","git-conflict-index-lab"],["git-conflict-index-lab","git-rebase-lab"],["git-rebase-lab","git-interactive-rebase"],["git-interactive-rebase","git-cherry-pick-lab"],["git-cherry-pick-lab","git-rerere-lab"]])assert(levels.order.git.indexOf(before)<levels.order.git.indexOf(after),'Git prerequisite '+before+' / '+after);
 for(const [id,min] of [["git-object-bytes",1],["git-ref-model",1],["git-index-format",1],["git-pack-storage",2],["git-plumbing-commit",2]]){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=320&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===min,'Git internals: '+id);}
 for(const [before,after] of [["git-objects","git-object-bytes"],["git-object-bytes","git-ref-model"],["git-history-reading","git-index-format"],["git-ref-model","git-pack-storage"],["git-index-format","git-plumbing-commit"]])assert(levels.order.git.indexOf(before)<levels.order.git.indexOf(after),'Git prerequisite '+before+' / '+after);
 const editorial=win.ATLAS_EDITORIAL;
