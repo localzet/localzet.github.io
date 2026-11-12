@@ -31,6 +31,8 @@ jobs:
         run: node academy/tests/git-branching.mjs
       - name: Verify Git recovery in disposable repositories
         run: node academy/tests/git-recovery.mjs
+      - name: Verify Git remotes in disposable repositories
+        run: node academy/tests/git-remotes-lab.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
