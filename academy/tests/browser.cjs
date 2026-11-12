@@ -36,6 +36,25 @@ const base='http://127.0.0.1:8765/academy/';
     await page.locator('[data-complete]').click();assert.equal(await theme(),changed);assert(await page.locator('[data-complete]').textContent().then(t=>t.includes('Прочитано')));
     await page.locator('[data-search]').click();await page.locator('.search-field').fill('DNSSEC');await page.locator('.search-result').first().waitFor();await page.locator('.search-field').press('Escape');assert.equal(await page.locator('.search-modal').count(),0);assert.equal(await theme(),changed);
     await page.goto(base+'#/reference');await page.locator('[data-reference-search]').fill('rebase');assert(await page.locator('.ref-item:visible').count()>0);await checkWidth();
+    // Cumulative route coverage and independent course preferences.
+    for(const course of ['linux','git','docker','devops','architecture','assembly','internet']){
+      let previous=[];
+      for(const level of ['junior','middle','senior','god']){
+        await page.goto(base+'#/course/'+course+'/'+level);
+        await page.locator('.lesson-row').first().waitFor();
+        const current=await page.locator('.lesson-row').evaluateAll(rows=>rows.map(row=>row.getAttribute('href').split('/')[2]));
+        assert(previous.every(id=>current.includes(id)),'Previous level lost a chapter '+course+' '+level);
+        assert.equal(new Set(current).size,current.length);
+        if(level==='god')assert.equal(current.length,previous.length);
+        previous=current;await checkWidth();
+      }
+    }
+    await page.goto(base+'#/course/git/junior');await page.locator('[data-level-choice="2"]').click();await page.waitForURL('**/git/senior');
+    await page.goto(base+'#/course/linux');assert.equal(await page.locator('[data-level-choice="0"]').getAttribute('aria-pressed'),'true');
+    await page.goto(base+'#/course/git');assert.equal(await page.locator('[data-level-choice="2"]').getAttribute('aria-pressed'),'true');
+    await page.reload();await page.locator('.lesson-row').first().waitFor();assert.equal(await page.locator('[data-level-choice="2"]').getAttribute('aria-pressed'),'true');
+    await page.goto(base+'#/lesson/git-merge/senior');await page.getByRole('heading',{name:'Углубление: три стадии индекса при конфликте'}).waitFor();
+    await page.locator('[data-complete]').click();await page.goto(base+'#/lesson/git-merge/junior');assert(await page.locator('[data-complete]').textContent().then(t=>t.includes('Прочитано')));
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();

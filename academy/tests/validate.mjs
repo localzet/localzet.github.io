@@ -16,11 +16,11 @@ for (const path of ['editorial.js', 'reference.js', 'levels.js']) new vm.Script(
 const d = win.ATLAS_DATA;
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 7, 'The seven requested directions must be available');
-assert(d.lessons.length >= 57, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 64, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=28);
+assert(Object.keys(levels.junior).length>=35);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
