@@ -398,6 +398,27 @@ const base='http://127.0.0.1:8765/academy/';
     for(const a of ['inspect','prepare','commit'])await txn.locator('[data-storage-action="'+a+'"]').click();
     assert((await txn.locator('[data-storage-feedback]').textContent()).includes('Обе ссылки теперь C'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-rerere-lab/senior');
+    const rr=page.locator('.reader > .prose > [data-teach="git-rerere-policy"]');await rr.waitFor();
+    await rr.locator('[data-wt-action="test"]').click();assert((await rr.locator('[data-wt-feedback]').textContent()).includes('FAIL'));
+    for(const a of ['forget','edit','record','test','add','commit'])await rr.locator('[data-wt-action="'+a+'"]').click();
+    assert((await rr.locator('[data-wt-feedback]').textContent()).includes('Merge завершён'));
+    const rrMode=page.locator('.reader > .prose > [data-teach="git-rerere-stages"]');await rrMode.locator('[data-wt-action="mode-on"]').click();
+    assert((await rrMode.locator('[data-wt-feedback]').textContent()).includes('MERGE_HEAD'));await checkWidth();
+    await page.goto(base+'#/lesson/git-worktree-lab/senior');
+    const wt=page.locator('.reader > .prose > [data-teach="git-worktree-state"]');await wt.waitFor();
+    for(const a of ['stage-main','edit-hot','stage-hot','commit-hot'])await wt.locator('[data-wt-action="'+a+'"]').click();
+    assert((await wt.locator('.teach-file.head .teach-file-content').textContent()).includes('Index staged'));
+    assert.equal(await wt.locator('.teach-file.index .teach-file-content').textContent(),'B');
+    const life=page.locator('.reader > .prose > [data-teach="git-worktree-lifecycle"]');
+    for(const a of ['lock','remove'])await life.locator('[data-wt-action="'+a+'"]').click();
+    assert((await life.locator('[data-wt-feedback]').textContent()).includes('заблокировано'));
+    for(const a of ['unlock','edit','remove'])await life.locator('[data-wt-action="'+a+'"]').click();
+    assert((await life.locator('[data-wt-feedback]').textContent()).includes('незакоммиченные'));
+    for(const a of ['commit','remove'])await life.locator('[data-wt-action="'+a+'"]').click();
+    assert((await life.locator('[data-wt-feedback]').textContent()).includes('ветка experiment'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
