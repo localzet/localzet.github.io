@@ -127,28 +127,28 @@ const base='http://127.0.0.1:8765/academy/';
     assert.equal(await ancestor.locator('[data-branch-feedback]').getAttribute('data-result'),'correct');await checkWidth();
     for(const id of ['git-ignore-attributes','git-undo','git-branch-lab']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.prose .teach-panel').first().waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/git-merge/junior');
-    const topo=page.locator('.reader .prose > [data-teach="git-merge-topology"]');await topo.waitFor();
+    const topo=page.locator('.reader > .prose > [data-teach="git-merge-topology"]');await topo.waitFor();
     await topo.locator('[data-merge-action="mode-diverged"]').click();
     assert((await topo.locator('[data-merge-feedback]').textContent()).includes('Fast-forward невозможен'));
     await topo.locator('[data-merge-action="mode-merge"]').click();
     assert((await topo.locator('[data-merge-feedback]').textContent()).includes('два родителя'));
-    const threeway=page.locator('.reader .prose > [data-teach="git-threeway"]');
+    const threeway=page.locator('.reader > .prose > [data-teach="git-threeway"]');
     await threeway.locator('[data-merge-action="case-3"]').click();
     assert((await threeway.locator('[data-merge-files]').textContent()).includes('Конфликт'));
-    const modes=page.locator('.reader .prose > [data-teach="git-merge-modes"]');
+    const modes=page.locator('.reader > .prose > [data-teach="git-merge-modes"]');
     await modes.locator('[data-merge-action="mode-squash"]').click();
     assert((await modes.locator('[data-merge-feedback]').textContent()).includes('одного родителя'));await checkWidth();
     await page.goto(base+'#/lesson/git-merge-lab/junior');
-    const mergeTask=page.locator('.reader .prose > [data-teach="git-merge-task"]');
+    const mergeTask=page.locator('.reader > .prose > [data-teach="git-merge-task"]');
     await mergeTask.locator('[data-merge-action="task-ff"]').click();assert.equal(await mergeTask.locator('[data-merge-feedback]').getAttribute('data-result'),'retry');
     await mergeTask.locator('[data-merge-action="task-merge"]').click();assert.equal(await mergeTask.locator('[data-merge-feedback]').getAttribute('data-result'),'correct');await checkWidth();
     await page.goto(base+'#/lesson/git-conflicts/junior');
-    const editor=page.locator('.reader .prose > [data-teach="git-conflict-editor"]');
+    const editor=page.locator('.reader > .prose > [data-teach="git-conflict-editor"]');
     await editor.locator('[data-merge-action="check-editor"]').click();assert.equal(await editor.locator('[data-merge-feedback]').getAttribute('data-result'),'retry');
     await editor.locator('[data-merge-editor]').fill('port=9090\ntimeout=40\nmode=demo');await editor.locator('[data-merge-action="check-editor"]').click();assert.equal(await editor.locator('[data-merge-feedback]').getAttribute('data-result'),'retry');
     await editor.locator('[data-merge-editor]').fill('port=9090\ntimeout=45\nmode=demo');await editor.locator('[data-merge-action="check-editor"]').click();assert.equal(await editor.locator('[data-merge-feedback]').getAttribute('data-result'),'correct');
     await editor.locator('[data-merge-action="reset-editor"]').click();assert((await editor.locator('[data-merge-editor]').inputValue()).includes('<<<<<<<'));await checkWidth();
-    for(const id of ['git-merge','git-merge-lab','git-conflicts']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader .prose > .teach-panel').first().waitFor();await checkWidth();}
+    for(const id of ['git-merge','git-merge-lab','git-conflicts']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > .teach-panel').first().waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
@@ -206,7 +206,7 @@ const base='http://127.0.0.1:8765/academy/';
     for(const [id,level] of [["git-restore-reset-lab","junior"],["git-restore-reset-lab","middle"],["git-revert-lab","junior"],["git-revert-lab","middle"],["git-stash-lab","junior"],["git-stash-lab","middle"],["git-reflog-recovery","middle"],["git-revision-ranges","middle"],["git-bisect-lab","middle"],["git-worktree-lab","senior"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,level] of [["git-fetch-push-lab","junior"],["git-fetch-push-lab","middle"],["git-refspec-lab","middle"],["git-push-lease","middle"],["git-transport-v2","senior"],["git-shallow-partial","senior"],["git-tags-mirror","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,level] of [["git-hooks-lab","middle"],["git-signatures-lab","middle"],["git-dependencies-lab","middle"],["git-attributes-lab","middle"],["git-maintenance-lab","senior"],["git-repository-security","junior"],["git-repository-security","middle"],["git-team-review","junior"],["git-team-review","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
-    for(const [id,key] of [['git-diff-status','git-hunk-explainer'],['git-commit-quality','git-commit-grouping']]){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader .prose > [data-teach="'+key+'"]').waitFor();await checkWidth();}
+    for(const [id,key] of [['git-diff-status','git-hunk-explainer'],['git-commit-quality','git-commit-grouping']]){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > [data-teach="'+key+'"]').waitFor();await checkWidth();}
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
