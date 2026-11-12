@@ -93,6 +93,53 @@ function tcpLab(node){
  node.addEventListener("click",e=>{const b=e.target.closest("[data-lab-action]");if(b){s=tcpStep(s,b.dataset.labAction);draw();}});
  draw();
 }
-const labFor={"git-index":gitLab,"git-undo":gitLab,"internet-cidr-lab":ipLab,"internet-local-network":ipLab,"internet-tcp":tcpLab};
-window.ATLAS_LABS={has:id=>Boolean(labFor[id]),mount:(root,id)=>{const node=root.querySelector("[data-atlas-lab]");if(node&&labFor[id])labFor[id](node);},subnet,gitInitial,gitStep,gitStatus,tcpStep};
+function mmuModel(value){
+ const raw=String(value).trim();
+ if(!/^(?:0x)?[0-9a-f]{1,12}$/i.test(raw))return null;
+ const n=BigInt("0x"+raw.replace(/^0x/i,""));
+ if(n>0x7fffffffffffn)return null;
+ return {indices:[39n,30n,21n,12n].map(s=>Number((n>>s)&511n)),offset:Number(n&4095n),binary:n.toString(2).padStart(48,"0")};
+}
+const cowInitial=()=>({parent:"A",child:null,a:7,b:null});
+function cowStep(s,action){
+ if(action==="reset")return cowInitial();
+ if(action==="fork"&&s.child===null)return {...s,child:"A"};
+ if(action==="write"&&s.child!==null)return {...s,child:"B",b:9};
+ return s;
+}
+function unitModel(wants,after,already){
+ const included=Boolean(wants||already);
+ return {included,ordered:included&&Boolean(after),text:!included?"Запускается только A":after?"B → A: задан порядок запуска":"A и B: относительный порядок не задан"};
+}
+function mmuLab(node){
+ node.innerHTML=frame("Разложение виртуального адреса","Учебная x86-64 модель: нижняя canonical-область, четыре уровня, страницы 4 КиБ. Введите шестнадцатеричный адрес.",
+ '<div class="lab-inputs"><label>Виртуальный адрес (hex)<input data-mmu-address type="text" value="0x41234567" autocomplete="off" spellcheck="false"></label></div><div class="lab-bits" data-mmu-bits aria-label="48 бит виртуального адреса"></div><dl class="lab-results" aria-live="polite" data-mmu-result></dl><p class="lab-note">Индексы выбирают записи таблиц, а не показывают физические адреса. Не моделируются TLB, LA57, huge pages и содержимое PTE.</p>');
+ const draw=()=>{
+  const m=mmuModel(node.querySelector("[data-mmu-address]").value),bits=node.querySelector("[data-mmu-bits]"),result=node.querySelector("[data-mmu-result]");
+  if(!m){bits.innerHTML="";result.innerHTML="<dt>Ошибка</dt><dd>Введите адрес 0x0–0x7fffffffffff.</dd>";return;}
+  bits.innerHTML=Array.from(m.binary,(b,i)=>'<span class="'+(Math.floor(i/9)%2===0?"bit-net":"bit-host")+(i===0||i===9||i===18||i===27||i===36?" octet-start":"")+'">'+b+'</span>').join("");
+  result.innerHTML=["PML4","PDPT","PD","PT","Смещение"].map((key,i)=>"<dt>"+key+"</dt><dd>"+(i===4?"0x"+m.offset.toString(16):m.indices[i])+"</dd>").join("");
+ };node.addEventListener("input",draw);draw();
+}
+function cowLab(node){
+ let s=cowInitial();
+ node.innerHTML=frame("Copy-on-Write после fork","Сначала родитель имеет страницу A. Создайте дочерний процесс и измените его байт. Модель не выделяет настоящую память.",
+ '<div class="lab-state-grid"><div class="lab-state"><small>Родитель</small><strong data-cow-parent></strong></div><div class="lab-state"><small>Ребёнок</small><strong data-cow-child></strong></div><div class="lab-state"><small>Физические страницы</small><strong data-cow-frames></strong></div></div><div class="lab-controls">'+button("fork","fork")+button("write","Запись ребёнка")+button("reset","Сначала")+'</div><pre class="lab-output" aria-live="polite" data-cow-result></pre><p class="lab-note">Модель приватной страницы, один байт, без swap, huge pages и оптимизаций реального ядра.</p>');
+ const draw=()=>{
+  node.querySelector("[data-cow-parent]").textContent="A · "+s.a;
+  node.querySelector("[data-cow-child]").textContent=s.child===null?"—":s.child+" · "+(s.child==="A"?s.a:s.b);
+  node.querySelector("[data-cow-frames]").textContent=s.b===null?"1":"2";
+  node.querySelector("[data-cow-result]").textContent=s.child===null?"Один владелец A.":s.child==="A"?"Оба процесса используют A; приватная запись потребует отдельного состояния.":"Родитель: 7, ребёнок: 9. В модели создалась страница B.";
+  node.querySelector('[data-lab-action="fork"]').disabled=s.child!==null;
+  node.querySelector('[data-lab-action="write"]').disabled=s.child===null||s.child==="B";
+ };
+ node.addEventListener("click",e=>{const b=e.target.closest("[data-lab-action]");if(b){s=cowStep(s,b.dataset.labAction);draw();}});draw();
+}
+function unitLab(node){
+ node.innerHTML=frame("Зависимость и порядок systemd","Выберите директивы A.service и наличие B.service в транзакции. Посмотрите, что действительно следует из конфигурации.",
+ '<div class="lab-inputs"><label>Wants=B.service<select data-unit-wants><option value="0">Нет</option><option value="1">Да</option></select></label><label>After=B.service<select data-unit-after><option value="0">Нет</option><option value="1">Да</option></select></label><label>B уже включена в транзакцию<select data-unit-already><option value="0">Нет</option><option value="1">Да</option></select></label></div><pre class="lab-output" data-unit-result aria-live="polite"></pre><p class="lab-note">Упрощённая транзакция без конфликтов, циклов и ошибок. Стрелка означает порядок запуска, не готовность приложения.</p>');
+ const draw=()=>{const flag=k=>node.querySelector("[data-unit-"+k+"]").value==="1";node.querySelector("[data-unit-result]").textContent=unitModel(flag("wants"),flag("after"),flag("already")).text;};node.addEventListener("change",draw);draw();
+}
+const labFor={"git-index":gitLab,"git-undo":gitLab,"internet-cidr-lab":ipLab,"internet-local-network":ipLab,"internet-tcp":tcpLab,"linux-mmu":mmuLab,"linux-mmap-cow":cowLab,"linux-service-dependencies":unitLab};
+window.ATLAS_LABS={has:id=>Boolean(labFor[id]),mount:(root,id)=>{const node=root.querySelector("[data-atlas-lab]");if(node&&labFor[id])labFor[id](node);},subnet,gitInitial,gitStep,gitStatus,tcpStep,mmuModel,cowInitial,cowStep,unitModel};
 })();

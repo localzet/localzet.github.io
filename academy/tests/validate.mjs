@@ -14,6 +14,9 @@ new vm.Script(load('assets/app.js'), { filename: 'assets/app.js' });
 new vm.Script(load('assets/theme.js'), { filename: 'assets/theme.js' });
 new vm.Script(load('assets/labs.js'), {filename:'assets/labs.js'}).runInNewContext({window:win});
 const labs=win.ATLAS_LABS;
+assert.equal(Array.from(labs.mmuModel('0x41234567').indices).join(','),'0,1,9,52');assert.equal(labs.mmuModel('0x41234567').offset,0x567);assert.equal(labs.mmuModel('0x800000000000'),null);assert.equal(labs.mmuModel('xyz'),null);
+let cow=labs.cowInitial();cow=labs.cowStep(cow,'fork');assert.equal(cow.child,'A');cow=labs.cowStep(cow,'write');assert.equal(cow.a,7);assert.equal(cow.b,9);assert.equal(cow.child,'B');assert.equal(labs.cowStep(cow,'reset').child,null);
+assert(!labs.unitModel(false,true,false).included);assert(labs.unitModel(true,true,false).ordered);assert(!labs.unitModel(true,false,false).ordered);assert(labs.unitModel(false,true,true).ordered);
 assert.equal(labs.subnet('192.0.2.130',26).network,'192.0.2.128');
 assert.equal(labs.subnet('192.0.2.130',26).last,'192.0.2.191');
 assert.equal(labs.subnet('0.0.0.0',0).size,4294967296);
@@ -25,12 +28,12 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(win.ATLAS_ARTICLES.length>=8);const articleIds=new Set();for(const a of win.ATLAS_ARTICLES){assert(!articleIds.has(a.id));articleIds.add(a.id);assert(a.title&&a.summary&&a.category&&a.body.split(/\s+/).length>=300);assert(a.diagram.steps.length>=2);assert(a.sources.every(s=>s.title&&s.url.startsWith('https://')));assert((a.body.match(/~~~/g)||[]).length%2===0);}
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 11, 'All eleven directions must be available');
-assert(d.lessons.length >= 143, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 146, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
@@ -44,7 +47,7 @@ for(const c of d.courses){
  assert(levels.courses[c.id].future.length>=3);
  for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
 }
-assert(d.lessons.filter(l=>l.course==='linux').length>=56);
+assert(d.lessons.filter(l=>l.course==='linux').length>=59);
 assert.equal(levels.minimum['linux-systemd'],0);
 for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups','linux-journal','linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-encryption','linux-block-io','linux-mmu','linux-mmap-cow','linux-reclaim','linux-syscalls','linux-event-io','linux-io-uring']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&/## (?:Практика и )?[Сс]амостоятельная работа/.test(chapter.body),'Linux editorial depth: '+id);}
 for(const id of ['linux-signals','linux-capstone']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&levels.minimum[id]===0,'Linux practice: '+id);}
@@ -52,6 +55,7 @@ for(const id of ['linux-firmware','linux-initramfs','linux-service-dependencies'
 assert.equal(levels.minimum['linux-boot'],0);
 for(const id of ['linux-netns','linux-sockets','linux-netfilter','linux-ssh-admin','linux-capabilities','linux-lsm','linux-seccomp-landlock','linux-security-basics']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=330&&l.body.includes('## Самостоятельная работа'),'Linux networking and security: '+id);}
 for(const id of ['linux-kbuild','linux-modules','linux-driver-model','linux-irq-dma','linux-locking','linux-futex-rcu','linux-tracing','linux-upstream']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=360&&l.body.includes('## Самостоятельная работа')&&levels.minimum[id]===2,'Linux kernel mechanisms: '+id);}
+for(const id of ['linux-storage-lab','linux-middle-project','linux-senior-project']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=450&&l.body.includes('## Самостоятельная работа'),'Linux capstone depth: '+id);}
 const editorial=win.ATLAS_EDITORIAL;
 assert(editorial && win.ATLAS_REFERENCE, 'Editorial and reference data missing');
 assert.equal(Object.keys(editorial).length,d.lessons.length,'Editorial coverage must match published chapters');

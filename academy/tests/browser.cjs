@@ -71,6 +71,11 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-security-basics/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('защитить'));await checkWidth();
     for(const id of ['linux-kbuild','linux-driver-model','linux-irq-dma','linux-futex-rcu']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-upstream/senior');await page.locator('.reader h1').waitFor();await checkWidth();
+    await page.goto(base+'#/lesson/linux-mmu/senior');await page.locator('[data-mmu-address]').fill('0x41234567');assert((await page.locator('[data-mmu-result]').textContent()).includes('0x567'));await page.locator('[data-mmu-address]').fill('bad!');assert((await page.locator('[data-mmu-result]').textContent()).includes('Ошибка'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-mmap-cow/middle');await page.locator('[data-lab-action="fork"]').click();await page.locator('[data-lab-action="write"]').click();assert.equal(await page.locator('[data-cow-parent]').textContent(),'A · 7');assert.equal(await page.locator('[data-cow-child]').textContent(),'B · 9');await checkWidth();
+    await page.goto(base+'#/lesson/linux-service-dependencies/middle');await page.locator('[data-unit-after]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('только A'));await page.locator('[data-unit-wants]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('B → A'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-storage-lab/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();
+    await page.goto(base+'#/lesson/linux-senior-project/senior');await page.locator('.reader h1').waitFor();await checkWidth();
     await page.goto(base+'#/lesson/internet-tls');await page.locator('.reader h1').waitFor();await checkWidth();assert.equal(await theme(),changed);
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();
