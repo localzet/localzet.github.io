@@ -18,10 +18,10 @@ const parseInline=s=>{
  x=x.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,(_,label,url)=>'<a href="'+url+'" target="_blank" rel="noopener noreferrer">'+label+"</a>");
  return x;
 };
-const figure=diagram=>{
+const figure=(diagram,id)=>{
  if(!diagram)return "";
  const {title,caption,steps,kind="flow"}=diagram;
- return '<figure class="diagram" aria-label="'+safe(title)+'"><div class="diagram-title">'+safe(title)+'</div><ol class="diagram-steps '+ (kind==="stack"?"stack":kind==="compare"?"compare":"") +'">'+steps.map((step,i)=>'<li><span class="diagram-number">'+String(i+1).padStart(2,"0")+'</span><div><strong>'+safe(step[0])+'</strong><span>'+safe(step[1])+'</span></div></li>').join("")+'</ol><figcaption>'+safe(caption)+'</figcaption></figure>';
+ return '<figure class="diagram" aria-label="'+safe(title)+'"><div class="diagram-title">'+safe(title)+'</div>'+(window.ATLAS_FIGURES?.[id]?'<div class="diagram-art" tabindex="0">'+window.ATLAS_FIGURES[id]+'</div>':'')+'<ol class="diagram-steps '+ (kind==="stack"?"stack":kind==="compare"?"compare":"") +'">'+steps.map((step,i)=>'<li><span class="diagram-number">'+String(i+1).padStart(2,"0")+'</span><div><strong>'+safe(step[0])+'</strong><span>'+safe(step[1])+'</span></div></li>').join("")+'</ol><figcaption>'+safe(caption)+'</figcaption></figure>';
 };
 const study=l=>{
  const e=E[l.id];if(!e)return "";
@@ -31,7 +31,7 @@ const check=l=>{
  const e=E[l.id];if(!e||!e.questions?.length)return "";
  return '<section class="study-box exercises"><h2>Проверьте понимание</h2>'+e.questions.map(([q,a],i)=>'<details><summary>'+String(i+1)+'. '+safe(q)+'</summary><p>'+safe(a)+'</p></details>').join("")+'</section>';
 };
-const renderMd=(md,diagram)=>{
+const renderMd=(md,diagram,id)=>{
  const lines=md.replace(/\r/g,"").trim().split("\n"); const out=[]; let para=[],list=null,code=null,quote=[],headings=0,inserted=false;
  const flushP=()=>{if(para.length){out.push("<p>"+parseInline(para.join(" "))+"</p>");para=[]}};
  const flushL=()=>{if(list){out.push("</"+list+">");list=null}};
@@ -42,7 +42,7 @@ const renderMd=(md,diagram)=>{
   if((trim.startsWith("```")||trim.startsWith("~~~"))){flushP();flushL();flushQ();code=[];continue}
   if(!trim){flushP();flushL();flushQ();continue}
   const h=/^(#{2,3})\s+(.+)$/.exec(trim);
-  if(h){flushP();flushL();flushQ();const n=h[1].length;if(n===2&&++headings===2&&diagram){out.push(figure(diagram));inserted=true;}out.push("<h"+n+' id="'+slug(h[2])+'">'+parseInline(h[2])+"</h"+n+">");continue}
+  if(h){flushP();flushL();flushQ();const n=h[1].length;if(n===2&&++headings===2&&diagram){out.push(figure(diagram,id));inserted=true;}out.push("<h"+n+' id="'+slug(h[2])+'">'+parseInline(h[2])+"</h"+n+">");continue}
   if(trim.startsWith("> ")){flushP();flushL();quote.push(trim.slice(2));continue}
   flushQ();
   const ul=/^[-*]\s+(.+)$/.exec(trim), ol=/^\d+\.\s+(.+)$/.exec(trim);
@@ -50,7 +50,7 @@ const renderMd=(md,diagram)=>{
   flushL();para.push(trim);
  }
  flushP();flushL();flushQ();if(code)out.push("<pre><code>"+safe(code.join("\n"))+"</code></pre>");
- if(diagram&&!inserted)out.push(figure(diagram)); return out.join("\n");
+ if(diagram&&!inserted)out.push(figure(diagram,id)); return out.join("\n");
 };
 const home=()=>{
  const total=lessons.length, chapters=courses.reduce((a,c)=>a+c.roadmap.reduce((x,g)=>x+g.topics.length,0),0);
@@ -65,7 +65,7 @@ const lessonPage=l=>{
  const toc=[...l.body.matchAll(/^#{2,3}\s+(.+)$/gm)].map(x=>x[1]);
  const sources=(l.sources||[]).map(id=>D.sources[id]).filter(Boolean);
  const next=own[ix+1] || null, prev=own[ix-1]||null; const e=E[l.id];
- return '<div class="container"><div class="breadcrumbs"><a href="#/">Атлас</a><span>/</span><a href="'+routeCourse(c.id)+'">'+safe(c.title)+'</a><span>/</span><b>'+safe(l.title)+'</b></div><div class="reader-layout"><aside class="reader-side"><details class="chapter-menu"><summary>'+safe(c.title)+' · главы курса</summary><nav class="reader-nav">'+own.map((x,i)=>'<a href="'+routeLesson(x.id)+'" class="'+(x.id===l.id?"current":"")+'">'+String(i+1).padStart(2,"0")+' '+safe(x.title)+'</a>').join("")+'</nav></details></aside><main id="main" class="reader"><span class="eyebrow">Техническая энциклопедия / '+String(ix+1).padStart(2,"0")+'</span><h1>'+safe(l.title)+'</h1><div class="reader-meta"><span class="tag">'+l.minutes+' минут</span><span class="tag">Теория + практика</span><span class="tag">Обновление: '+safe(D.updated)+'</span></div><p class="reader-intro">'+safe(l.summary)+'</p>'+study(l)+(l.course==="linux"||l.course==="git"||l.course==="docker"?'<a class="reference-link" href="#/reference">↗ Справочник команд и аргументов</a>':'')+'<details class="mobile-toc"><summary>Оглавление главы</summary><nav class="toc-links">'+toc.map(h=>'<button type="button" data-toc="'+slug(h)+'">'+safe(h)+'</button>').join("")+'</nav></details><div class="prose">'+renderMd(l.body,e?.diagram)+'</div>'+check(l)+'<section class="source-section"><h2>Первоисточники и дальнейшее чтение</h2>'+(sources.length?'<ul>'+sources.map(s=>'<li><a href="'+safe(s.url)+'" target="_blank" rel="noopener noreferrer">'+safe(s.title)+' ↗</a><small>'+safe(s.description)+'</small></li>').join("")+'</ul>':"<p>Подборка источников для этой главы дополняется.</p>")+'</section><div class="reader-foot"><button class="check-btn '+(completed().includes(l.id)?"checked":"")+'" data-complete="'+safe(l.id)+'">'+(completed().includes(l.id)?"✓ Прочитано":"○ Отметить прочитанным")+'</button>'+ (prev?'<a class="btn" href="'+routeLesson(prev.id)+'">← Предыдущая</a>':'') +(next?'<a class="btn" href="'+routeLesson(next.id)+'">Следующая глава →</a>':'<a class="btn" href="'+routeCourse(c.id)+'">К программе курса →</a>')+'</div><div class="reader-warning">Команды выполняй в лабораторной среде. Некоторые примеры меняют состояние системы; всегда проверяй параметры в <code>man</code> и <code>--help</code>.</div></main><aside class="reader-toc"><div class="reader-heading">На этой странице</div><nav class="toc-links">'+toc.map(h=>'<button type="button" data-toc="'+slug(h)+'">'+safe(h)+'</button>').join("")+'</nav></aside></div></div>';
+ return '<div class="container"><div class="breadcrumbs"><a href="#/">Атлас</a><span>/</span><a href="'+routeCourse(c.id)+'">'+safe(c.title)+'</a><span>/</span><b>'+safe(l.title)+'</b></div><div class="reader-layout"><aside class="reader-side"><details class="chapter-menu"><summary>'+safe(c.title)+' · главы курса</summary><nav class="reader-nav">'+own.map((x,i)=>'<a href="'+routeLesson(x.id)+'" class="'+(x.id===l.id?"current":"")+'">'+String(i+1).padStart(2,"0")+' '+safe(x.title)+'</a>').join("")+'</nav></details></aside><main id="main" class="reader"><span class="eyebrow">Техническая энциклопедия / '+String(ix+1).padStart(2,"0")+'</span><h1>'+safe(l.title)+'</h1><div class="reader-meta"><span class="tag">'+l.minutes+' минут</span><span class="tag">Теория + практика</span><span class="tag">Обновление: '+safe(D.updated)+'</span></div><p class="reader-intro">'+safe(l.summary)+'</p>'+study(l)+(l.course==="linux"||l.course==="git"||l.course==="docker"?'<a class="reference-link" href="#/reference">↗ Справочник команд и аргументов</a>':'')+'<details class="mobile-toc"><summary>Оглавление главы</summary><nav class="toc-links">'+toc.map(h=>'<button type="button" data-toc="'+slug(h)+'">'+safe(h)+'</button>').join("")+'</nav></details><div class="prose">'+renderMd(l.body,e?.diagram,l.id)+'</div>'+check(l)+'<section class="source-section"><h2>Первоисточники и дальнейшее чтение</h2>'+(sources.length?'<ul>'+sources.map(s=>'<li><a href="'+safe(s.url)+'" target="_blank" rel="noopener noreferrer">'+safe(s.title)+' ↗</a><small>'+safe(s.description)+'</small></li>').join("")+'</ul>':"<p>Подборка источников для этой главы дополняется.</p>")+'</section><div class="reader-foot"><button class="check-btn '+(completed().includes(l.id)?"checked":"")+'" data-complete="'+safe(l.id)+'">'+(completed().includes(l.id)?"✓ Прочитано":"○ Отметить прочитанным")+'</button>'+ (prev?'<a class="btn" href="'+routeLesson(prev.id)+'">← Предыдущая</a>':'') +(next?'<a class="btn" href="'+routeLesson(next.id)+'">Следующая глава →</a>':'<a class="btn" href="'+routeCourse(c.id)+'">К программе курса →</a>')+'</div><div class="reader-warning">Команды выполняй в лабораторной среде. Некоторые примеры меняют состояние системы; всегда проверяй параметры в <code>man</code> и <code>--help</code>.</div></main><aside class="reader-toc"><div class="reader-heading">На этой странице</div><nav class="toc-links">'+toc.map(h=>'<button type="button" data-toc="'+slug(h)+'">'+safe(h)+'</button>').join("")+'</nav></aside></div></div>';
 };
 const referencePage=()=>{
  const refs=window.ATLAS_REFERENCE||[];
