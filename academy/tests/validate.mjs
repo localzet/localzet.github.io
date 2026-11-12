@@ -12,15 +12,27 @@ for (const path of ['content.js', ...subjects.map(name => 'subjects/' + name + '
 }
 new vm.Script(load('assets/app.js'), { filename: 'assets/app.js' });
 new vm.Script(load('assets/theme.js'), { filename: 'assets/theme.js' });
+new vm.Script(load('assets/labs.js'), {filename:'assets/labs.js'}).runInNewContext({window:win});
+const labs=win.ATLAS_LABS;
+assert.equal(labs.subnet('192.0.2.130',26).network,'192.0.2.128');
+assert.equal(labs.subnet('192.0.2.130',26).last,'192.0.2.191');
+assert.equal(labs.subnet('0.0.0.0',0).size,4294967296);
+assert.equal(labs.subnet('192.0.2.4',31).hostCount,2);
+assert.equal(labs.subnet('192.0.2.4',32).hostCount,1);
+assert.equal(labs.subnet('300.0.0.1',24),null);
+assert.equal(labs.subnet('1.2.3.4',33),null);
+let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])model=labs.gitStep(model,action);
+assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
+let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
 const d = win.ATLAS_DATA;
 assert(d && Array.isArray(d.courses) && Array.isArray(d.lessons), 'Data model not initialized');
 assert.equal(d.courses.length, 7, 'The seven requested directions must be available');
-assert(d.lessons.length >= 64, 'Unexpectedly low number of published chapters');
+assert(d.lessons.length >= 78, 'Unexpectedly low number of published chapters');
 const ids = new Set();
 const levels=win.ATLAS_LEVELS;
 assert.deepEqual(Array.from(levels.names),['Junior','Middle','Senior','God']);
-assert(Object.keys(levels.junior).length>=35);
+assert(Object.keys(levels.junior).length>=49);
 assert(Object.keys(levels.advanced).length>=7);
 for(const c of d.courses){
  const ls=d.lessons.filter(l=>l.course===c.id);
@@ -77,7 +89,7 @@ for (const subject of subjects) {
 assert(html.includes('src="./assets/theme.js"'),'Early theme initialization missing');
 assert(!load('assets/app.js').includes('closest("[data-theme]")'),'Theme toggle must not match the document root');
 assert(html.indexOf('src="./assets/theme.js"')<html.indexOf('rel="stylesheet"'),'Theme must initialize before CSS');
-assert(html.indexOf('src="./content.js"') < html.indexOf('src="./subjects/linux.js"'), 'Invalid script load order');
+assert(html.indexOf('src="./content.js') < html.indexOf('src="./subjects/linux.js"'), 'Invalid script load order');
 assert(html.indexOf('src="./subjects/cryptography.js"') < html.indexOf('src="./assets/app.js'), 'App runs before lesson data');
 assert(Object.keys(win.ATLAS_FIGURES).length>=15,'Missing vector diagrams');
 for(const id of Object.keys(win.ATLAS_FIGURES))assert(ids.has(id.replace(/^junior-/,'')),'Orphan SVG '+id);
