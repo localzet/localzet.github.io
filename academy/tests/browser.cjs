@@ -306,6 +306,23 @@ const base='http://127.0.0.1:8765/academy/';
     await lease.locator('[data-diag-action="implicit"]').click();assert((await lease.locator('[data-diag-feedback]').textContent()).includes('ожидание совпало'));
     assert.equal(await lease.locator('[data-diag-view] .teach-file.head .teach-file-content').textContent(),'B');await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-tags-mirror/middle');
+    const publish=page.locator('.reader > .prose > [data-teach="git-tag-publish"]');await publish.waitFor();
+    await publish.locator('[data-release-action="tag-follow"]').click();assert((await publish.locator('[data-release-feedback]').textContent()).includes('Выбранные метки: v1.'));
+    await publish.locator('[data-release-action="tag-all"]').click();assert((await publish.locator('[data-release-feedback]').textContent()).includes('v1, light, v2'));
+    const mirror=page.locator('.reader > .prose > [data-teach="git-mirror-plan"]');
+    await mirror.locator('[data-release-action="preview"]').click();assert((await mirror.locator('[data-release-view] .teach-file.index').textContent()).includes('extra'));
+    await mirror.locator('[data-release-action="sync"]').click();assert(!(await mirror.locator('[data-release-view] .teach-file.index').textContent()).includes('extra'));await checkWidth();
+    await page.goto(base+'#/lesson/git-hooks-lab/middle');
+    const hook=page.locator('.reader > .prose > [data-teach="git-hook-index"]');
+    await hook.locator('[data-release-action="commit"]').click();assert((await hook.locator('[data-release-feedback]').textContent()).includes('Отказ'));
+    await hook.locator('[data-release-action="add"]').click();await hook.locator('[data-release-action="commit"]').click();assert((await hook.locator('[data-release-feedback]').textContent()).includes('Commit B'));
+    const request=page.locator('.reader > .prose > [data-teach="git-hook-request"]');await request.locator('[data-release-action="request-both"]').click();assert((await request.locator('[data-release-feedback]').textContent()).includes('весь запрос отклонён'));await checkWidth();
+    await page.goto(base+'#/lesson/git-signatures-lab/middle');
+    const trust=page.locator('.reader > .prose > [data-teach="git-signature-trust"]');await trust.locator('[data-release-action="trust-revoked"]').click();assert((await trust.locator('[data-release-view]').textContent()).includes('Не принимает'));
+    const rewrite=page.locator('.reader > .prose > [data-teach="git-signature-rewrite"]');await rewrite.locator('[data-release-action="rewrite-signed"]').click();assert((await rewrite.locator('[data-release-view]').textContent()).includes('C · прежний объект'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
