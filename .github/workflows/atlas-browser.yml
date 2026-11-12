@@ -73,6 +73,8 @@ jobs:
         run: node academy/tests/git-middle-project.mjs
       - name: Verify guided Git selectors, recovery and command choices
         run: node academy/tests/git-teaching-review.mjs
+      - name: Verify guided Git pack binary format and plumbing transactions
+        run: node academy/tests/git-teaching-storage.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies

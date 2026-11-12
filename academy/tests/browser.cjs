@@ -379,6 +379,25 @@ const base='http://127.0.0.1:8765/academy/';
     }
     assert((await choice.locator('[data-review-progress]').textContent()).includes('решено 5 / 5'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-pack-storage/senior');
+    const delta=page.locator('.reader > .prose > [data-teach="git-pack-delta"]');await delta.waitFor();
+    await delta.locator('[data-storage-action="insert"]').click();assert((await delta.locator('[data-storage-feedback]').textContent()).includes('Следуйте порядку'));
+    await delta.locator('[data-storage-action="copy"]').click();await delta.locator('[data-storage-action="insert"]').click();assert((await delta.locator('[data-storage-feedback]').textContent()).includes('Результат восстановлен'));
+    const fan=page.locator('.reader > .prose > [data-teach="git-pack-fanout"]');await fan.locator('[data-storage-action="fan-18"]').click();assert((await fan.locator('[data-storage-feedback]').textContent()).includes('[1, 3)'));
+    await fan.locator('[data-storage-action="fan-19"]').click();assert((await fan.locator('[data-storage-feedback]').textContent()).includes('совпадений: 0'));await checkWidth();
+    await page.goto(base+'#/lesson/git-plumbing-commit/senior');
+    const build=page.locator('.reader > .prose > [data-teach="git-plumb-build"]');
+    await build.locator('[data-storage-action="publish"]').click();assert((await build.locator('[data-storage-feedback]').textContent()).includes('предыдущую стадию'));
+    for(const a of ['blob','index','tree','commit','publish'])await build.locator('[data-storage-action="'+a+'"]').click();
+    assert((await build.locator('[data-storage-feedback]').textContent()).includes('Main остаётся A'));
+    const txn=page.locator('.reader > .prose > [data-teach="git-plumb-transaction"]');
+    for(const a of ['peer','prepare'])await txn.locator('[data-storage-action="'+a+'"]').click();
+    assert((await txn.locator('[data-storage-feedback]').textContent()).includes('Prepare отказал'));
+    assert.equal(await txn.locator('.teach-file.head .teach-file-content').textContent(),'A');
+    for(const a of ['inspect','prepare','commit'])await txn.locator('[data-storage-action="'+a+'"]').click();
+    assert((await txn.locator('[data-storage-feedback]').textContent()).includes('Обе ссылки теперь C'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
