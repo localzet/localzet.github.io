@@ -59,6 +59,8 @@ jobs:
         run: node academy/tests/git-teaching-objects.mjs
       - name: Verify guided Git binary index, conflict stages and revision ranges
         run: node academy/tests/git-teaching-index.mjs
+      - name: Verify guided Git rebase, todo and cherry-pick
+        run: node academy/tests/git-teaching-rewrite.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
