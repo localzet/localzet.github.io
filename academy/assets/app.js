@@ -12,6 +12,7 @@ const pct=c=>{const ls=lessons.filter(l=>l.course===c.id);return ls.length?Math.
 const slug=s=>s.toLowerCase().replace(/[^a-zа-яё0-9 -]/gi,"").replace(/\s+/g,"-").replace(/-+/g,"-");
 const parseInline=s=>{
  let x=safe(s); x=x.replace(/`([^`]+)`/g,(_,t)=>"<code>"+t+"</code>");
+ x=x.replace(/§([^§]+)§/g,(_,t)=>"<code>"+t+"</code>");
  x=x.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
  x=x.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,(_,label,url)=>'<a href="'+url+'" target="_blank" rel="noopener noreferrer">'+label+"</a>");
  return x;
@@ -23,8 +24,8 @@ const renderMd=md=>{
  const flushQ=()=>{if(quote.length){out.push("<blockquote>"+parseInline(quote.join(" "))+"</blockquote>");quote=[]}};
  for(const line of lines){
   const trim=line.trim();
-  if(code!==null){if(trim.startsWith("```")){out.push("<pre><code>"+safe(code.join("\n"))+"</code></pre>");code=null;}else code.push(line);continue}
-  if(trim.startsWith("```")){flushP();flushL();flushQ();code=[];continue}
+  if(code!==null){if((trim.startsWith("```")||trim.startsWith("~~~"))){out.push("<pre><code>"+safe(code.join("\n"))+"</code></pre>");code=null;}else code.push(line);continue}
+  if((trim.startsWith("```")||trim.startsWith("~~~"))){flushP();flushL();flushQ();code=[];continue}
   if(!trim){flushP();flushL();flushQ();continue}
   const h=/^(#{2,3})\s+(.+)$/.exec(trim);
   if(h){flushP();flushL();flushQ();const n=h[1].length;out.push("<h"+n+' id="'+slug(h[2])+'">'+parseInline(h[2])+"</h"+n+">");continue}
