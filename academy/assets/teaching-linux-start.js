@@ -1532,5 +1532,151 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: подтвердите навыки и runtime.",
       "Это нарушает минимальные полномочия."
     ]
+  },
+  "linux-trust-chain": {
+    "title": "Цепочка доверия к пакету",
+    "cases": [
+      [
+        "Ключ",
+        "Доверенный ключ",
+        "Проверка подписи",
+        "Источник ключа важен."
+      ],
+      [
+        "Метаданные",
+        "Подписанный манифест",
+        "Индексы и хеши",
+        "Подпись связывает байты и ключ."
+      ],
+      [
+        "Пакет",
+        "Хеш из индекса",
+        "Совпадение содержимого",
+        "Не доказательство качества кода."
+      ],
+      [
+        "План",
+        "Версии и зависимости",
+        "Проверка транзакции",
+        "Совместимость и доверие различаются."
+      ]
+    ]
+  },
+  "linux-trust-plan": {
+    "title": "План безопасного обновления",
+    "cases": [
+      [
+        "Индекс",
+        "update",
+        "Новые метаданные",
+        "Не обновляет установленные пакеты."
+      ],
+      [
+        "Симуляция",
+        "apt-get -s",
+        "План изменений",
+        "Проверяйте удаления."
+      ],
+      [
+        "Копия",
+        "Данные и конфигурация",
+        "Проверка восстановления",
+        "Откат бинарника не отменяет миграцию."
+      ],
+      [
+        "Функция",
+        "HTTP и журнал",
+        "Проверенный результат",
+        "Успешная транзакция не равна готовности."
+      ]
+    ]
+  },
+  "linux-trust-check": {
+    "title": "Что доказывает подпись?",
+    "q": "Подпись манифеста верна. Можно ли принять пакет с несовпадающим хешем?",
+    "a": [
+      "Да",
+      "Нет: цепочка целостности нарушена",
+      "Да, если версия новее"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Подпись манифеста не исправляет пакет.",
+      "Верно: отклоните изменённую нагрузку.",
+      "Версия не заменяет проверку целостности."
+    ]
+  },
+  "linux-ssh-identities": {
+    "title": "Две проверки SSH",
+    "cases": [
+      [
+        "Клиент",
+        "Адрес и маршрут",
+        "Соединение",
+        "Доступность не означает доверие."
+      ],
+      [
+        "Сервер",
+        "Host key",
+        "Проверка идентичности",
+        "Сверяйте отпечаток независимо."
+      ],
+      [
+        "Пользователь",
+        "Приватный ключ",
+        "Доказательство владения",
+        "Приватный ключ не передаётся серверу."
+      ],
+      [
+        "Политика",
+        "authorized_keys / правила",
+        "Разрешённый вход",
+        "Ключ не гарантирует авторизацию."
+      ]
+    ]
+  },
+  "linux-ssh-failure": {
+    "title": "Диагностируем SSH",
+    "cases": [
+      [
+        "Refused",
+        "TCP отказ",
+        "Порт или listener",
+        "Проверьте собственный сервер."
+      ],
+      [
+        "Host key",
+        "Неожиданный отпечаток",
+        "Проверка доверия",
+        "Не отключайте проверку."
+      ],
+      [
+        "Denied",
+        "Аутентификация или политика",
+        "Разрешение входа",
+        "Проверьте идентичность и серверные правила."
+      ],
+      [
+        "Config",
+        "ssh -G",
+        "Эффективные параметры",
+        "Не устанавливает соединение."
+      ]
+    ]
+  },
+  "linux-ssh-check": {
+    "title": "Неожиданный ключ хоста",
+    "q": "Ключ сервера изменился. Что делать?",
+    "a": [
+      "Отключить проверку",
+      "Подтвердить новый ключ через независимый доверенный канал",
+      "Отправить приватный ключ серверу"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Это убирает защиту от подмены.",
+      "Верно: выясните причину до подключения.",
+      "Приватный ключ не передаётся."
+    ]
   }
-};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
