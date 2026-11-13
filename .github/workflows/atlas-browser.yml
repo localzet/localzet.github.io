@@ -6,13 +6,18 @@ on:
     paths:
       - 'academy/**'
       - '.github/workflows/atlas-browser.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'academy/**'
+      - '.github/workflows/atlas-browser.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: atlas-browser-main
+  group: atlas-browser-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:

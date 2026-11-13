@@ -47,3 +47,212 @@ function mount(root){prev.mount(root);root.querySelectorAll("[data-teach]").forE
 });}
 window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPathStep:pathStep,linuxPipeStep:pipeStep,linuxPipeOutput:pipeOutput,linuxArgvCases:argvCases,linuxStreams:streams};
 })();
+(function(){'use strict';const prev=window.ATLAS_TEACHING;const panels={
+  "linux-vfs-links": {
+    "title": "Имя, объект и данные",
+    "cases": [
+      [
+        "Исходник",
+        "logs/service.log → inode A",
+        "байты: журнал Atlas",
+        "Имя связывает каталог с объектом."
+      ],
+      [
+        "Hard link",
+        "links/hard.log → inode A",
+        "те же байты",
+        "Оба имени ссылаются на один объект."
+      ],
+      [
+        "Symlink",
+        "links/soft.log → ../logs/service.log",
+        "разрешение пути → inode A",
+        "Ссылка хранит путь, а не второе имя inode A."
+      ],
+      [
+        "Копия",
+        "links/copy.log → inode B",
+        "независимые байты",
+        "Изменение A не меняет B."
+      ]
+    ]
+  },
+  "linux-vfs-life": {
+    "title": "Жизненный цикл открытого файла",
+    "cases": [
+      [
+        "Открыть",
+        "service.log → inode A",
+        "FD 3 → открытое описание → A",
+        "Имя и открытое описание независимы."
+      ],
+      [
+        "Удалить имя",
+        "service.log отсутствует",
+        "FD 3 → A, nlink=0",
+        "Объект остаётся доступным через FD."
+      ],
+      [
+        "Создать снова",
+        "service.log → inode B",
+        "FD 3 → A",
+        "Старый процесс не переключился на B."
+      ],
+      [
+        "Закрыть FD",
+        "service.log → inode B",
+        "FD 3 закрыт",
+        "A может быть освобождён при отсутствии других ссылок."
+      ]
+    ]
+  },
+  "linux-vfs-check": {
+    "title": "Проверьте прогноз",
+    "q": "После удаления исходного имени осталась жёсткая ссылка. Что произойдёт?",
+    "a": [
+      "Данные всегда исчезнут",
+      "Жёсткая ссылка продолжит открывать тот же объект",
+      "Ссылка автоматически станет симлинком"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Удаление имени не уничтожает объект с другими ссылками.",
+      "Верно: имя удалено, объект ещё имеет ссылку.",
+      "Тип ссылки не меняется."
+    ]
+  },
+  "linux-text-search": {
+    "title": "Выберите область поиска",
+    "cases": [
+      [
+        "find",
+        "find logs -name '*.log'",
+        "имена файлов",
+        "Ищет пути, не строки журнала."
+      ],
+      [
+        "grep",
+        "grep '^ERROR ' logs/service.log",
+        "строки с уровнем ERROR",
+        "Проверяет содержимое известного файла."
+      ],
+      [
+        "awk",
+        "awk '$1==\"ERROR\"'",
+        "записи по первому полю",
+        "Позволяет работать с полями и счётчиками."
+      ]
+    ]
+  },
+  "linux-text-fields": {
+    "title": "Из записи в счётчик",
+    "cases": [
+      [
+        "Вход",
+        "INFO ERROR text\\nERROR timeout\\nERROR disk\\nERROR timeout",
+        "4 строки",
+        "INFO ERROR text не является ошибкой уровня ERROR."
+      ],
+      [
+        "Фильтр",
+        "ERROR timeout\\nERROR disk\\nERROR timeout",
+        "3 записи",
+        "Проверяется первое поле."
+      ],
+      [
+        "Группировка",
+        "timeout → 2\\ndisk → 1",
+        "2 причины",
+        "Счётчик увеличивается для второго поля."
+      ],
+      [
+        "Отчёт",
+        "disk 1\\ntimeout 2",
+        "стабильный порядок",
+        "Сортировка не меняет счётчики."
+      ]
+    ]
+  },
+  "linux-text-check": {
+    "title": "Проверьте прогноз",
+    "q": "Как безопасно передать имена с переводом строки?",
+    "a": [
+      "for f in $(find ...)",
+      "find -print0 и NUL-совместимый потребитель",
+      "Разделять по пробелам"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Разбиение разрушит границы имён.",
+      "Верно: NUL не может входить в имя файла.",
+      "Пробел допустим внутри имени."
+    ]
+  },
+  "linux-script-flow": {
+    "title": "Ветвление отчёта",
+    "cases": [
+      [
+        "Нет аргумента",
+        "argc = 0",
+        "stderr: usage · exit 2",
+        "Нельзя выбирать файл наугад."
+      ],
+      [
+        "Нет файла",
+        "argc = 1 · missing.log",
+        "stderr: cannot read · exit 2",
+        "Ошибка входа, не нулевой отчёт."
+      ],
+      [
+        "Чистый журнал",
+        "INFO ready",
+        "stdout: 0 · exit 0",
+        "Ноль событий — корректный результат."
+      ],
+      [
+        "Есть ошибки",
+        "ERROR disk × 2",
+        "stdout: 2 · exit 0",
+        "Число событий не является статусом программы."
+      ]
+    ]
+  },
+  "linux-script-status": {
+    "title": "Статус выполнения и данные",
+    "cases": [
+      [
+        "Совпадение",
+        "grep → 0",
+        "данные найдены",
+        "Продолжить обработку."
+      ],
+      [
+        "Нет совпадения",
+        "grep → 1",
+        "пустая выборка",
+        "Это ожидаемый исход при поиске."
+      ],
+      [
+        "Ошибка чтения",
+        "grep → 2",
+        "stderr: диагностика",
+        "Не выдавать успешный отчёт."
+      ]
+    ]
+  },
+  "linux-script-check": {
+    "title": "Проверьте контракт",
+    "q": "Отчёт напечатал 3 ошибки. Какой статус нужен при успешном чтении?",
+    "a": [
+      "3",
+      "0",
+      "2"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Число событий — данные stdout.",
+      "Верно: обработка успешна.",
+      "2 обозначает ошибку входа в нашем контракте."
+    ]
+  }
+};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];view.innerHTML='<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
