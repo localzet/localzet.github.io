@@ -498,7 +498,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/internet-tcp/junior');await page.locator('[data-lab-action="next"]').click();await page.locator('[data-lab-action="drop"]').click();assert((await page.locator('[data-tcp-message]').textContent()).includes('потерян'));await page.locator('[data-lab-action="next"]').click();for(let i=0;i<6;i++)await page.locator('[data-lab-action="next"]').click();assert.equal(await page.locator('[data-tcp-client]').textContent(),'ESTABLISHED');assert((await page.locator('[data-tcp-message]').textContent()).includes('105'));await checkWidth();
     await page.goto(base+'#/articles');await page.locator('.article-card').first().waitFor();assert.equal(await page.locator('.article-card').count(),8);await checkWidth();await page.locator('.article-card[href="#/article/choose-database"]').click();await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('базу данных'));await checkWidth();
     await page.goto(base+'#/lesson/python-start/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Python'));await checkWidth();
-    await page.goto(base+'#/lesson/linux-network-admin/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('сеть'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-network-admin/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).toLowerCase().includes('сеть'));await checkWidth();
     await page.goto(base+'#/lesson/linux-systemd/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('службами'));await checkWidth();
     await page.goto(base+'#/lesson/linux-scheduler/senior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Планировщик'));await checkWidth();
     for(const id of ['linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-block-io']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
@@ -597,6 +597,15 @@ const base='http://127.0.0.1:8765/academy/';
     await vfsQuiz.locator('[data-linux-next="1"]').click();
     assert.equal(await vfsQuiz.locator('[data-linux-next-feedback]').getAttribute('data-result'),'correct');
     for(const [id,key,choice,needle] of [['linux-permissions','linux-access-mode',1,'Группа: чтение'],['linux-accounts','linux-user-session',1,'Старый процесс'],['linux-processes','linux-proc-life',2,'PID 101']]){
+      for(const level of ['junior','middle']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,needle] of [['linux-network-admin','linux-net-socket',3,'404'],['linux-signals','linux-signal-flow',3,'exit 0'],['linux-monitoring','linux-monitor-symptom',2,'Available']]){
       for(const level of ['junior','middle']){
         await page.goto(base+'#/lesson/'+id+'/'+level);
         const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');

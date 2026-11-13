@@ -80,7 +80,7 @@ for(const c of d.courses){
  for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
 }
 assert(d.lessons.filter(l=>l.course==='linux').length>=63);
-assert.deepEqual(Array.from(win.ATLAS_GUIDED_IDS.filter(id=>id.startsWith('linux-'))),['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes']);
+assert.deepEqual(Array.from(win.ATLAS_GUIDED_IDS.filter(id=>id.startsWith('linux-'))),['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes','linux-network-admin','linux-signals','linux-monitoring']);
 assert.equal(levels.minimum['linux-systemd'],0);
 for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups','linux-journal','linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-encryption','linux-block-io','linux-mmu','linux-mmap-cow','linux-reclaim','linux-syscalls','linux-event-io','linux-io-uring']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&/## (?:Практика и )?[Сс]амостоятельная работа/.test(chapter.body),'Linux editorial depth: '+id);}
 for(const id of ['linux-signals','linux-capstone']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&levels.minimum[id]===0,'Linux practice: '+id);}
@@ -91,7 +91,7 @@ for(const id of ['linux-kbuild','linux-modules','linux-driver-model','linux-irq-
 for(const id of ['linux-storage-lab','linux-middle-project','linux-senior-project']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=450&&l.body.includes('## Самостоятельная работа'),'Linux capstone depth: '+id);}
 for(const id of ['linux-elf','linux-special-fs','linux-mount-overlay','linux-packet-diagnostics']){const l=d.lessons.find(x=>x.id===id);assert(l&&l.body.split(/\s+/).length>=310&&l.body.includes('## Самостоятельная работа'),'Linux review: '+id);}
 const order=levels.order.linux;
-for(const [before,after] of [['linux-vfs','linux-search-text'],['linux-encryption','linux-storage-lab'],['linux-processes','linux-syscalls'],['linux-memory','linux-mmap-cow'],['linux-cgroups','linux-netns'],['linux-systemd','linux-service-dependencies'],['linux-syscalls','linux-io-uring'],['linux-capstone','linux-middle-project'],['linux-middle-project','linux-senior-project']])assert(order.indexOf(before)<order.indexOf(after),'Prerequisite order '+before+' / '+after);
+for(const [before,after] of [['linux-vfs','linux-search-text'],['linux-encryption','linux-storage-lab'],['linux-processes','linux-syscalls'],['linux-network-admin','linux-signals'],['linux-signals','linux-monitoring'],['linux-memory','linux-mmap-cow'],['linux-cgroups','linux-netns'],['linux-systemd','linux-service-dependencies'],['linux-syscalls','linux-io-uring'],['linux-capstone','linux-middle-project'],['linux-middle-project','linux-senior-project']])assert(order.indexOf(before)<order.indexOf(after),'Prerequisite order '+before+' / '+after);
 for(const id of order.filter(id=>levels.minimum[id]===0))assert(levels.junior[id].body.split(/\s+/).length>=200,'Junior review depth '+id);
 assert.equal(order.filter(id=>levels.minimum[id]===0).length,22);
 const linuxReference=win.ATLAS_REFERENCE.find(x=>x.id==='linux').groups.flatMap(g=>g.entries);
