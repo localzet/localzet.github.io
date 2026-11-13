@@ -503,7 +503,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-scheduler/senior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Планировщик'));await checkWidth();
     for(const id of ['linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-block-io']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     for(const id of ['linux-mmu','linux-mmap-cow','linux-syscalls','linux-io-uring']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
-    for(const id of ['linux-firmware','linux-initramfs','linux-service-dependencies']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
+    for(const id of ['linux-firmware','linux-initramfs']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-boot/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('запускает Linux'));await checkWidth();
     for(const id of ['linux-netns','linux-netfilter','linux-seccomp-landlock']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-security-basics/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('защитить'));await checkWidth();
@@ -511,7 +511,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-upstream/senior');await page.locator('.reader h1').waitFor();await checkWidth();
     await page.goto(base+'#/lesson/linux-mmu/senior');await page.locator('[data-mmu-address]').fill('0x41234567');assert((await page.locator('[data-mmu-result]').textContent()).includes('0x567'));await page.locator('[data-mmu-address]').fill('bad!');assert((await page.locator('[data-mmu-result]').textContent()).includes('Ошибка'));await checkWidth();
     await page.goto(base+'#/lesson/linux-mmap-cow/middle');await page.locator('[data-lab-action="fork"]').click();await page.locator('[data-lab-action="write"]').click();assert.equal(await page.locator('[data-cow-parent]').textContent(),'A · 7');assert.equal(await page.locator('[data-cow-child]').textContent(),'B · 9');await checkWidth();
-    await page.goto(base+'#/lesson/linux-service-dependencies/middle');await page.locator('[data-unit-after]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('только A'));await page.locator('[data-unit-wants]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('B → A'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-service-dependencies/middle');await page.locator('[data-teach="linux-dep-ready"] .linux-visual-node').first().waitFor();await page.locator('[data-unit-after]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('только A'));await page.locator('[data-unit-wants]').selectOption('1');assert((await page.locator('[data-unit-result]').textContent()).includes('B → A'));await checkWidth();
     await page.goto(base+'#/lesson/linux-storage-lab/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();
     await page.goto(base+'#/lesson/linux-senior-project/senior');await page.locator('.reader h1').waitFor();await checkWidth();
     await page.goto(base+'#/reference');await page.locator('[data-reference-search]').fill('readelf');const refItem=page.locator('[data-ref-item]:visible').filter({hasText:'readelf'}).first();await refItem.locator('.ref-options summary').click();assert((await refItem.textContent()).includes('-lW'));await checkWidth();
@@ -631,6 +631,16 @@ const base='http://127.0.0.1:8765/academy/';
         assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
         assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
         assert.equal(await panel.locator('.linux-visual-node').count(),4);
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,needle,levels] of [['linux-boot','linux-boot-chain',3,'PID 1',['junior','middle']],['linux-memory','linux-mem-map',1,'MMU',['junior','middle']],['linux-service-dependencies','linux-dep-ready',2,'Type=notify',['middle']]]){
+      for(const level of levels){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
         await checkWidth();
       }
     }

@@ -1094,5 +1094,224 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: результат ограничен конкретным сценарием.",
       "Приватные данные не должны быть в публичном дереве."
     ]
+  },
+  "linux-boot-chain": {
+    "title": "Передача управления",
+    "cases": [
+      [
+        "Firmware",
+        "UEFI / BIOS",
+        "Выбор загрузочного пути",
+        "Прошивка не запускает HTTP."
+      ],
+      [
+        "Kernel",
+        "Загрузчик → ядро",
+        "Драйверы и память",
+        "Не всякий запуск использует отдельный загрузчик."
+      ],
+      [
+        "Root",
+        "initramfs / rootfs",
+        "Настоящий корень",
+        "Ранний userspace при необходимости."
+      ],
+      [
+        "Userspace",
+        "PID 1 → службы",
+        "Atlas HTTP",
+        "Готовность сервиса проверяется отдельно."
+      ]
+    ]
+  },
+  "linux-boot-failure": {
+    "title": "Локализуем сбой",
+    "cases": [
+      [
+        "Firmware",
+        "Нет загрузочной записи",
+        "Проверить загрузочный путь",
+        "Не форматировать ESP."
+      ],
+      [
+        "Root",
+        "Ядро не находит корень",
+        "Параметры, драйверы, initramfs",
+        "Не менять реальный диск в опыте."
+      ],
+      [
+        "PID 1",
+        "Проблема userspace",
+        "Консоль и журнал",
+        "Отличать ядро от init."
+      ],
+      [
+        "HTTP",
+        "ОС работает",
+        "Unit, журнал, запрос",
+        "Не переписывать загрузчик."
+      ]
+    ]
+  },
+  "linux-boot-check": {
+    "title": "Что доказывает наблюдение?",
+    "q": "В контейнере /proc/1/comm показывает bash. Что доказано?",
+    "a": [
+      "Хост загружен через Bash",
+      "В видимом PID namespace PID 1 имеет это имя",
+      "На хосте нет systemd"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Контейнер может иметь отдельный PID namespace.",
+      "Верно: граница наблюдения важна.",
+      "По контейнеру нельзя установить менеджер хоста."
+    ]
+  },
+  "linux-mem-map": {
+    "title": "От адреса к странице",
+    "cases": [
+      [
+        "Адрес",
+        "Виртуальный адрес",
+        "Диапазон процесса",
+        "Не физический адрес RAM."
+      ],
+      [
+        "MMU",
+        "Таблицы страниц",
+        "Отображение и права",
+        "TLB кэширует преобразование."
+      ],
+      [
+        "Fault",
+        "Первое обращение / COW",
+        "Ядро может удовлетворить запрос",
+        "Fault не обязательно ошибка."
+      ],
+      [
+        "RAM",
+        "Резидентная страница",
+        "Данные и учёт",
+        "Общие страницы могут учитываться несколько раз."
+      ]
+    ]
+  },
+  "linux-mem-resident": {
+    "title": "Размер и резидентность",
+    "cases": [
+      [
+        "Резерв",
+        "VmSize",
+        "Виртуальный диапазон",
+        "Не равно физической памяти."
+      ],
+      [
+        "Чтение",
+        "Demand paging",
+        "Страница может стать резидентной",
+        "Размер зависит от механизма."
+      ],
+      [
+        "Запись",
+        "Private mapping",
+        "COW при необходимости",
+        "Исходный файл не меняется."
+      ],
+      [
+        "Закрытие",
+        "munmap",
+        "Диапазон удалён",
+        "Не обещаем точный RSS."
+      ]
+    ]
+  },
+  "linux-mem-check": {
+    "title": "Проверьте модель памяти",
+    "q": "VmSize вырос на 4 МиБ. Что доказано?",
+    "a": [
+      "Занято ровно 4 МиБ новой RAM",
+      "Виртуальный размер изменился; RSS нужно изучить отдельно",
+      "Система скоро вызовет OOM"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Резидентность и отображение различаются.",
+      "Верно: проверяйте метрики и контекст.",
+      "Один показатель не доказывает дефицит."
+    ]
+  },
+  "linux-dep-graph": {
+    "title": "Активация и порядок",
+    "cases": [
+      [
+        "After",
+        "A After=B",
+        "Порядок при наличии B",
+        "Само по себе не добавляет B."
+      ],
+      [
+        "Wants",
+        "A Wants=B",
+        "Слабая зависимость",
+        "Не задаёт порядок сама."
+      ],
+      [
+        "Requires + After",
+        "A требует B и следует за ним",
+        "Активация и порядок",
+        "Не равно HTTP readiness."
+      ],
+      [
+        "Readiness",
+        "Прикладная проверка",
+        "Контракт приложения",
+        "Нужна отдельная проверка."
+      ]
+    ]
+  },
+  "linux-dep-ready": {
+    "title": "Процесс и готовность",
+    "cases": [
+      [
+        "Spawn",
+        "PID создан",
+        "Запуск начат",
+        "Exec может ещё не состояться."
+      ],
+      [
+        "Exec",
+        "Type=exec",
+        "Исполняемый файл запущен",
+        "HTTP может быть не готов."
+      ],
+      [
+        "Ready",
+        "Type=notify (при поддержке)",
+        "Уведомление приложения",
+        "Контракт определяет смысл готовности."
+      ],
+      [
+        "Health",
+        "HTTP-запрос",
+        "Проверка функции",
+        "Готовность может измениться позже."
+      ]
+    ]
+  },
+  "linux-dep-check": {
+    "title": "Проверьте зависимости",
+    "q": "Достаточно ли After=db.service, чтобы запустить БД и дождаться SQL?",
+    "a": [
+      "Да, всегда",
+      "Нет: отдельно активация, ordering и readiness",
+      "Нужно только увеличить RestartSec"
+    ],
+    "ok": 1,
+    "feedback": [
+      "After не добавляет зависимость.",
+      "Верно: три разные гарантии.",
+      "Задержка не доказывает готовность."
+    ]
   }
-};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
