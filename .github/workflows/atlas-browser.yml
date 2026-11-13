@@ -92,6 +92,8 @@ jobs:
         run: node academy/tests/git-final-audit.mjs
       - name: Verify guided Linux foundations and continuous workspace
         run: node academy/tests/linux-teaching-start.mjs
+      - name: Verify Linux Junior project static contract
+        run: node academy/tests/linux-junior-acceptance.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies
