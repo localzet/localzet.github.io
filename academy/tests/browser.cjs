@@ -453,6 +453,20 @@ const base='http://127.0.0.1:8765/academy/';
     for(const a of ['inspect','rescue','backup','maintain'])await ret.locator('[data-maint-action="'+a+'"]').click();
     assert((await ret.locator('[data-maint-feedback]').textContent()).includes('refs и снимки совпадают'));await checkWidth();
     }
+    {
+    await page.goto(base+'#/lesson/git-senior-project/senior');
+    const enterprise=page.locator('.reader > .prose > [data-teach="git-enterprise-checklist"]');await enterprise.waitFor();
+    await enterprise.locator('[data-enterprise-task="0"]').check();
+    assert((await enterprise.locator('[data-enterprise-progress]').textContent()).includes('1 / 7'));
+    await enterprise.locator('[data-enterprise-task="0"]').uncheck();
+    assert((await enterprise.locator('[data-enterprise-progress]').textContent()).includes('0 / 7'));
+    const enterpriseHint=page.locator('.reader > .prose > [data-teach="git-enterprise-hints"] details').first();
+    await enterpriseHint.locator('summary').click();assert(await enterpriseHint.locator('a').isVisible());
+    const enterpriseLink=page.locator('.reader > .prose > [data-teach="git-enterprise-checker"] a');
+    assert.equal(await enterpriseLink.getAttribute('href'),'./exercises/check-git-senior.sh');
+    const enterpriseNav=await page.locator('.reader-nav a').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
+    assert.equal(enterpriseNav.length,51);assert(enterpriseNav[42].includes('git-middle-project'));assert(enterpriseNav[50].includes('git-senior-project'));await checkWidth();
+    }
     await page.goto(base+'#/lesson/git-index/junior');
     const walkthrough=page.locator('[data-teach="git-walkthrough"]');
     await walkthrough.waitFor();
