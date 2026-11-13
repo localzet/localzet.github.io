@@ -254,5 +254,212 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: обработка успешна.",
       "2 обозначает ошибку входа в нашем контракте."
     ]
+  },
+  "linux-access-mode": {
+    "title": "Разбираем mode на три класса",
+    "cases": [
+      [
+        "600",
+        "u=rw- · g=--- · o=---",
+        "Владелец: чтение и запись",
+        "Конфигурация доступна владельцу по обычному mode."
+      ],
+      [
+        "640",
+        "u=rw- · g=r-- · o=---",
+        "Группа: чтение",
+        "Группа не получает запись."
+      ],
+      [
+        "750",
+        "u=rwx · g=r-x · o=---",
+        "Группа: чтение и поиск/выполнение",
+        "У каталога x означает поиск по пути."
+      ],
+      [
+        "777",
+        "u=rwx · g=rwx · o=rwx",
+        "Все классы: все обычные биты",
+        "Не используйте как универсальное исправление."
+      ]
+    ]
+  },
+  "linux-access-dir": {
+    "title": "Права на каталог и файл",
+    "cases": [
+      [
+        "Список",
+        "Каталог r",
+        "Чтение списка имён",
+        "Для получения метаданных по имени может потребоваться x."
+      ],
+      [
+        "Проход",
+        "Каталог x",
+        "Поиск известного имени",
+        "x нужен на каждом компоненте каталога."
+      ],
+      [
+        "Удаление",
+        "Каталог w+x",
+        "Изменение записи каталога",
+        "С учётом sticky bit, ACL, mount и иных политик."
+      ],
+      [
+        "Чтение",
+        "Файл r + проход по пути",
+        "Чтение содержимого",
+        "Один mode файла не гарантирует доступ."
+      ]
+    ]
+  },
+  "linux-access-check": {
+    "title": "Диагностика отказа",
+    "q": "Файл имеет 644, но чтение по пути запрещено. Что проверить сначала?",
+    "a": [
+      "chmod -R 777",
+      "UID, права родительских каталогов и ACL",
+      "Перезапустить компьютер"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Это расширяет доступ без диагноза.",
+      "Верно: путь и credentials имеют значение.",
+      "Перезапуск не объясняет отказ."
+    ]
+  },
+  "linux-user-identity": {
+    "title": "От имени к credentials",
+    "cases": [
+      [
+        "Имя",
+        "atlas",
+        "NSS → UID 1001 (пример)",
+        "Имя может отличаться между окружениями."
+      ],
+      [
+        "Группа",
+        "atlas-readers",
+        "NSS → GID 2001 (пример)",
+        "Членство позволяет выбрать групповой класс."
+      ],
+      [
+        "Процесс",
+        "UID 1001 · GID 2001",
+        "Запрос чтения файла",
+        "Ядро проверяет credentials и политику."
+      ]
+    ]
+  },
+  "linux-user-session": {
+    "title": "Группы в базе и в процессе",
+    "cases": [
+      [
+        "До изменения",
+        "База: группа A",
+        "Процесс: A",
+        "Процесс получил группы при запуске."
+      ],
+      [
+        "Изменили запись",
+        "База: A, B",
+        "Старый процесс: A",
+        "База не переписывает credentials работающего процесса."
+      ],
+      [
+        "Новый вход",
+        "База: A, B",
+        "Новый процесс: A, B (обычно)",
+        "Новый сеанс формирует credentials по политике."
+      ]
+    ]
+  },
+  "linux-user-check": {
+    "title": "Проверьте понимание",
+    "q": "Администратор добавил пользователя в группу. Почему терминал ещё не видит её?",
+    "a": [
+      "Файлы обязательно повреждены",
+      "Группы уже работающего процесса не обновились",
+      "UID всегда меняется"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Это не признак повреждения файлов.",
+      "Верно: проверьте текущий id и новый сеанс.",
+      "UID не обязан меняться."
+    ]
+  },
+  "linux-proc-life": {
+    "title": "fork → exec → wait",
+    "cases": [
+      [
+        "Родитель",
+        "Bash · PID 100",
+        "До запуска",
+        "PID условный, модель не запускает процессы."
+      ],
+      [
+        "fork",
+        "Родитель PID 100",
+        "Потомок PID 101",
+        "Создан новый процесс."
+      ],
+      [
+        "exec",
+        "Потомок PID 101",
+        "Новый образ программы",
+        "PID остался прежним."
+      ],
+      [
+        "wait",
+        "Родитель PID 100",
+        "Получен статус потомка",
+        "Родитель собирает завершение."
+      ]
+    ]
+  },
+  "linux-proc-wait": {
+    "title": "Фоновая работа и результат",
+    "cases": [
+      [
+        "Запуск",
+        "report.sh &",
+        "$! → PID потомка",
+        "Файл отчёта ещё не доказывает успех."
+      ],
+      [
+        "Ожидание",
+        "wait PID",
+        "Статус завершения",
+        "Оболочка ждёт собственную задачу."
+      ],
+      [
+        "Успех",
+        "stdout: 3",
+        "exit 0",
+        "Три события — данные, а не ошибка скрипта."
+      ],
+      [
+        "Отказ",
+        "stderr: cannot read",
+        "exit 2",
+        "Не считать пустой файл успешным отчётом."
+      ]
+    ]
+  },
+  "linux-proc-check": {
+    "title": "Проверьте модель процесса",
+    "q": "Что происходит с PID при успешном exec?",
+    "a": [
+      "Всегда создаётся новый PID",
+      "PID сохраняется, образ программы заменяется",
+      "PID становится кодом завершения"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Новый процесс создаёт fork/clone, не exec.",
+      "Верно: образ заменён внутри процесса.",
+      "Статус и PID — разные сущности."
+    ]
   }
 };const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];view.innerHTML='<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();

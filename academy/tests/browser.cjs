@@ -596,6 +596,15 @@ const base='http://127.0.0.1:8765/academy/';
     assert.equal(await vfsQuiz.locator('[data-linux-next-feedback]').getAttribute('data-result'),'retry');
     await vfsQuiz.locator('[data-linux-next="1"]').click();
     assert.equal(await vfsQuiz.locator('[data-linux-next-feedback]').getAttribute('data-result'),'correct');
+    for(const [id,key,choice,needle] of [['linux-permissions','linux-access-mode',1,'Группа: чтение'],['linux-accounts','linux-user-session',1,'Старый процесс'],['linux-processes','linux-proc-life',2,'PID 101']]){
+      for(const level of ['junior','middle']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        await checkWidth();
+      }
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
