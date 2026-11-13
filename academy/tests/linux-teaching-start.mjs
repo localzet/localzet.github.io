@@ -19,7 +19,7 @@ const blocks=body=>[...body.matchAll(/~~~sh\n([\s\S]*?)\n~~~/g)].map(m=>m[1]);
 const lab=mkdtempSync(join(tmpdir(),'atlas-linux-start-'));
 try{
 const env={...process.env,LC_ALL:'C',HOME:lab,TMPDIR:lab};
-const run=(code,id)=>{const p=spawnSync('bash',['--noprofile','--norc','-c',code],{cwd:lab,env,encoding:'utf8',timeout:30000});if(p.error)throw p.error;assert.equal(p.status,0,id+'\n'+p.stdout+'\n'+p.stderr);return p.stdout;};
+const run=(code,id)=>{const p=spawnSync('bash',['--noprofile','--norc','-c',code],{cwd:lab,env,encoding:'utf8',timeout:30000});if(p.error)throw new Error(id+'\n'+p.stdout+'\n'+p.stderr,{cause:p.error});assert.equal(p.status,0,id+'\n'+p.stdout+'\n'+p.stderr);return p.stdout;};
 let count=0;
 for(const l of window.ATLAS_DATA.lessons){
  for(const body of [l.body,window.ATLAS_LEVELS.junior[l.id].body]){
