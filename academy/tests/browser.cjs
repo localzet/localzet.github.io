@@ -53,7 +53,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/course/linux');assert.equal(await page.locator('[data-level-choice="0"]').getAttribute('aria-pressed'),'true');
     await page.goto(base+'#/course/git');assert.equal(await page.locator('[data-level-choice="2"]').getAttribute('aria-pressed'),'true');
     await page.reload();await page.locator('.lesson-row').first().waitFor();assert.equal(await page.locator('[data-level-choice="2"]').getAttribute('aria-pressed'),'true');
-    await page.goto(base+'#/lesson/git-merge/senior');await page.getByRole('heading',{name:'Углубление: три стадии индекса при конфликте'}).waitFor();
+    await page.goto(base+'#/lesson/git-merge/senior');await page.locator('.reader > .prose > [data-teach="git-audit-crisscross"]').waitFor();
     await page.locator('[data-complete]').click();await page.goto(base+'#/lesson/git-merge/junior');assert(await page.locator('[data-complete]').textContent().then(t=>t.includes('Прочитано')));
     await page.goto(base+'#/lesson/git-origins/junior');
     await page.locator('[data-teach="git-snapshots"]').waitFor();
