@@ -499,7 +499,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/articles');await page.locator('.article-card').first().waitFor();assert.equal(await page.locator('.article-card').count(),8);await checkWidth();await page.locator('.article-card[href="#/article/choose-database"]').click();await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('базу данных'));await checkWidth();
     await page.goto(base+'#/lesson/python-start/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Python'));await checkWidth();
     await page.goto(base+'#/lesson/linux-network-admin/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).toLowerCase().includes('сеть'));await checkWidth();
-    await page.goto(base+'#/lesson/linux-systemd/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('службами'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-systemd/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('службу'));await checkWidth();
     await page.goto(base+'#/lesson/linux-scheduler/senior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Планировщик'));await checkWidth();
     for(const id of ['linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-block-io']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     for(const id of ['linux-mmu','linux-mmap-cow','linux-syscalls','linux-io-uring']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
@@ -627,7 +627,7 @@ const base='http://127.0.0.1:8765/academy/';
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
       const routes=await page.evaluate(()=>{const L=window.ATLAS_LEVELS,D=window.ATLAS_DATA;return ['junior','middle','senior'].flatMap((level,n)=>L.order.linux.filter(id=>L.minimum[id]<=n).map(id=>({id,level,title:n===0?L.junior[id].title:D.lessons.find(l=>l.id===id).title})));});
-      assert.equal(routes.length,132);
+      assert.equal(routes.length,133);
       for(const r of routes){
         await page.goto(base+'#/lesson/'+r.id+'/'+r.level);
         await page.locator('.reader h1').waitFor();
@@ -636,7 +636,7 @@ const base='http://127.0.0.1:8765/academy/';
         assert.equal(await page.locator('[data-complete]').count(),1,r.id+' progress');
         await checkWidth();
       }
-      console.log('PASS: all 132 Linux Junior/Middle/Senior lesson routes');
+      console.log('PASS: all 133 Linux Junior/Middle/Senior lesson routes');
     }
     assert.deepEqual(errors,[],'Browser exceptions');console.log('PASS',view.width,scheme);
     await ctx.close();

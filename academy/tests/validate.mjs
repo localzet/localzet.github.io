@@ -93,7 +93,7 @@ for(const id of ['linux-elf','linux-special-fs','linux-mount-overlay','linux-pac
 const order=levels.order.linux;
 for(const [before,after] of [['linux-vfs','linux-search-text'],['linux-encryption','linux-storage-lab'],['linux-processes','linux-syscalls'],['linux-network-admin','linux-signals'],['linux-signals','linux-monitoring'],['linux-memory','linux-mmap-cow'],['linux-cgroups','linux-netns'],['linux-systemd','linux-service-dependencies'],['linux-systemd','linux-journal'],['linux-journal','linux-timers'],['linux-syscalls','linux-io-uring'],['linux-capstone','linux-middle-project'],['linux-middle-project','linux-senior-project']])assert(order.indexOf(before)<order.indexOf(after),'Prerequisite order '+before+' / '+after);
 for(const id of order.filter(id=>levels.minimum[id]===0))assert(levels.junior[id].body.split(/\s+/).length>=200,'Junior review depth '+id);
-assert.equal(order.filter(id=>levels.minimum[id]===0).length,22);
+assert.equal(order.filter(id=>levels.minimum[id]===0).length,23);
 const linuxReference=win.ATLAS_REFERENCE.find(x=>x.id==='linux').groups.flatMap(g=>g.entries);
 assert.equal(new Set(linuxReference.map(e=>e.name)).size,linuxReference.length,'Duplicate Linux reference names');
 assert(linuxReference.filter(e=>e.options?.length).length>=94);
