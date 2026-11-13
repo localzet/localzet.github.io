@@ -674,5 +674,206 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: проверяем гипотезу измерениями.",
       "Это изменяет систему и может ухудшить работу."
     ]
+  },
+  "linux-unit-life": {
+    "title": "От описания к службе",
+    "cases": [
+      [
+        "Unit",
+        "ExecStart + WorkingDirectory",
+        "Описание запуска",
+        "Файл сам по себе не процесс."
+      ],
+      [
+        "start",
+        "systemctl start",
+        "Менеджер создаёт процесс",
+        "Type влияет на критерий старта."
+      ],
+      [
+        "active",
+        "ActiveState=active",
+        "Процесс или активный unit",
+        "Проверяйте HTTP отдельно."
+      ],
+      [
+        "stop",
+        "systemctl stop",
+        "Запрос остановки и ожидание",
+        "Менеджер применяет политику остановки."
+      ]
+    ]
+  },
+  "linux-unit-state": {
+    "title": "Состояние и результат",
+    "cases": [
+      [
+        "active",
+        "ActiveState=active",
+        "HTTP может быть 404",
+        "Активность не равно прикладная готовность."
+      ],
+      [
+        "failed",
+        "Result=exit-code",
+        "ExecMainStatus=2 (пример)",
+        "Изучите журнал и команду."
+      ],
+      [
+        "inactive",
+        "ActiveState=inactive",
+        "oneshot мог завершиться успешно",
+        "Не всякий inactive — ошибка."
+      ]
+    ]
+  },
+  "linux-unit-check": {
+    "title": "Проверьте модель",
+    "q": "systemctl показывает active. Что ещё проверить?",
+    "a": [
+      "Ничего",
+      "HTTP-ответ и журнал конкретного запуска",
+      "chmod 777"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Active не гарантирует функцию приложения.",
+      "Верно: проверяем требуемое поведение.",
+      "Не расширяйте права без диагноза."
+    ]
+  },
+  "linux-log-chain": {
+    "title": "Хронология запуска",
+    "cases": [
+      [
+        "Старт",
+        "stdout: start",
+        "Наблюдение",
+        "Старт не доказывает завершение."
+      ],
+      [
+        "Ошибка",
+        "stderr: cannot read",
+        "Диагностика",
+        "Проверяем путь и контекст."
+      ],
+      [
+        "Итог",
+        "exit=2",
+        "Неуспешная команда",
+        "Статус независим от текста."
+      ]
+    ]
+  },
+  "linux-log-filter": {
+    "title": "Фильтры журнала",
+    "cases": [
+      [
+        "Unit",
+        "atlas.service",
+        "События одной службы",
+        "Не смешивайте другие службы."
+      ],
+      [
+        "Boot",
+        "boot-a",
+        "События одной загрузки",
+        "PID может повторяться."
+      ],
+      [
+        "Время",
+        "since / until",
+        "Окно расследования",
+        "Учитывайте часы и зону."
+      ],
+      [
+        "Запуск",
+        "Invocation ID",
+        "Один запуск при наличии поля",
+        "Сравните с результатом менеджера."
+      ]
+    ]
+  },
+  "linux-log-check": {
+    "title": "Проверьте доказательство",
+    "q": "В журнале написано ERROR. Что это доказывает?",
+    "a": [
+      "Точную первопричину",
+      "Источник сообщил об ошибке; нужен контекст",
+      "Необходимо очистить журнал"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Сообщение не доказывает причину.",
+      "Верно: сопоставьте статус и наблюдения.",
+      "Очистка уничтожает историю."
+    ]
+  },
+  "linux-timer-flow": {
+    "title": "Расписание и результат",
+    "cases": [
+      [
+        "Timer",
+        "09:00 UTC",
+        "Запрос активации",
+        "Не доказательство успеха."
+      ],
+      [
+        "Service",
+        "Type=oneshot",
+        "Конечная задача",
+        "Отдельный контракт результата."
+      ],
+      [
+        "Успех",
+        "exit 0",
+        "Новый last-check.txt",
+        "Обновление после успешной обработки."
+      ],
+      [
+        "Отказ",
+        "exit 2",
+        "Старый отчёт сохранён",
+        "Ошибка видна отдельно."
+      ]
+    ]
+  },
+  "linux-timer-missed": {
+    "title": "Пропущенные события",
+    "cases": [
+      [
+        "Работает",
+        "Понедельник 09:00",
+        "Запуск",
+        "Обычная активация."
+      ],
+      [
+        "Выключен",
+        "Вторник и среда",
+        "Пропуск",
+        "Локальный процесс не работает."
+      ],
+      [
+        "Возврат",
+        "Persistent=true",
+        "Компенсирующая активация",
+        "Не очередь каждого пропущенного запуска."
+      ]
+    ]
+  },
+  "linux-timer-check": {
+    "title": "Проверяем расписание",
+    "q": "Таймер сработал, но команда вернула 2. Что считать успехом?",
+    "a": [
+      "Факт срабатывания",
+      "Только подтверждённый успешный результат задачи",
+      "Любой новый файл"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Расписание не гарантирует выполнение.",
+      "Верно: смотрите статус и контракт результата.",
+      "Файл может быть частичным или старым."
+    ]
   }
 };const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];view.innerHTML='<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
