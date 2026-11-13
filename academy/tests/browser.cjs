@@ -25,7 +25,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.locator('button[data-level-choice="0"]').click();await page.waitForURL('**/junior');
     await checkWidth();await page.locator('.reader h1').click();assert.equal(await theme(),scheme,'Clicking text must not toggle theme');
     await page.locator('.glossary summary').click();assert.equal(await theme(),scheme);assert(await page.locator('.glossary dd').first().isVisible());
-    await page.locator('.diagram').first().scrollIntoViewIfNeeded();await checkWidth();
+    await page.locator('[data-teach="linux-layers"]').first().scrollIntoViewIfNeeded();await checkWidth();
     const exercises=page.locator('.exercises summary');if(await exercises.count())await exercises.first().click();assert.equal(await theme(),scheme);
     const oldHash=await page.evaluate(()=>location.hash);
     const toc=page.locator('.mobile-toc');if(await toc.isVisible()){await toc.locator('summary').click();await toc.locator('button').first().click();}else await page.locator('.reader-toc button').first().click();
@@ -525,7 +525,30 @@ const base='http://127.0.0.1:8765/academy/';
     for(const [id,level] of [["git-fetch-push-lab","junior"],["git-fetch-push-lab","middle"],["git-refspec-lab","middle"],["git-push-lease","middle"],["git-transport-v2","senior"],["git-shallow-partial","senior"],["git-tags-mirror","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,level] of [["git-hooks-lab","middle"],["git-signatures-lab","middle"],["git-dependencies-lab","middle"],["git-attributes-lab","middle"],["git-maintenance-lab","senior"],["git-repository-security","junior"],["git-repository-security","middle"],["git-team-review","junior"],["git-team-review","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,key] of [['git-diff-status','git-hunk-explainer'],['git-commit-quality','git-commit-grouping']]){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > [data-teach="'+key+'"]').waitFor();await checkWidth();}
-    // Every Git reading edition, including previous-level navigation and sources.
+    {
+    await page.goto(base+'#/lesson/linux-history/junior');
+    const layer=page.locator('.reader > .prose > [data-teach="linux-layer-choice"]');await layer.waitFor();
+    await layer.locator('[data-lin-action="layer-package"]').click();assert((await layer.locator('[data-lin-view]').textContent()).includes('пакетный менеджер'));
+    await page.goto(base+'#/lesson/linux-lab-start/junior');
+    const linuxPath=page.locator('.reader > .prose > [data-teach="linux-path-walk"]');
+    await linuxPath.locator('[data-lin-action="www"]').click();assert((await linuxPath.locator('[data-lin-view]').textContent()).endsWith('/www'));
+    await linuxPath.locator('[data-lin-action="logs"]').click();assert((await linuxPath.locator('[data-lin-feedback]').textContent()).includes('не найден'));
+    await linuxPath.locator('[data-lin-action="parent"]').click();await linuxPath.locator('[data-lin-action="logs"]').click();assert((await linuxPath.locator('[data-lin-view]').textContent()).endsWith('/logs'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-shell/junior');
+    const linuxArgv=page.locator('.reader > .prose > [data-teach="linux-shell-argv"]');
+    await linuxArgv.locator('[data-lin-action="argv-split"]').click();assert.equal(await linuxArgv.locator('.linux-start-args .teach-file').count(),3);
+    await linuxArgv.locator('[data-lin-action="argv-quoted"]').click();assert.equal(await linuxArgv.locator('.linux-start-args .teach-file').count(),2);
+    const linuxPipe=page.locator('.reader > .prose > [data-teach="linux-shell-pipe"]');
+    await linuxPipe.locator('[data-lin-action="uniq"]').click();assert((await linuxPipe.locator('[data-lin-feedback]').textContent()).includes('порядку'));
+    for(const a of ['grep','sort','uniq'])await linuxPipe.locator('[data-lin-action="'+a+'"]').click();
+    assert((await linuxPipe.locator('[data-lin-view]').textContent()).includes('2 ERROR timeout'));await checkWidth();
+    await page.goto(base+'#/lesson/linux-shell/middle');
+    const linuxStatus=page.locator('.reader > .prose > [data-teach="linux-shell-status"]');
+    await linuxStatus.locator('[data-lin-action="status-on"]').click();assert.equal(await linuxStatus.locator('.teach-file.index .teach-file-content').textContent(),'1');
+    const linuxStreams=page.locator('.reader > .prose > [data-teach="linux-shell-streams"]');
+    await linuxStreams.locator('[data-lin-action="stream-reverse"]').click();assert.equal(await linuxStreams.locator('.teach-file.work .teach-file-content').textContent(),'Терминал');await checkWidth();
+    }
+        // Every Git reading edition, including previous-level navigation and sources.
     if((view.width===1440&&scheme==='light')||(view.width===360&&scheme==='dark')){
       const routes=await page.evaluate(()=>{const L=window.ATLAS_LEVELS,D=window.ATLAS_DATA;
         return [L.juniorOrder.git,L.middleOrder.git,L.seniorOrder.git].flatMap((order,n)=>order.map((id,i)=>({
