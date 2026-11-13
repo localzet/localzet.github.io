@@ -623,6 +623,17 @@ const base='http://127.0.0.1:8765/academy/';
         await checkWidth();
       }
     }
+    for(const [id,key,choice,needle] of [['linux-disks','linux-disk-stack',3,'/data/atlas'],['linux-packages','linux-pkg-graph',1,'bash'],['linux-security-basics','linux-sec-boundary',2,'127.0.0.1']]){
+      for(const level of ['junior','middle']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+        assert.equal(await panel.locator('.linux-visual-node').count(),4);
+        await checkWidth();
+      }
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){

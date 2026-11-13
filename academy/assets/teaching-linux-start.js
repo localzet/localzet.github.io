@@ -875,5 +875,224 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: смотрите статус и контракт результата.",
       "Файл может быть частичным или старым."
     ]
+  },
+  "linux-disk-stack": {
+    "title": "Устройство → файловая система → путь",
+    "cases": [
+      [
+        "Устройство",
+        "/dev/vda",
+        "Блочный носитель",
+        "Имя устройства не является постоянным идентификатором."
+      ],
+      [
+        "Раздел",
+        "/dev/vda1",
+        "Диапазон блоков",
+        "Не всякая ФС требует раздела."
+      ],
+      [
+        "ФС",
+        "ext4 · UUID",
+        "Имена, inode и блоки",
+        "ФС управляет метаданными и размещением."
+      ],
+      [
+        "Монтирование",
+        "/data",
+        "/data/atlas/logs",
+        "Один каталог может быть точкой подключения другой ФС."
+      ]
+    ]
+  },
+  "linux-disk-space": {
+    "title": "Что именно измеряем?",
+    "cases": [
+      [
+        "Обычный файл",
+        "Логический размер",
+        "Выделенные блоки",
+        "Размер и аллокация не обязаны совпадать."
+      ],
+      [
+        "Разреженный",
+        "8 МиБ",
+        "Дырки читаются как нули",
+        "Выделенное место зависит от ФС."
+      ],
+      [
+        "Удалённый открытый",
+        "Имя отсутствует",
+        "Дескриптор удерживает объект",
+        "Du не видит имя, блоки могут оставаться."
+      ],
+      [
+        "Inode",
+        "Байты свободны",
+        "Метаданные исчерпаны",
+        "Создание нового файла может завершиться ENOSPC."
+      ]
+    ]
+  },
+  "linux-disk-check": {
+    "title": "Проверьте диагностику",
+    "q": "df показывает занятое место, а du не видит соответствующий файл. Что проверить?",
+    "a": [
+      "Немедленно форматировать диск",
+      "Открытые удалённые файлы, метаданные и границы ФС",
+      "Выдать всем chmod 777"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Форматирование уничтожает данные.",
+      "Верно: это несколько возможных причин расхождения.",
+      "Права не устраняют расход пространства."
+    ]
+  },
+  "linux-pkg-graph": {
+    "title": "Граф зависимостей пакета",
+    "cases": [
+      [
+        "Артефакт",
+        "atlas-doc_1.0-1",
+        "Файлы и control",
+        "Сборка не устанавливает зависимости."
+      ],
+      [
+        "Depends",
+        "bash · python3",
+        "Требования к среде",
+        "Менеджер должен проверить их выполнение."
+      ],
+      [
+        "Кандидат",
+        "Индексы и политика",
+        "Выбранные версии",
+        "Версия зависит от ограничений и приоритетов."
+      ],
+      [
+        "Установка",
+        "Решённый граф",
+        "Изменение системы",
+        "Сначала проверьте план."
+      ]
+    ]
+  },
+  "linux-pkg-plan": {
+    "title": "От индекса к установке",
+    "cases": [
+      [
+        "update",
+        "Индексы репозитория",
+        "Локальные метаданные",
+        "Установленные пакеты не обновляются автоматически."
+      ],
+      [
+        "simulation",
+        "apt-get -s",
+        "План операций",
+        "Состояние системы не меняется."
+      ],
+      [
+        "install",
+        "Проверенный план",
+        "Установка пакетов",
+        "Требует соответствующих полномочий."
+      ],
+      [
+        "trust",
+        "Подписанные метаданные",
+        "Проверяемые хеши",
+        "Подпись не доказывает безопасность кода."
+      ]
+    ]
+  },
+  "linux-pkg-check": {
+    "title": "Проверьте пакетную модель",
+    "q": "dpkg-deb успешно собрал архив. Что это доказывает?",
+    "a": [
+      "Все зависимости установлены",
+      "Архив собран; зависимости ещё нужно проверить",
+      "Код безопасен и подписан"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Сборка архива не разрешает зависимости.",
+      "Верно: проверяйте метаданные, граф и доверие отдельно.",
+      "Сборка не является аудитом или подписью."
+    ]
+  },
+  "linux-sec-boundary": {
+    "title": "Активы и границы доверия",
+    "cases": [
+      [
+        "Публичное",
+        "www/index.html",
+        "HTTP 200",
+        "Разрешённый ресурс."
+      ],
+      [
+        "Конфигурация",
+        "config/service.conf",
+        "Вне www · mode 600",
+        "Ограничиваем доступ несколькими мерами."
+      ],
+      [
+        "Сеть",
+        "127.0.0.1",
+        "Локальный контекст",
+        "Loopback не аутентифицирует клиента."
+      ],
+      [
+        "Остаточный риск",
+        "Владелец скомпрометирован",
+        "Доступ возможен",
+        "Права не защищают от всех угроз."
+      ]
+    ]
+  },
+  "linux-sec-audit": {
+    "title": "Угроза → мера → доказательство",
+    "cases": [
+      [
+        "Раскрытие",
+        "Приватная конфигурация",
+        "Mode + проверка HTTP",
+        "Проверяем конкретный сценарий."
+      ],
+      [
+        "Потеря данных",
+        "Удаление файла",
+        "Резервная копия + восстановление",
+        "Копия не предотвращает чтение."
+      ],
+      [
+        "Уязвимость",
+        "Зависимость",
+        "Доверенный источник + обновление",
+        "Подпись не гарантирует отсутствие уязвимостей."
+      ],
+      [
+        "Отказ",
+        "Сервис недоступен",
+        "Проверка функции + журнал",
+        "Наблюдение не равно причина."
+      ]
+    ]
+  },
+  "linux-sec-check": {
+    "title": "Проверьте границу",
+    "q": "HTTP-запрос к приватной конфигурации дал 404. Что доказано?",
+    "a": [
+      "Сервис полностью защищён",
+      "Проверенный путь не отдан в данной конфигурации",
+      "Можно публиковать настоящий секрет в www"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Один тест не доказывает отсутствие других путей.",
+      "Верно: результат ограничен конкретным сценарием.",
+      "Приватные данные не должны быть в публичном дереве."
+    ]
   }
-};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];view.innerHTML='<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
