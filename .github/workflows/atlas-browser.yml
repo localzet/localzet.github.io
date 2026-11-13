@@ -83,6 +83,8 @@ jobs:
         run: node academy/tests/git-teaching-maintenance.mjs
       - name: Verify Senior Git capstone and negative acceptance cases
         run: node academy/tests/git-senior-project.mjs
+      - name: Verify Git final route and Senior merge-base audit
+        run: node academy/tests/git-final-audit.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
       - name: Install Linux exercise dependencies

@@ -525,6 +525,39 @@ const base='http://127.0.0.1:8765/academy/';
     for(const [id,level] of [["git-fetch-push-lab","junior"],["git-fetch-push-lab","middle"],["git-refspec-lab","middle"],["git-push-lease","middle"],["git-transport-v2","senior"],["git-shallow-partial","senior"],["git-tags-mirror","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,level] of [["git-hooks-lab","middle"],["git-signatures-lab","middle"],["git-dependencies-lab","middle"],["git-attributes-lab","middle"],["git-maintenance-lab","senior"],["git-repository-security","junior"],["git-repository-security","middle"],["git-team-review","junior"],["git-team-review","middle"]]){await page.goto(base+'#/lesson/'+id+'/'+level);await page.locator('.reader h1').waitFor();await checkWidth();}
     for(const [id,key] of [['git-diff-status','git-hunk-explainer'],['git-commit-quality','git-commit-grouping']]){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.reader > .prose > [data-teach="'+key+'"]').waitFor();await checkWidth();}
+    // Every Git reading edition, including previous-level navigation and sources.
+    if((view.width===1440&&scheme==='light')||(view.width===360&&scheme==='dark')){
+      const routes=await page.evaluate(()=>{const L=window.ATLAS_LEVELS,D=window.ATLAS_DATA;
+        return [L.juniorOrder.git,L.middleOrder.git,L.seniorOrder.git].flatMap((order,n)=>order.map((id,i)=>({
+          id,level:['junior','middle','senior'][n],title:n===0?L.junior[id].title:D.lessons.find(l=>l.id===id).title,
+          markers:[...(n===0?L.junior[id].body:D.lessons.find(l=>l.id===id).body+(n===2&&L.advanced[id]?'\n\n'+L.advanced[id]:'')).matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]),
+          prev:order[i-1]||null,next:order[i+1]||null,count:order.length
+        })));});
+      assert.equal(routes.length,115);
+      for(const r of routes){
+        await page.goto(base+'#/lesson/'+r.id+'/'+r.level);
+        await page.locator('.reader h1').waitFor();
+        assert.equal(await page.locator('.reader h1').textContent(),r.title,r.id+' '+r.level);
+        assert.deepEqual(await page.locator('.reader > .prose > [data-teach]').evaluateAll(nodes=>nodes.map(n=>n.dataset.teach)),r.markers,r.id+' markers');
+        assert.equal(await page.locator('.reader-nav a').count(),r.count);
+        assert.equal(await page.locator('.reader-nav a.current').getAttribute('href'),'#/lesson/'+r.id+'/'+r.level);
+        const foot=await page.locator('.reader-foot a').evaluateAll(links=>links.map(a=>a.getAttribute('href')));
+        if(r.prev)assert(foot.includes('#/lesson/'+r.prev+'/'+r.level),r.id+' previous');
+        if(r.next)assert(foot.includes('#/lesson/'+r.next+'/'+r.level),r.id+' next');
+        else assert(foot.includes('#/course/git/'+r.level),r.id+' course');
+        assert(await page.locator('.source-section a').count()>0,r.id+' sources');
+        assert.equal(await page.locator('[data-complete]').count(),1,r.id+' progress');
+        const linkTargets=await page.locator('.reader > .prose [href^="./exercises/"]').evaluateAll(links=>links.map(a=>a.href));
+        for(const target of linkTargets)assert((await page.request.get(target)).ok(),target);
+        await checkWidth();
+      }
+      await page.goto(base+'#/lesson/git-merge/senior');
+      const criss=page.locator('.reader > .prose > [data-teach="git-audit-base-question"]');await criss.waitFor();
+      await criss.locator('[data-audit-answer="a"]').click();assert.equal(await criss.locator('[data-audit-feedback]').getAttribute('data-result'),'retry');
+      await criss.locator('[data-audit-answer="bc"]').click();assert.equal(await criss.locator('[data-audit-feedback]').getAttribute('data-result'),'correct');
+      await page.locator('.base-reading summary').click();assert(await page.locator('.base-reading a[href="#/course/git/junior"]').isVisible());await checkWidth();
+      console.log('PASS: all 115 Git editions in '+view.width+' '+scheme);
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
