@@ -581,6 +581,21 @@ const base='http://127.0.0.1:8765/academy/';
       await page.locator('.base-reading summary').click();assert(await page.locator('.base-reading a[href="#/course/git/junior"]').isVisible());await checkWidth();
       console.log('PASS: all 115 Git editions in '+view.width+' '+scheme);
     }
+    for(const [id,key,needle] of [['linux-vfs','linux-vfs-life','inode B'],['linux-search-text','linux-text-fields','timeout 2'],['linux-bash-scripts','linux-script-flow','exit 0']]) {
+      for(const level of ['junior','middle']) {
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="3"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        await checkWidth();
+      }
+    }
+    await page.goto(base+'#/lesson/linux-vfs/junior');
+    const vfsQuiz=page.locator('.reader > .prose > [data-teach="linux-vfs-check"]');
+    await vfsQuiz.locator('[data-linux-next="0"]').click();
+    assert.equal(await vfsQuiz.locator('[data-linux-next-feedback]').getAttribute('data-result'),'retry');
+    await vfsQuiz.locator('[data-linux-next="1"]').click();
+    assert.equal(await vfsQuiz.locator('[data-linux-next-feedback]').getAttribute('data-result'),'correct');
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
