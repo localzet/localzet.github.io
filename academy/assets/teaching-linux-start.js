@@ -461,5 +461,218 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: образ заменён внутри процесса.",
       "Статус и PID — разные сущности."
     ]
+  },
+  "linux-net-layers": {
+    "title": "От адреса до ответа",
+    "cases": [
+      [
+        "Интерфейс",
+        "ip address",
+        "IP и интерфейс",
+        "Не доказывает маршрут."
+      ],
+      [
+        "Маршрут",
+        "ip route get",
+        "Выбранный путь",
+        "Не отправляет тестовый пакет."
+      ],
+      [
+        "TCP",
+        "connect / ss",
+        "Слушающий сокет",
+        "Не доказывает HTTP."
+      ],
+      [
+        "HTTP",
+        "GET /",
+        "200 или 404",
+        "404 подтверждает прикладной ответ."
+      ]
+    ]
+  },
+  "linux-net-socket": {
+    "title": "Адрес и состояние TCP",
+    "cases": [
+      [
+        "bind",
+        "127.0.0.1:порт",
+        "Адрес зарезервирован",
+        "Без listen входящее соединение не обслуживается."
+      ],
+      [
+        "listen",
+        "127.0.0.1:порт",
+        "Сокет слушает",
+        "Доступ ограничен текущим сетевым контекстом."
+      ],
+      [
+        "connect",
+        "Клиент → сокет",
+        "TCP установлен",
+        "Далее нужен прикладной запрос."
+      ],
+      [
+        "HTTP",
+        "GET /missing",
+        "404",
+        "Сеть работает, ресурс отсутствует."
+      ]
+    ]
+  },
+  "linux-net-check": {
+    "title": "Диагностируем результат",
+    "q": "HTTP 404 от Atlas означает что?",
+    "a": [
+      "TCP точно не работает",
+      "Сервер ответил, но ресурс не найден",
+      "Нужно выключить firewall"
+    ],
+    "ok": 1,
+    "feedback": [
+      "HTTP-ответ требует прикладного обмена.",
+      "Верно: проверьте путь и логи приложения.",
+      "Изменять firewall без основания не нужно."
+    ]
+  },
+  "linux-signal-flow": {
+    "title": "От сигнала до подтверждения",
+    "cases": [
+      [
+        "Работает",
+        "PID дочернего процесса",
+        "Сокет открыт",
+        "Цель принадлежит нашей оболочке."
+      ],
+      [
+        "TERM",
+        "Запрос завершения",
+        "Обработчик получил сигнал",
+        "Отправка ещё не доказательство выхода."
+      ],
+      [
+        "Очистка",
+        "finally",
+        "Сокет закрывается",
+        "Программа может завершить работу."
+      ],
+      [
+        "wait",
+        "Родитель",
+        "exit 0",
+        "Подтверждён итог дочернего процесса."
+      ]
+    ]
+  },
+  "linux-signal-choice": {
+    "title": "Выбор сигнала",
+    "cases": [
+      [
+        "TERM",
+        "Запрос завершения",
+        "Может быть обработан",
+        "Начните с документированного штатного способа."
+      ],
+      [
+        "STOP",
+        "Остановка",
+        "Нельзя перехватить",
+        "Процесс не завершён."
+      ],
+      [
+        "CONT",
+        "Продолжение",
+        "Возобновление",
+        "Не является новым запуском."
+      ],
+      [
+        "KILL",
+        "Принудительное завершение",
+        "Нет пользовательской очистки",
+        "Не первый шаг диагностики."
+      ]
+    ]
+  },
+  "linux-signal-check": {
+    "title": "Проверяем понимание",
+    "q": "kill -TERM вернул 0. Что доказано?",
+    "a": [
+      "Процесс уже завершился",
+      "Сигнал успешно отправлен, итог надо проверить",
+      "Данные гарантированно сохранены"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Доставка и завершение различаются.",
+      "Верно: для потомка используйте wait.",
+      "Сохранение зависит от приложения."
+    ]
+  },
+  "linux-monitor-symptom": {
+    "title": "Симптом и измерение",
+    "cases": [
+      [
+        "HTTP",
+        "Медленный ответ",
+        "Измерить задержку",
+        "Начните с конкретного сценария."
+      ],
+      [
+        "CPU",
+        "Высокий load",
+        "Интервальные CPU/очереди",
+        "Load не равен проценту CPU."
+      ],
+      [
+        "Память",
+        "Мало free",
+        "Available, swap, PSI",
+        "Кэш может быть полезным."
+      ],
+      [
+        "I/O",
+        "D-состояния",
+        "Очереди, PSI, задержки",
+        "Не автоматически нехватка CPU."
+      ]
+    ]
+  },
+  "linux-monitor-memory": {
+    "title": "Память и давление",
+    "cases": [
+      [
+        "Кэш",
+        "Free мало",
+        "Available достаточно",
+        "Сам по себе кэш не доказывает дефицит."
+      ],
+      [
+        "Давление",
+        "Available мало",
+        "PSI memory растёт",
+        "Нужны интервалы и контекст."
+      ],
+      [
+        "Контейнер",
+        "Системная память",
+        "Лимит cgroup",
+        "Смотрите границы среды."
+      ]
+    ]
+  },
+  "linux-monitor-check": {
+    "title": "Выберите следующее измерение",
+    "q": "Высокий load и много задач D. Что делать?",
+    "a": [
+      "Немедленно увеличить CPU",
+      "Исследовать ожидания, I/O и давление ресурсов",
+      "Очистить page cache"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Load включает непрерываемое ожидание.",
+      "Верно: проверяем гипотезу измерениями.",
+      "Это изменяет систему и может ухудшить работу."
+    ]
   }
 };const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];view.innerHTML='<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();

@@ -605,6 +605,15 @@ const base='http://127.0.0.1:8765/academy/';
         await checkWidth();
       }
     }
+    for(const [id,key,choice,needle] of [['linux-network-admin','linux-net-socket',3,'404'],['linux-signals','linux-signal-flow',3,'exit 0'],['linux-monitoring','linux-monitor-symptom',2,'Available']]){
+      for(const level of ['junior','middle']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        await checkWidth();
+      }
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
