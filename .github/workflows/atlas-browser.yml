@@ -94,6 +94,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio libseccomp-dev nftables iproute2 iputils-ping openssh-client clang kmod linux-headers-generic mdadm lvm2 cryptsetup tcpdump fdisk
       - name: Verify guided Linux foundations and continuous workspace
         run: node academy/tests/linux-teaching-start.mjs
+      - name: Verify Linux final teaching audit in published script order
+        run: node academy/tests/linux-final-audit.mjs
       - name: Verify Linux Junior project static contract
         run: node academy/tests/linux-junior-acceptance.mjs
       - name: Verify Linux storage exercises on disposable files
@@ -116,6 +118,8 @@ jobs:
         env:
           ATLAS_REVIEW_VM: '1'
         run: node academy/tests/linux-review.mjs
+      - name: Verify guided Docker lifecycle on local runner Engine
+        run: node academy/tests/docker-teaching-start.mjs
       - name: Install isolated browser test dependency
         run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
       - name: Install Chromium

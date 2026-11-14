@@ -561,6 +561,9 @@ const base='http://127.0.0.1:8765/academy/';
         await page.goto(base+'#/lesson/'+r.id+'/'+r.level);
         await page.locator('.reader h1').waitFor();
         assert.equal(await page.locator('.reader h1').textContent(),r.title,r.id+' '+r.level);
+        const expected=await page.evaluate(({id,level})=>{const L=window.ATLAS_LEVELS,D=window.ATLAS_DATA;const l=D.lessons.find(x=>x.id===id);const body=level==='junior'?L.junior[id].body:l.body+(level==='senior'&&L.advanced[id]?'\n\n'+L.advanced[id]:'');return [...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);},r);
+        const actual=await page.locator('.reader > .prose > [data-teach]').evaluateAll(nodes=>nodes.map(n=>n.dataset.teach));
+        assert.deepEqual(actual,expected,r.id+' '+r.level+' rendered teaching blocks');
         assert.deepEqual(await page.locator('.reader > .prose > [data-teach]').evaluateAll(nodes=>nodes.map(n=>n.dataset.teach)),r.markers,r.id+' markers');
         assert.equal(await page.locator('.reader-nav a').count(),r.count);
         assert.equal(await page.locator('.reader-nav a.current').getAttribute('href'),'#/lesson/'+r.id+'/'+r.level);
@@ -809,6 +812,21 @@ const base='http://127.0.0.1:8765/academy/';
         assert.equal(await q.locator('[data-linux-next-feedback]').getAttribute('data-result'),'retry');
         await q.locator('[data-linux-next="1"]').click();
         assert.equal(await q.locator('[data-linux-next-feedback]').getAttribute('data-result'),'correct');
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,a,b,quiz] of [['docker-origin','docker-image-instance',3,'removed','created','docker-origin-check'],['docker-runtime','docker-runtime-data',1,'changed','base','docker-runtime-check']]){
+      for(const level of ['junior','middle','senior']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-docker-next="'+choice+'"]').click();
+        assert.equal(await panel.locator('[data-docker-a]').textContent(),a);
+        assert.equal(await panel.locator('[data-docker-b]').textContent(),b);
+        const q=page.locator('.reader > .prose > [data-teach="'+quiz+'"]');
+        await q.locator('[data-docker-next="0"]').click();
+        assert.equal(await q.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+        await q.locator('[data-docker-next="1"]').click();
+        assert.equal(await q.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
         await checkWidth();
       }
     }
