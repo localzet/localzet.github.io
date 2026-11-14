@@ -502,7 +502,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-systemd/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('службу'));await checkWidth();
     await page.goto(base+'#/lesson/linux-scheduler/senior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('Планировщик'));await checkWidth();
     for(const id of ['linux-block-io']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
-    for(const id of ['linux-io-uring']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
+
     for(const id of ['linux-firmware','linux-initramfs']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-boot/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('запускает Linux'));await checkWidth();
 
@@ -734,6 +734,26 @@ const base='http://127.0.0.1:8765/academy/';
           await panel.locator('[data-linux-next="1"]').click();
           assert.equal(await fig.locator('.linux-cow-b').count(),0);
           assert((await fig.getAttribute('aria-label')).includes('Оба процесса'));
+        }
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,needle,levels] of [['linux-scheduler','linux-sched-state',1,'Runnable',['senior']],['linux-mount-overlay','linux-overlay-layers',2,'ENOENT',['middle','senior']],['linux-io-uring','linux-uring-ring',2,'-EBADF',['senior']]]){
+      for(const level of levels){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+        if(id==='linux-mount-overlay'){
+          assert.equal(await panel.locator('[data-overlay-merged]').textContent(),'note отсутствует');
+          await panel.locator('[data-linux-next="3"]').click();
+          assert.equal(await panel.locator('[data-overlay-merged]').textContent(),'note = base');
+        }
+        if(id==='linux-io-uring'){
+          assert.equal(await panel.locator('[data-uring-slot="2"]').textContent(),'CQE 22 · -EBADF');
+          await panel.locator('[data-linux-next="3"]').click();
+          assert.equal(await panel.locator('[data-uring-slot="3"]').textContent(),'CQE 11 · 5');
         }
         await checkWidth();
       }
