@@ -4,7 +4,7 @@ import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
-const ids=['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes','linux-network-admin','linux-signals','linux-monitoring','linux-systemd','linux-journal','linux-timers','linux-disks','linux-packages','linux-security-basics','linux-boot','linux-memory','linux-service-dependencies','linux-recovery','linux-cli-atlas','linux-capstone','linux-package-trust','linux-ssh-admin','linux-elf','linux-syscalls','linux-ipc','linux-special-fs','linux-ext4','linux-cow-filesystems'];
+const ids=['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes','linux-network-admin','linux-signals','linux-monitoring','linux-systemd','linux-journal','linux-timers','linux-disks','linux-packages','linux-security-basics','linux-boot','linux-memory','linux-service-dependencies','linux-recovery','linux-cli-atlas','linux-capstone','linux-package-trust','linux-ssh-admin','linux-elf','linux-syscalls','linux-ipc','linux-special-fs','linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-encryption','linux-storage-lab'];
 const window={ATLAS_DATA:{lessons:ids.map(id=>({id,body:''}))},ATLAS_LEVELS:{junior:{},minimum:{}},ATLAS_EDITORIAL:Object.fromEntries(ids.map(id=>[id,{}])),ATLAS_GUIDED_IDS:[],ATLAS_TEACHING:{keys:[],render(){},mount(){}}};
 const load=p=>new vm.Script(readFileSync(new URL('../'+p,import.meta.url),'utf8')).runInNewContext({window});
 load('subjects/linux-teaching-start.js');load('assets/teaching-linux-start.js');
@@ -27,7 +27,7 @@ for(const l of window.ATLAS_DATA.lessons){
  }
  for(const code of blocks(l.body).filter(code=>code.includes('PASS:'))){assert(run(code,l.id).includes('PASS:'));count++;}
 }
-assert.equal(count,61);
+assert.equal(count,67);
 run('set -eu\n'+ids.flatMap(id=>blocks(window.ATLAS_LEVELS.junior[id]?.body||'')).join('\n')+'\ntest "$(cat www/index.html)" = atlas-service-v1\ntest "$(wc -l < logs/errors.log)" -eq 3\ntest ! -s logs/output.txt\ntest -s logs/diagnostic.txt\ntest "$(cat reports/errors.txt)" = "$(printf \'disk 1\\ntimeout 2\')"\ntest "$(bash scripts/report.sh logs/service.log)" = 3\ntest "$(stat -c %a config/service.conf)" = 600\ntest "$(cat reports/background.txt)" = 3\ntest "$(cat reports/server-exit.txt)" = 0\ngrep -q "^HTTP 200$" reports/http-timing.txt\ntest -s reports/resources.txt\ntest "$(cat reports/incident-status.txt)" = exit=2\ntest "$(cat reports/last-check.txt)" = 3\ntest -s units/atlas-lab.service\ntest -s units/atlas-check.timer\ntest -s reports/storage.txt\ntest -s reports/dependencies.txt\ntest "$(dpkg-deb -f packaging/atlas-doc.deb Package)" = atlas-doc\ngrep -q "^config: HTTP 404$" reports/security.txt\ntest -s reports/threat-model.txt\ntest -s reports/boot.txt\ngrep -q "^mapped$" reports/memory.txt\ntest -s reports/package-plan.txt\nsha256sum -c reports/package.sha256\ngrep -qx "port 2222" reports/ssh-config.txt\ntest -s reports/ssh-fingerprint.txt','continuous Junior service workspace');
-console.log('PASS: sixty-one Linux labs and continuous Junior service workspace');
+console.log('PASS: sixty-seven Linux labs and continuous Junior service workspace');
 }finally{rmSync(lab,{recursive:true,force:true});}

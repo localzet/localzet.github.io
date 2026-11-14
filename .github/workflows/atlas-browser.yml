@@ -90,14 +90,14 @@ jobs:
         run: node academy/tests/git-senior-project.mjs
       - name: Verify Git final route and Senior merge-base audit
         run: node academy/tests/git-final-audit.mjs
+      - name: Install Linux exercise dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio libseccomp-dev nftables iproute2 iputils-ping openssh-client clang kmod linux-headers-generic mdadm lvm2 cryptsetup tcpdump
       - name: Verify guided Linux foundations and continuous workspace
         run: node academy/tests/linux-teaching-start.mjs
       - name: Verify Linux Junior project static contract
         run: node academy/tests/linux-junior-acceptance.mjs
       - name: Verify Linux storage exercises on disposable files
         run: bash academy/tests/linux-storage.sh
-      - name: Install Linux exercise dependencies
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio libseccomp-dev nftables iproute2 iputils-ping openssh-client clang kmod linux-headers-generic mdadm lvm2 cryptsetup tcpdump
       - name: Compile and execute Linux memory examples from published chapters
         run: node academy/tests/linux-memory.mjs
       - name: Verify published Linux boot and maintenance examples
