@@ -5,3 +5,5 @@
 .linux-visual-flow.linux-visual-compare .linux-visual-node::after{display:none}
 
 .linux-cow-figure{display:block;width:100%;max-width:520px;height:auto;margin:12px auto;color:var(--text)}.linux-cow-figure text{font-size:12px;fill:currentColor;font-family:inherit}.linux-cow-process{fill:var(--surface2);stroke:#3b82f6;stroke-width:1.5}.linux-cow-a{fill:color-mix(in srgb,#159947 18%,var(--surface2));stroke:#159947;stroke-width:1.5}.linux-cow-b{fill:color-mix(in srgb,#a855f7 18%,var(--surface2));stroke:#a855f7;stroke-width:1.5}.linux-cow-absent{fill:var(--surface2);stroke:var(--line);stroke-dasharray:4 3}.linux-cow-link{fill:none;stroke:#3b82f6;stroke-width:2}.linux-cow-note{font-size:12px;color:var(--sub);text-align:center}
+
+.linux-overlay-figure,.linux-uring-figure{max-width:520px}
