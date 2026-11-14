@@ -1678,5 +1678,224 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: выясните причину до подключения.",
       "Приватный ключ не передаётся."
     ]
+  },
+  "linux-elf-chain": {
+    "title": "От файла к main",
+    "cases": [
+      [
+        "ELF header",
+        "Magic, класс, архитектура",
+        "Проверка формата",
+        "Секции и сегменты различаются."
+      ],
+      [
+        "PT_LOAD",
+        "Program headers",
+        "Отображения сегментов",
+        "Не обязательно отдельная секция на сегмент."
+      ],
+      [
+        "PT_INTERP",
+        "Путь ld.so",
+        "Динамические зависимости",
+        "Отсутствующий путь может дать ENOENT."
+      ],
+      [
+        "Entry",
+        "Startup и релокации",
+        "main",
+        "Точка входа не равна main."
+      ]
+    ]
+  },
+  "linux-elf-errors": {
+    "title": "Локализуем ошибку запуска",
+    "cases": [
+      [
+        "Формат",
+        "Неподдерживаемая архитектура",
+        "exec может отказать",
+        "Проверьте readelf -h."
+      ],
+      [
+        "Interpreter",
+        "PT_INTERP отсутствует на диске",
+        "ENOENT",
+        "Сам ELF может существовать."
+      ],
+      [
+        "Library",
+        "DT_NEEDED не найден",
+        "Ошибка загрузчика",
+        "Проверьте readelf -dW и путь поиска."
+      ],
+      [
+        "Application",
+        "main выполняется",
+        "Код выхода приложения",
+        "Это уже другая граница."
+      ]
+    ]
+  },
+  "linux-elf-check": {
+    "title": "Проверяем модель ELF",
+    "q": "Файл существует, но execve возвращает ENOENT. Какую гипотезу проверить?",
+    "a": [
+      "Всегда chmod 777",
+      "Путь PT_INTERP или интерпретатор скрипта",
+      "Немедленно заменить системную libc"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Права не объясняют отсутствующий интерпретатор.",
+      "Верно: сначала проверьте формат и путь.",
+      "Подмена системных библиотек опасна."
+    ]
+  },
+  "linux-syscall-chain": {
+    "title": "API → ABI → ядро → результат",
+    "cases": [
+      [
+        "API",
+        "open() в libc",
+        "Обёртка",
+        "Может вызвать openat."
+      ],
+      [
+        "ABI",
+        "Номер и аргументы",
+        "Вход в ядро",
+        "Зависит от архитектуры."
+      ],
+      [
+        "Kernel",
+        "Проверка параметров и прав",
+        "Дескриптор или ошибка",
+        "Не обязательно смена процесса."
+      ],
+      [
+        "Return",
+        "Результат и errno",
+        "Ветвление приложения",
+        "errno проверяют при сообщённой ошибке."
+      ]
+    ]
+  },
+  "linux-syscall-result": {
+    "title": "Наблюдаем разные результаты",
+    "cases": [
+      [
+        "openat",
+        "O_CREAT|O_EXCL",
+        "fd >= 0",
+        "Дескриптор не глобален."
+      ],
+      [
+        "EEXIST",
+        "Существующий путь",
+        "-1 и errno в libc",
+        "Не произошло перезаписи."
+      ],
+      [
+        "write",
+        "Запрошено N байтов",
+        "Может быть меньше N",
+        "Учитывайте частичную запись."
+      ],
+      [
+        "close",
+        "Освобождение fd",
+        "Номер может переиспользоваться",
+        "Не повторяйте close вслепую."
+      ]
+    ]
+  },
+  "linux-syscall-check": {
+    "title": "Проверяем границу",
+    "q": "write вернул 5 при запросе 10 байтов. Что делать?",
+    "a": [
+      "Считать все 10 записанными",
+      "Продолжить с оставшихся 5 согласно контракту",
+      "Всегда повторить весь буфер"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Возвращено только 5.",
+      "Верно: учитывайте прогресс.",
+      "Повтор всего буфера может дублировать данные."
+    ]
+  },
+  "linux-ipc-pipe": {
+    "title": "Жизненный цикл pipe",
+    "cases": [
+      [
+        "Запись",
+        "writer + duplicate",
+        "Буфер abc",
+        "Оба дескриптора удерживают пишущий конец."
+      ],
+      [
+        "Чтение",
+        "Буфер abc",
+        "Получено abc",
+        "Буфер теперь пуст."
+      ],
+      [
+        "Один writer закрыт",
+        "Другой writer открыт",
+        "EAGAIN в nonblocking",
+        "В blocking чтение ожидало бы."
+      ],
+      [
+        "Все writer закрыты",
+        "Буфер пуст",
+        "EOF",
+        "Чтение возвращает пустые байты."
+      ]
+    ]
+  },
+  "linux-ipc-frame": {
+    "title": "Протокол поверх потока",
+    "cases": [
+      [
+        "Header",
+        "00 00 00 05",
+        "Длина 5",
+        "Нужен полный заголовок."
+      ],
+      [
+        "Payload",
+        "at + la + s",
+        "atlas",
+        "recv не гарантирует границу сообщения."
+      ],
+      [
+        "Validation",
+        "5 <= 1024",
+        "Принято",
+        "Ограничивайте длину."
+      ],
+      [
+        "Truncated",
+        "Длина 4, данные x, EOF",
+        "Ошибка протокола",
+        "Не принимайте неполное сообщение."
+      ]
+    ]
+  },
+  "linux-ipc-check": {
+    "title": "Почему читатель ждёт?",
+    "q": "Данные прочитаны, основной писатель завершился, но EOF не приходит. Что проверить?",
+    "a": [
+      "Размер диска",
+      "Все унаследованные и дублированные пишущие fd",
+      "Сразу отправить SIGKILL всем процессам"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Pipe не обычный файл.",
+      "Верно: EOF зависит от последнего писателя.",
+      "Сначала локализуйте дескрипторы."
+    ]
   }
-};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]},"linux-elf-chain":{"labels":["ELF header","PT_LOAD","PT_INTERP","Entry"],"details":["Формат","Сегменты","ld.so","Startup → main"],"colors":["blue","violet","amber","green"]},"linux-syscall-chain":{"labels":["API","ABI","Kernel","Return"],"details":["libc","Регистры","Проверка","fd / errno"],"colors":["blue","violet","amber","green"]},"linux-ipc-pipe":{"labels":["Запись","Чтение","Один writer","Все закрыты"],"details":["abc","Буфер пуст","EAGAIN","EOF"],"colors":["blue","violet","amber","green"]},"linux-ipc-frame":{"labels":["Header","Payload","Validation","Truncated"],"details":["4 байта","5 байтов","Лимит","EOF → отказ"],"colors":["blue","violet","green","amber"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
