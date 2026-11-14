@@ -797,6 +797,21 @@ const base='http://127.0.0.1:8765/academy/';
       assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
       await checkWidth();
     }
+    for(const [id,key,choice,needle,quiz,levels] of [['linux-middle-project','linux-middle-incident',3,'200 + хеш','linux-middle-acceptance',['middle','senior']],['linux-senior-project','linux-senior-evidence',2,'Корректный frame','linux-senior-acceptance',['senior']]]){
+      for(const level of levels){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+        const q=page.locator('.reader > .prose > [data-teach="'+quiz+'"]');
+        await q.locator('[data-linux-next="0"]').click();
+        assert.equal(await q.locator('[data-linux-next-feedback]').getAttribute('data-result'),'retry');
+        await q.locator('[data-linux-next="1"]').click();
+        assert.equal(await q.locator('[data-linux-next-feedback]').getAttribute('data-result'),'correct');
+        await checkWidth();
+      }
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
