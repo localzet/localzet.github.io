@@ -1897,5 +1897,224 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: EOF зависит от последнего писателя.",
       "Сначала локализуйте дескрипторы."
     ]
+  },
+  "linux-special-map": {
+    "title": "Один VFS — разные реализации",
+    "cases": [
+      [
+        "procfs",
+        "/proc/self/status",
+        "Состояние процесса",
+        "Текст может формироваться при чтении."
+      ],
+      [
+        "sysfs",
+        "/sys",
+        "Атрибуты объектов ядра",
+        "Запись может менять состояние."
+      ],
+      [
+        "tmpfs",
+        "/run или /dev/shm",
+        "Данные виртуальной памяти",
+        "Может использовать swap."
+      ],
+      [
+        "devtmpfs",
+        "/dev (если так смонтирован)",
+        "Узлы устройств",
+        "Операции передаются драйверам."
+      ]
+    ]
+  },
+  "linux-special-fd": {
+    "title": "Что означает self?",
+    "cases": [
+      [
+        "Shell",
+        "/proc/$$",
+        "PID оболочки",
+        "Значение зависит от контекста оболочки."
+      ],
+      [
+        "Python",
+        "/proc/self",
+        "PID читающего процесса",
+        "Не PID вызывающей оболочки."
+      ],
+      [
+        "Descriptor",
+        "/proc/self/fd/N",
+        "Открытый объект",
+        "Имя может быть удалено."
+      ],
+      [
+        "Mountinfo",
+        "/proc/self/mountinfo",
+        "Видимые монтирования",
+        "Не обязательно все ФС хоста."
+      ]
+    ]
+  },
+  "linux-special-check": {
+    "title": "Проверяем семантику",
+    "q": "stat показывает нулевой размер файла procfs. Что делать?",
+    "a": [
+      "Считать файл гарантированно пустым",
+      "Прочитать разрешённый интерфейс и понять его семантику",
+      "Записать в него тестовые данные"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Размер может не отражать результат чтения.",
+      "Верно: это виртуальный интерфейс.",
+      "Запись может изменить состояние ядра."
+    ]
+  },
+  "linux-ext4-layout": {
+    "title": "От имени к данным ext4",
+    "cases": [
+      [
+        "Directory",
+        "note / alias",
+        "Ссылка на inode",
+        "Два имени могут указывать на один объект."
+      ],
+      [
+        "Inode",
+        "Mode, size, links",
+        "Метаданные",
+        "Имя не хранится как единственный атрибут inode."
+      ],
+      [
+        "Extent",
+        "Логический диапазон",
+        "Диапазон блоков ФС",
+        "Большие карты могут образовывать дерево."
+      ],
+      [
+        "Block",
+        "Данные",
+        "Содержимое файла",
+        "Не равен физическому сектору SSD."
+      ]
+    ]
+  },
+  "linux-ext4-journal": {
+    "title": "Учебная транзакция JBD2",
+    "cases": [
+      [
+        "Изменение",
+        "Каталог + inode + bitmap",
+        "Набор метаданных",
+        "Нужна согласованность структур."
+      ],
+      [
+        "Journal",
+        "Описание и данные транзакции",
+        "Запись журнала",
+        "Режим данных имеет значение."
+      ],
+      [
+        "Commit",
+        "Подтверждённая транзакция",
+        "Допустима к восстановлению",
+        "Не равна транзакции приложения."
+      ],
+      [
+        "Checkpoint",
+        "Основные структуры",
+        "Перенос изменений",
+        "Долговечность зависит от нижних слоёв."
+      ]
+    ]
+  },
+  "linux-ext4-check": {
+    "title": "Что гарантирует rename?",
+    "q": "Файл заменён через rename в той же ФС. Достаточно ли этого для сохранности после отключения питания?",
+    "a": [
+      "Да, всегда",
+      "Нет: атомарность имени и долговечность различны",
+      "Достаточно выключить журнал"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Атомарность не доказывает запись на носитель.",
+      "Верно: нужен протокол синхронизации и корректный storage.",
+      "Это не решает проблему."
+    ]
+  },
+  "linux-cow-storage": {
+    "title": "Три вида копирования",
+    "cases": [
+      [
+        "Hard link",
+        "Один inode",
+        "Изменение видно по двум именам",
+        "Это не независимый файл."
+      ],
+      [
+        "Reflink",
+        "Два inode",
+        "Общие extents при клонировании",
+        "Запись может выделить новые блоки."
+      ],
+      [
+        "Snapshot",
+        "Состояние subvolume",
+        "Разделяемые блоки",
+        "Снимок может удерживать место."
+      ],
+      [
+        "Backup",
+        "Независимое хранилище",
+        "Восстановление после потери источника",
+        "Проверяйте границу отказа."
+      ]
+    ]
+  },
+  "linux-cow-snapshot": {
+    "title": "Модель ссылок на блоки",
+    "cases": [
+      [
+        "Снимок",
+        "live → A; snap → A",
+        "A: 2 ссылки",
+        "Обе версии используют A."
+      ],
+      [
+        "Запись",
+        "live → B; snap → A",
+        "A: 1; B: 1",
+        "Старая версия остаётся."
+      ],
+      [
+        "Удаление live",
+        "snap → A",
+        "A: 1",
+        "A ещё нельзя освободить."
+      ],
+      [
+        "Удаление snapshot",
+        "Нет ссылок",
+        "A: 0",
+        "Модель допускает освобождение."
+      ]
+    ]
+  },
+  "linux-cow-storage-check": {
+    "title": "Проверяем границу отказа",
+    "q": "Снимок находится на том же диске. Защищает ли он от полной потери диска?",
+    "a": [
+      "Да",
+      "Нет: нужна независимая восстановимая копия",
+      "Да, если снимок read-only"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Снимок зависит от исходного хранилища.",
+      "Верно: проверяйте восстановление вне этой границы отказа.",
+      "Read-only не спасает от потери носителя."
+    ]
   }
-};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]},"linux-elf-chain":{"labels":["ELF header","PT_LOAD","PT_INTERP","Entry"],"details":["Формат","Сегменты","ld.so","Startup → main"],"colors":["blue","violet","amber","green"]},"linux-syscall-chain":{"labels":["API","ABI","Kernel","Return"],"details":["libc","Регистры","Проверка","fd / errno"],"colors":["blue","violet","amber","green"]},"linux-ipc-pipe":{"labels":["Запись","Чтение","Один writer","Все закрыты"],"details":["abc","Буфер пуст","EAGAIN","EOF"],"colors":["blue","violet","amber","green"]},"linux-ipc-frame":{"labels":["Header","Payload","Validation","Truncated"],"details":["4 байта","5 байтов","Лимит","EOF → отказ"],"colors":["blue","violet","green","amber"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]},"linux-elf-chain":{"labels":["ELF header","PT_LOAD","PT_INTERP","Entry"],"details":["Формат","Сегменты","ld.so","Startup → main"],"colors":["blue","violet","amber","green"]},"linux-syscall-chain":{"labels":["API","ABI","Kernel","Return"],"details":["libc","Регистры","Проверка","fd / errno"],"colors":["blue","violet","amber","green"]},"linux-ipc-pipe":{"labels":["Запись","Чтение","Один writer","Все закрыты"],"details":["abc","Буфер пуст","EAGAIN","EOF"],"colors":["blue","violet","amber","green"]},"linux-ipc-frame":{"labels":["Header","Payload","Validation","Truncated"],"details":["4 байта","5 байтов","Лимит","EOF → отказ"],"colors":["blue","violet","green","amber"]},"linux-special-map":{"labels":["procfs","sysfs","tmpfs","devtmpfs"],"details":["Процессы","Объекты ядра","Память","Устройства"],"colors":["blue","violet","amber","green"]},"linux-ext4-layout":{"labels":["Directory","Inode","Extent","Block"],"details":["Имя","Метаданные","Диапазон","Данные"],"colors":["blue","violet","amber","green"]},"linux-ext4-journal":{"labels":["Изменение","Journal","Commit","Checkpoint"],"details":["Метаданные","Транзакция","Подтверждение","Основная ФС"],"colors":["blue","violet","green","amber"]},"linux-cow-snapshot":{"labels":["Снимок","Запись","Удаление live","Удаление snap"],"details":["A:2","A:1 B:1","A:1","A:0"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
