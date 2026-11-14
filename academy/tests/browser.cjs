@@ -789,6 +789,14 @@ const base='http://127.0.0.1:8765/academy/';
       }
       await checkWidth();
     }
+    for(const [id,key,choice,needle] of [['linux-tracing','linux-trace-evidence',1,'verifier'],['linux-upstream','linux-upstream-patch',2,'Совпадает дерево']]){
+      await page.goto(base+'#/lesson/'+id+'/senior');
+      const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+      await panel.locator('[data-linux-next="'+choice+'"]').click();
+      assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+      assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+      await checkWidth();
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
