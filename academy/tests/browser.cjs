@@ -507,7 +507,7 @@ const base='http://127.0.0.1:8765/academy/';
     await page.goto(base+'#/lesson/linux-boot/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('запускает Linux'));await checkWidth();
 
     await page.goto(base+'#/lesson/linux-security-basics/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('защитить'));await checkWidth();
-    for(const id of ['linux-irq-dma','linux-futex-rcu']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
+
     await page.goto(base+'#/lesson/linux-upstream/senior');await page.locator('.reader h1').waitFor();await checkWidth();
     await page.goto(base+'#/lesson/linux-mmu/senior');await page.locator('[data-mmu-address]').fill('0x41234567');assert((await page.locator('[data-mmu-result]').textContent()).includes('0x567'));await page.locator('[data-mmu-address]').fill('bad!');assert((await page.locator('[data-mmu-result]').textContent()).includes('Ошибка'));await checkWidth();
     await page.goto(base+'#/lesson/linux-mmap-cow/middle');await page.locator('[data-lab-action="fork"]').click();await page.locator('[data-lab-action="write"]').click();assert.equal(await page.locator('[data-cow-parent]').textContent(),'A · 7');assert.equal(await page.locator('[data-cow-child]').textContent(),'B · 9');await checkWidth();
@@ -774,6 +774,19 @@ const base='http://127.0.0.1:8765/academy/';
       await panel.locator('[data-linux-next="'+choice+'"]').click();
       assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
       assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+      await checkWidth();
+    }
+    for(const [id,key,choice,needle] of [['linux-irq-dma','linux-dma-owner',1,'Устройство владеет'],['linux-locking','linux-lock-order',2,'deadlock'],['linux-futex-rcu','linux-rcu-versions',3,'A можно освободить']]){
+      await page.goto(base+'#/lesson/'+id+'/senior');
+      const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+      await panel.locator('[data-linux-next="'+choice+'"]').click();
+      assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+      assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+      if(id==='linux-futex-rcu'){
+        assert.equal(await panel.locator('[data-rcu-old]').textContent(),'A · освобождена');
+        await panel.locator('[data-linux-next="2"]').click();
+        assert.equal(await panel.locator('[data-rcu-old]').textContent(),'A · жива');
+      }
       await checkWidth();
     }
     // Exhaustive Linux lesson navigation in one desktop context; other views
