@@ -1,4 +1,4 @@
-name: Deploy Localzet Weather and Atlas to GitHub Pages
+name: Deploy Localzet Weather, Atlas and Contributions to GitHub Pages
 
 on:
   push:
@@ -6,11 +6,12 @@ on:
     paths:
       - 'weather/index.html'
       - 'academy/**'
+      - 'contributions/**'
       - 'weather/data/accuracy.json'
       - 'weather/data/historical.json'
       - '.github/workflows/weather-pages.yml'
   schedule:
-    - cron: '59 */6 * * *'
+    - cron: '17,47 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -25,12 +26,16 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - name: Verify engineering atlas content
         run: node academy/tests/validate.mjs
+      - name: Verify contribution hub
+        run: |
+          python3 -m unittest discover -s contributions -p 'test_*.py'
+          node --check contributions/app.js
       - name: Assemble public weather and atlas sites
         run: |
           mkdir -p public/weather/data
@@ -45,6 +50,17 @@ jobs:
           test -s public/academy/content.js
           test -s public/weather/data/accuracy.json
           test -s public/weather/data/historical.json
+      - name: Assemble contribution hub
+        run: |
+          mkdir -p public/contributions
+          cp contributions/{index.html,style.css,app.js,data.json,summary.svg} public/contributions/
+      - name: Refresh public contribution data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! python3 contributions/collect.py public/contributions; then
+            echo "::warning::Contribution refresh failed; serving dated initial snapshot"
+          fi
       - uses: actions/upload-pages-artifact@v4
         with:
           path: public
