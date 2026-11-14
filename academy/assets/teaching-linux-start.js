@@ -2773,5 +2773,224 @@ window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxPat
       "Верно: граница наблюдения важна.",
       "Не меняйте production вслепую."
     ]
+  },
+  "linux-cap-sets": {
+    "title": "Наборы capabilities",
+    "cases": [
+      [
+        "Permitted",
+        "CapPrm",
+        "Доступные для effective полномочия",
+        "Не означает, что все активны."
+      ],
+      [
+        "Effective",
+        "CapEff",
+        "Проверяемые полномочия",
+        "Подмножество permitted."
+      ],
+      [
+        "Ambient",
+        "CapAmb",
+        "Сохранение при подходящем exec",
+        "Подмножество permitted и inheritable."
+      ],
+      [
+        "Bounding",
+        "CapBnd",
+        "Ограничение части приобретений через exec",
+        "Не просто глобальная маска всех прав."
+      ]
+    ]
+  },
+  "linux-cap-exec": {
+    "title": "no_new_privs и наследование",
+    "cases": [
+      [
+        "Родитель",
+        "Исходное значение",
+        "Не меняется",
+        "Изменяем только потомка."
+      ],
+      [
+        "Потомок",
+        "setpriv --no-new-privs",
+        "NoNewPrivs: 1",
+        "Новые привилегии через exec ограничены."
+      ],
+      [
+        "Exec",
+        "Новая программа",
+        "Признак наследуется",
+        "Существующие права не исчезают автоматически."
+      ],
+      [
+        "Сброс",
+        "PR_SET_NO_NEW_PRIVS=0",
+        "EINVAL",
+        "Признак нельзя снять обычным вызовом."
+      ]
+    ]
+  },
+  "linux-cap-check": {
+    "title": "Минимальные полномочия",
+    "q": "Atlas слушает высокий TCP-порт. Нужно ли выдавать CAP_NET_ADMIN только ради этого?",
+    "a": [
+      "Да, для любого TCP",
+      "Нет: обычный сервер не требует сетевого администрирования",
+      "Да, если он читает конфигурацию"
+    ],
+    "ok": 1,
+    "feedback": [
+      "TCP listener не равен сетевому администрированию.",
+      "Верно: выдавайте только необходимое.",
+      "Чтение проверяется другими механизмами."
+    ]
+  },
+  "linux-lsm-gates": {
+    "title": "Независимые ограничения доступа",
+    "cases": [
+      [
+        "DAC отказ",
+        "Обычные права запрещают",
+        "Отказ",
+        "Дополнительная политика не выдаёт право."
+      ],
+      [
+        "LSM отказ",
+        "DAC разрешает, политика запрещает",
+        "Отказ",
+        "chmod не отменяет MAC."
+      ],
+      [
+        "Оба разрешают",
+        "DAC и учебная политика",
+        "Условие выполнено",
+        "Могут действовать другие проверки."
+      ],
+      [
+        "Аудит",
+        "Субъект, объект, операция",
+        "Диагностическое свидетельство",
+        "Отказ не является разрешением на расширение политики."
+      ]
+    ]
+  },
+  "linux-lsm-policy": {
+    "title": "Матрица Atlas",
+    "cases": [
+      [
+        "Public read",
+        "atlas → public",
+        "Разрешено",
+        "Нужная функция."
+      ],
+      [
+        "Config write",
+        "atlas → config",
+        "Запрещено",
+        "Чтение не равно записи."
+      ],
+      [
+        "Logs write",
+        "atlas → logs",
+        "Разрешено",
+        "Отдельная область данных."
+      ],
+      [
+        "Other read",
+        "other → public",
+        "Запрещено в модели",
+        "Не реальная политика ядра."
+      ]
+    ]
+  },
+  "linux-lsm-check": {
+    "title": "Диагностика EACCES",
+    "q": "DAC разрешает операцию, но журнал LSM фиксирует отказ. Что делать?",
+    "a": [
+      "Отключить LSM",
+      "Проверить субъект, объект, действие и минимально необходимое правило",
+      "chmod 777 на весь каталог"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Не отключайте защиту для устранения симптома.",
+      "Верно: сначала доказательства и отрицательный тест.",
+      "Обычные права не отменяют дополнительную политику."
+    ]
+  },
+  "linux-sandbox-layers": {
+    "title": "Разные механизмы песочницы",
+    "cases": [
+      [
+        "Seccomp",
+        "Номер и аргументы syscall",
+        "Ограничение операций",
+        "Не произвольное чтение путей по указателю."
+      ],
+      [
+        "Landlock / LSM",
+        "Поддерживаемые объекты и действия",
+        "Политика доступа",
+        "Не добавляет запрещённые права."
+      ],
+      [
+        "Capabilities",
+        "Credentials",
+        "Полномочия",
+        "Область user namespace важна."
+      ],
+      [
+        "Namespaces / cgroups",
+        "Видимость / ресурсы",
+        "Изоляция и лимиты",
+        "Не заменяют политику объектов."
+      ]
+    ]
+  },
+  "linux-sandbox-fd": {
+    "title": "Граница ранее открытого fd",
+    "cases": [
+      [
+        "До правил",
+        "open deny.txt",
+        "fd → B",
+        "Файл уже открыт."
+      ],
+      [
+        "Ограничение",
+        "READ_FILE",
+        "Ruleset применён",
+        "Обрабатывается конкретный класс доступа."
+      ],
+      [
+        "Новый open",
+        "deny.txt",
+        "EACCES",
+        "Новый доступ запрещён."
+      ],
+      [
+        "Старый fd",
+        "read ранее открытого fd",
+        "B",
+        "Проверяйте наследованные дескрипторы."
+      ]
+    ]
+  },
+  "linux-sandbox-check": {
+    "title": "Проверка обязательной защиты",
+    "q": "Приложение требует Landlock, но ядро не предоставляет нужный ABI. Что делать?",
+    "a": [
+      "Продолжить молча",
+      "Отказаться от запуска либо явно выбрать согласованную альтернативу",
+      "Считать seccomp полной заменой"
+    ],
+    "ok": 1,
+    "feedback": [
+      "Требование безопасности не выполнено.",
+      "Верно: не допускайте незаметного ослабления.",
+      "Механизмы решают разные задачи."
+    ]
   }
-};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]},"linux-elf-chain":{"labels":["ELF header","PT_LOAD","PT_INTERP","Entry"],"details":["Формат","Сегменты","ld.so","Startup → main"],"colors":["blue","violet","amber","green"]},"linux-syscall-chain":{"labels":["API","ABI","Kernel","Return"],"details":["libc","Регистры","Проверка","fd / errno"],"colors":["blue","violet","amber","green"]},"linux-ipc-pipe":{"labels":["Запись","Чтение","Один writer","Все закрыты"],"details":["abc","Буфер пуст","EAGAIN","EOF"],"colors":["blue","violet","amber","green"]},"linux-ipc-frame":{"labels":["Header","Payload","Validation","Truncated"],"details":["4 байта","5 байтов","Лимит","EOF → отказ"],"colors":["blue","violet","green","amber"]},"linux-special-map":{"labels":["procfs","sysfs","tmpfs","devtmpfs"],"details":["Процессы","Объекты ядра","Память","Устройства"],"colors":["blue","violet","amber","green"]},"linux-ext4-layout":{"labels":["Directory","Inode","Extent","Block"],"details":["Имя","Метаданные","Диапазон","Данные"],"colors":["blue","violet","amber","green"]},"linux-ext4-journal":{"labels":["Изменение","Journal","Commit","Checkpoint"],"details":["Метаданные","Транзакция","Подтверждение","Основная ФС"],"colors":["blue","violet","green","amber"]},"linux-cow-snapshot":{"labels":["Снимок","Запись","Удаление live","Удаление snap"],"details":["A:2","A:1 B:1","A:1","A:0"],"colors":["blue","violet","amber","green"]},"linux-lvm-map":{"labels":["PV","VG","LV","ФС"],"details":["Extents","Пул","Отображение","Данные"],"colors":["blue","violet","amber","green"]},"linux-luks-path":{"labels":["Пароль","Keyslot","Mapping","ФС"],"details":["KDF","Ключ тома","dm-crypt","Файлы"],"colors":["violet","blue","amber","green"]},"linux-storage-stack":{"labels":["Диски","LVM","LUKS","ext4"],"details":["Loop → RAID1","PV/VG → LV","dm-crypt","Readback"],"colors":["blue","violet","amber","green"]},"linux-cgroup-boundary":{"labels":["Namespace","Cgroup","Контейнер","Диагностика"],"details":["Видимость","Ресурсы","Комбинация","Контекст"],"colors":["blue","violet","green","amber"]},"linux-cgroup-quota":{"labels":["CPU max","CPU weight","Memory high","Memory max"],"details":["Квота","Вес","Давление","Предел"],"colors":["blue","violet","amber","green"]},"linux-netns-topology":{"labels":["Namespace A","Veth","Namespace B","Маршрут"],"details":["192.0.2.1","av ↔ bv","192.0.2.2","/30"],"colors":["blue","violet","green","amber"]},"linux-socket-life":{"labels":["Bind","Listen","Accept","Half-close"],"details":["Адрес","Listener","Client fd","EOF / ответ"],"colors":["blue","violet","green","amber"]},"linux-event-ready":{"labels":["Пусто","Данные","Часть","Конец"],"details":["EAGAIN","EPOLLIN","LT / ET","EOF"],"colors":["amber","blue","violet","green"]},"linux-event-pressure":{"labels":["Свободно","Заполнено","Чтение","Запись"],"details":["EPOLLOUT","EAGAIN","Место","Остаток"],"colors":["green","amber","blue","violet"]},"linux-nft-path":{"labels":["Prerouting","Input","Forward","Output"],"details":["Маршрут","Локально","Пересылка","Локальный исходящий"],"colors":["blue","green","violet","amber"]},"linux-packet-point":{"labels":["Приложение","Сокет","Интерфейс","Захват"],"details":["HTTP","TCP","Очереди","pcap"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
+};const diagrams={"linux-disk-stack":{"labels":["Устройство","Раздел","Файловая система","Точка монтирования"],"details":["/dev/vda","/dev/vda1","ext4 · UUID","/data/atlas"],"colors":["blue","violet","amber","green"]},"linux-pkg-graph":{"labels":["Пакет","Зависимости","Кандидаты","План"],"details":["atlas-doc","bash + python3","Индексы · версии","Решённый граф"],"colors":["violet","blue","amber","green"]},"linux-sec-boundary":{"labels":["Публичные файлы","Приватная конфигурация","Сетевая граница","Остаточный риск"],"details":["www · HTTP 200","config · 600","127.0.0.1","Привилегии · symlink"],"colors":["green","violet","blue","amber"]},"linux-net-layers":{"labels":["Интерфейс","Маршрут","TCP","HTTP"],"details":["IP","Выбор пути","Сокет","Ответ"],"colors":["blue","violet","amber","green"]},"linux-signal-flow":{"labels":["Процесс","SIGTERM","Очистка","wait"],"details":["PID","Запрос","finally","exit status"],"colors":["blue","amber","violet","green"]},"linux-unit-life":{"labels":["Unit","Start","Active","Stop"],"details":["Описание","ExecStart","Состояние","Ожидание"],"colors":["violet","blue","green","amber"]},"linux-timer-flow":{"labels":["Timer","Service","Успех","Отказ"],"details":["09:00 UTC","oneshot","Новый отчёт","Старый отчёт"],"colors":["violet","blue","green","amber"]},"linux-boot-chain":{"labels":["Firmware","Kernel","Root","Userspace"],"details":["UEFI / BIOS","Драйверы","initramfs / rootfs","PID 1 → HTTP"],"colors":["violet","blue","amber","green"]},"linux-mem-map":{"labels":["Адрес","MMU","Fault","RAM"],"details":["Виртуальный","Таблицы страниц","Demand / COW","Резидентность"],"colors":["blue","violet","amber","green"]},"linux-dep-ready":{"labels":["Spawn","Exec","Ready","Health"],"details":["PID","Type=exec","Уведомление","HTTP"],"colors":["blue","violet","amber","green"]},"linux-recover-flow":{"labels":["Наблюдение","Копия","Проверка","Возврат"],"details":["Граница отказа","Отдельный каталог","Целостность","Контракт"],"colors":["blue","violet","amber","green"]},"linux-final-contract":{"labels":["Структура","Диагностика","Восстановление","Защита"],"details":["Права","Журнал","Архив","HTTP"],"colors":["blue","violet","amber","green"]},"linux-trust-chain":{"labels":["Ключ","Метаданные","Пакет","План"],"details":["Доверие","Подпись","Хеш","Зависимости"],"colors":["violet","blue","amber","green"]},"linux-ssh-identities":{"labels":["Клиент","Сервер","Пользователь","Политика"],"details":["Соединение","Host key","User key","Авторизация"],"colors":["blue","violet","amber","green"]},"linux-elf-chain":{"labels":["ELF header","PT_LOAD","PT_INTERP","Entry"],"details":["Формат","Сегменты","ld.so","Startup → main"],"colors":["blue","violet","amber","green"]},"linux-syscall-chain":{"labels":["API","ABI","Kernel","Return"],"details":["libc","Регистры","Проверка","fd / errno"],"colors":["blue","violet","amber","green"]},"linux-ipc-pipe":{"labels":["Запись","Чтение","Один writer","Все закрыты"],"details":["abc","Буфер пуст","EAGAIN","EOF"],"colors":["blue","violet","amber","green"]},"linux-ipc-frame":{"labels":["Header","Payload","Validation","Truncated"],"details":["4 байта","5 байтов","Лимит","EOF → отказ"],"colors":["blue","violet","green","amber"]},"linux-special-map":{"labels":["procfs","sysfs","tmpfs","devtmpfs"],"details":["Процессы","Объекты ядра","Память","Устройства"],"colors":["blue","violet","amber","green"]},"linux-ext4-layout":{"labels":["Directory","Inode","Extent","Block"],"details":["Имя","Метаданные","Диапазон","Данные"],"colors":["blue","violet","amber","green"]},"linux-ext4-journal":{"labels":["Изменение","Journal","Commit","Checkpoint"],"details":["Метаданные","Транзакция","Подтверждение","Основная ФС"],"colors":["blue","violet","green","amber"]},"linux-cow-snapshot":{"labels":["Снимок","Запись","Удаление live","Удаление snap"],"details":["A:2","A:1 B:1","A:1","A:0"],"colors":["blue","violet","amber","green"]},"linux-lvm-map":{"labels":["PV","VG","LV","ФС"],"details":["Extents","Пул","Отображение","Данные"],"colors":["blue","violet","amber","green"]},"linux-luks-path":{"labels":["Пароль","Keyslot","Mapping","ФС"],"details":["KDF","Ключ тома","dm-crypt","Файлы"],"colors":["violet","blue","amber","green"]},"linux-storage-stack":{"labels":["Диски","LVM","LUKS","ext4"],"details":["Loop → RAID1","PV/VG → LV","dm-crypt","Readback"],"colors":["blue","violet","amber","green"]},"linux-cgroup-boundary":{"labels":["Namespace","Cgroup","Контейнер","Диагностика"],"details":["Видимость","Ресурсы","Комбинация","Контекст"],"colors":["blue","violet","green","amber"]},"linux-cgroup-quota":{"labels":["CPU max","CPU weight","Memory high","Memory max"],"details":["Квота","Вес","Давление","Предел"],"colors":["blue","violet","amber","green"]},"linux-netns-topology":{"labels":["Namespace A","Veth","Namespace B","Маршрут"],"details":["192.0.2.1","av ↔ bv","192.0.2.2","/30"],"colors":["blue","violet","green","amber"]},"linux-socket-life":{"labels":["Bind","Listen","Accept","Half-close"],"details":["Адрес","Listener","Client fd","EOF / ответ"],"colors":["blue","violet","green","amber"]},"linux-event-ready":{"labels":["Пусто","Данные","Часть","Конец"],"details":["EAGAIN","EPOLLIN","LT / ET","EOF"],"colors":["amber","blue","violet","green"]},"linux-event-pressure":{"labels":["Свободно","Заполнено","Чтение","Запись"],"details":["EPOLLOUT","EAGAIN","Место","Остаток"],"colors":["green","amber","blue","violet"]},"linux-nft-path":{"labels":["Prerouting","Input","Forward","Output"],"details":["Маршрут","Локально","Пересылка","Локальный исходящий"],"colors":["blue","green","violet","amber"]},"linux-packet-point":{"labels":["Приложение","Сокет","Интерфейс","Захват"],"details":["HTTP","TCP","Очереди","pcap"],"colors":["blue","violet","amber","green"]},"linux-cap-sets":{"labels":["Permitted","Effective","Ambient","Bounding"],"details":["Доступные","Активные","Наследуемые","Граница exec"],"colors":["blue","green","violet","amber"],"compare":true},"linux-cap-exec":{"labels":["Родитель","Потомок","Exec","Сброс"],"details":["Исходный","NNP=1","NNP=1","EINVAL"],"colors":["blue","violet","green","amber"]},"linux-lsm-gates":{"labels":["DAC отказ","LSM отказ","Оба разрешают","Аудит"],"details":["Запрет","Запрет","Необходимые условия","Свидетельство"],"colors":["amber","amber","green","blue"],"compare":true},"linux-sandbox-layers":{"labels":["Seccomp","Landlock / LSM","Capabilities","Namespaces / cgroups"],"details":["Syscalls","Объекты","Полномочия","Видимость / ресурсы"],"colors":["blue","violet","amber","green"],"compare":true},"linux-sandbox-fd":{"labels":["До правил","Ограничение","Новый open","Старый fd"],"details":["fd открыт","READ_FILE","EACCES","B доступен"],"colors":["blue","violet","amber","green"]}};const keys=Object.keys(panels);const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const file=(role,label,body)=>'<div class="teach-file '+role+'"><div class="teach-file-title">'+esc(label)+'</div><div class="teach-file-content">'+esc(body).replace(/\\n|\n/g,'<br>')+'</div></div>';function render(key){const p=panels[key];if(!p)return prev.render(key);const labels=p.cases?p.cases.map(c=>c[0]):p.a;return '<section class="teach-panel" data-teach="'+key+'" aria-label="'+esc(p.title)+'"><div class="teach-label">Учебный блок Linux</div><h3>'+esc(p.title)+'</h3>'+(p.q?'<p>'+esc(p.q)+'</p>':'<p>Выберите состояние и сравните модель с опытом в терминале.</p>')+'<div class="teach-actions">'+labels.map((label,i)=>'<button type="button" class="teach-btn" data-linux-next="'+i+'" aria-pressed="false">'+esc(label)+'</button>').join('')+'</div><div data-linux-next-view></div><p class="teach-feedback" data-linux-next-feedback aria-live="polite"></p></section>';}function mount(root){prev.mount(root);root.querySelectorAll('[data-teach]').forEach(n=>{const p=panels[n.dataset.teach];if(!p)return;const view=n.querySelector('[data-linux-next-view]'),out=n.querySelector('[data-linux-next-feedback]');const draw=i=>{n.querySelectorAll('[data-linux-next]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.linuxNext)===i)));if(p.cases){const c=p.cases[i];const model=diagrams[n.dataset.teach];const diagram=model?'<div class="linux-visual-flow'+(model.compare?' linux-visual-compare':'')+'" role="group" aria-label="Схема текущего состояния">'+model.labels.map((label,k)=>'<div class="linux-visual-node linux-visual-'+model.colors[k]+(k===i?' is-selected':'')+'"'+(k===i?' aria-current="step"':'')+'><b>'+esc(label)+'</b><small>'+esc(model.details[k])+'</small></div>').join('')+'</div>':'';view.innerHTML=diagram+'<div class="teach-files teach-two">'+file('index','Вход / имя',c[1])+file('head','Объект / результат',c[2])+'</div>';out.textContent=c[3];}else{out.dataset.result=i===p.ok?'correct':'retry';out.textContent=p.feedback[i];}};n.addEventListener('click',e=>{const b=e.target.closest('[data-linux-next]');if(b)draw(Number(b.dataset.linuxNext));});if(p.cases)draw(0);else out.textContent='Выберите ответ.';});}window.ATLAS_TEACHING={...prev,keys:[...prev.keys,...keys],render,mount,linuxNextPanels:panels};})();
