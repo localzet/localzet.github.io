@@ -505,7 +505,7 @@ const base='http://127.0.0.1:8765/academy/';
     for(const id of ['linux-mmu','linux-mmap-cow','linux-io-uring']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     for(const id of ['linux-firmware','linux-initramfs']){await page.goto(base+'#/lesson/'+id+'/middle');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-boot/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('запускает Linux'));await checkWidth();
-    for(const id of ['linux-netns','linux-netfilter','linux-seccomp-landlock']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
+    for(const id of ['linux-seccomp-landlock']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-security-basics/junior');await page.locator('.reader h1').waitFor();assert((await page.locator('.reader h1').textContent()).includes('защитить'));await checkWidth();
     for(const id of ['linux-kbuild','linux-driver-model','linux-irq-dma','linux-futex-rcu']){await page.goto(base+'#/lesson/'+id+'/senior');await page.locator('.diagram-art svg').waitFor();await checkWidth();}
     await page.goto(base+'#/lesson/linux-upstream/senior');await page.locator('.reader h1').waitFor();await checkWidth();
@@ -682,6 +682,26 @@ const base='http://127.0.0.1:8765/academy/';
       }
     }
     for(const [id,key,choice,needle] of [['linux-lvm-raid','linux-lvm-map',2,'Отображение'],['linux-encryption','linux-luks-path',1,'Ключ тома'],['linux-storage-lab','linux-storage-stack',3,'Readback']]){
+      for(const level of ['middle','senior']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,needle] of [['linux-cgroups','linux-cgroup-quota',0,'0,5 CPU'],['linux-netns','linux-netns-topology',2,'192.0.2.2'],['linux-sockets','linux-socket-life',3,'EOF']]){
+      for(const level of ['middle','senior']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-linux-next="'+choice+'"]').click();
+        assert((await panel.locator('[data-linux-next-view]').textContent()).includes(needle));
+        assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
+        await checkWidth();
+      }
+    }
+    for(const [id,key,choice,needle] of [['linux-event-io','linux-event-ready',3,'EOF'],['linux-netfilter','linux-nft-path',2,'Postrouting'],['linux-packet-diagnostics','linux-packet-point',3,'tcpdump']]){
       for(const level of ['middle','senior']){
         await page.goto(base+'#/lesson/'+id+'/'+level);
         const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
