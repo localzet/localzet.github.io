@@ -80,7 +80,7 @@ for(const c of d.courses){
  for(let n=0;n<4;n++)assert(ls.some(l=>levels.minimum[l.id]<=n),'Empty route '+c.id);
 }
 assert(d.lessons.filter(l=>l.course==='linux').length>=63);
-assert.deepEqual(Array.from(win.ATLAS_GUIDED_IDS.filter(id=>id.startsWith('linux-'))),['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes','linux-network-admin','linux-signals','linux-monitoring','linux-systemd','linux-journal','linux-timers','linux-disks','linux-packages','linux-security-basics','linux-boot','linux-memory','linux-service-dependencies','linux-recovery','linux-cli-atlas','linux-capstone']);
+assert.deepEqual(Array.from(win.ATLAS_GUIDED_IDS.filter(id=>id.startsWith('linux-'))),['linux-history','linux-lab-start','linux-shell','linux-vfs','linux-search-text','linux-bash-scripts','linux-permissions','linux-accounts','linux-processes','linux-network-admin','linux-signals','linux-monitoring','linux-systemd','linux-journal','linux-timers','linux-disks','linux-packages','linux-security-basics','linux-boot','linux-memory','linux-service-dependencies','linux-recovery','linux-cli-atlas','linux-capstone','linux-package-trust','linux-ssh-admin']);
 assert.equal(levels.minimum['linux-systemd'],0);
 for(const id of ['linux-accounts','linux-network-admin','linux-monitoring','linux-ipc','linux-scheduler','linux-cgroups','linux-journal','linux-ext4','linux-cow-filesystems','linux-lvm-raid','linux-encryption','linux-block-io','linux-mmu','linux-mmap-cow','linux-reclaim','linux-syscalls','linux-event-io','linux-io-uring']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&/## (?:Практика и )?[Сс]амостоятельная работа/.test(chapter.body),'Linux editorial depth: '+id);}
 for(const id of ['linux-signals','linux-capstone']){const chapter=d.lessons.find(l=>l.id===id);assert(chapter&&chapter.body.split(/\s+/).length>=430&&levels.minimum[id]===0,'Linux practice: '+id);}
@@ -94,6 +94,7 @@ const order=levels.order.linux;
 for(const [before,after] of [['linux-vfs','linux-search-text'],['linux-encryption','linux-storage-lab'],['linux-processes','linux-syscalls'],['linux-network-admin','linux-signals'],['linux-signals','linux-monitoring'],['linux-memory','linux-mmap-cow'],['linux-cgroups','linux-netns'],['linux-systemd','linux-service-dependencies'],['linux-systemd','linux-journal'],['linux-journal','linux-timers'],['linux-syscalls','linux-io-uring'],['linux-capstone','linux-middle-project'],['linux-middle-project','linux-senior-project']])assert(order.indexOf(before)<order.indexOf(after),'Prerequisite order '+before+' / '+after);
 for(const id of order.filter(id=>levels.minimum[id]===0))assert(levels.junior[id].body.split(/\s+/).length>=200,'Junior review depth '+id);
 assert.equal(order.filter(id=>levels.minimum[id]===0).length,23);
+assert(order.filter(id=>levels.minimum[id]===0).every(id=>win.ATLAS_GUIDED_IDS.includes(id)),'All Linux Junior chapters must have guided editions');
 const linuxReference=win.ATLAS_REFERENCE.find(x=>x.id==='linux').groups.flatMap(g=>g.entries);
 assert.equal(new Set(linuxReference.map(e=>e.name)).size,linuxReference.length,'Duplicate Linux reference names');
 assert(linuxReference.filter(e=>e.options?.length).length>=94);
