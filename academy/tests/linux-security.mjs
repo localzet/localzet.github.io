@@ -38,5 +38,21 @@ try{
    assert.match(net,/2 received/);console.log('PASS: isolated veth connectivity');
    const nft=ok('sudo',['bash','-c',blocks('linux-netfilter','sh')[0]]);
    assert.match(nft,/1 received/);assert.match(nft,/counter packets [1-9]/);console.log('PASS: isolated nftables policy');
+   const negative=`set -euo pipefail
+ip link set lo up
+nft -f - <<'NFT'
+table inet atlas {
+  chain input {
+    type filter hook input priority 0; policy accept;
+    iifname "lo" icmp type echo-request counter drop
+  }
+}
+NFT
+if ping -c 1 -W 1 127.0.0.1; then exit 1; fi
+nft list table inet atlas
+`;
+   const denied=ok('sudo',['unshare','--net','bash','-c',negative]);
+   assert.match(denied,/counter packets [1-9][0-9]* bytes [0-9]+ drop/);
+   console.log('PASS: isolated nftables denied ICMP and rule counter');
  }else console.log('SKIP: privileged namespace labs (enable only on disposable VM)');
 }finally{rmSync(lab,{recursive:true,force:true});}
