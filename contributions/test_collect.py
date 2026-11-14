@@ -1,5 +1,5 @@
 import unittest
-from collect import review_status, reply_signal, ci_status
+from collect import review_status, reply_signal, ci_status, external_repo
 
 class TestStatuses(unittest.TestCase):
     def test_review(self):
@@ -14,3 +14,8 @@ class TestStatuses(unittest.TestCase):
                   {"id":2,"name":"test","status":"completed","conclusion":"success"}]
         self.assertEqual(ci_status(checks, {"total_count":0}), "passed")
         self.assertEqual(ci_status(None, {}), "unknown")
+
+    def test_external_owners(self):
+        for repo in ("localzet/project", "Localzet-Dev/CDN", "Triangle-org/Engine", "localzet-archive/FrameX-Public", "tt-university/project"):
+            self.assertFalse(external_repo(repo))
+        self.assertTrue(external_repo("python/cpython"))

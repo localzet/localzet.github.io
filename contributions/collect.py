@@ -10,6 +10,11 @@ import urllib.error
 
 USER = "localzet"
 API = "https://api.github.com"
+EXCLUDED_OWNERS = frozenset(json.loads(pathlib.Path(__file__).with_name("config.json").read_text(encoding="utf-8"))["excluded_owners"])
+
+def external_repo(repo):
+    return repo.split("/", 1)[0].casefold() not in EXCLUDED_OWNERS
+
 
 def get(path, **params):
     headers = {"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
@@ -90,9 +95,9 @@ def ci_status(checks, combined):
 def collect():
     repos, items = {}, {}
     for kind in ("pr", "issue"):
-        for i in pages("/search/issues", "items", q=f"author:{USER} is:public -user:{USER} is:{kind}"):
+        for i in pages("/search/issues", "items", q=f"author:{USER} is:public is:{kind} " + " ".join(f"-user:{owner}" for owner in sorted(EXCLUDED_OWNERS))):
             repo = i["repository_url"].removeprefix(API + "/repos/")
-            if repo.split("/")[0].lower() == USER or (i.get("user") or {}).get("login", "").lower() != USER:
+            if not external_repo(repo) or (i.get("user") or {}).get("login", "").lower() != USER:
                 continue
             if repo not in repos:
                 repos[repo] = get("/repos/" + repo)
@@ -136,7 +141,7 @@ def badge(data):
     opened = sum(i["kind"] == "pr" and i["state"] == "open" for i in items)
     repos = len({i["repo"] for i in items})
     date = data["generated"][:10]
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="720" height="142" viewBox="0 0 720 142"><rect x="1" y="1" width="718" height="140" rx="12" fill="#0d1117" stroke="#30363d"/><g font-family="Verdana,Arial,sans-serif"><text x="24" y="29" font-size="15" fill="#e6edf3">Open source contribution hub</text><text x="24" y="74" font-size="30" font-weight="bold" fill="#bc8cff">{merged}</text><text x="24" y="96" font-size="12" fill="#9da7b3">Merged PRs</text><text x="255" y="74" font-size="30" font-weight="bold" fill="#3fb950">{opened}</text><text x="255" y="96" font-size="12" fill="#9da7b3">Open PRs</text><text x="484" y="74" font-size="30" font-weight="bold" fill="#58a6ff">{repos}</text><text x="484" y="96" font-size="12" fill="#9da7b3">Repositories</text><text x="24" y="124" font-size="10" fill="#9da7b3">Public contributions to other owners · Updated {date}</text></g></svg>'''
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="720" height="142" viewBox="0 0 720 142"><rect x="1" y="1" width="718" height="140" rx="12" fill="#0d1117" stroke="#30363d"/><g font-family="Verdana,Arial,sans-serif"><text x="24" y="29" font-size="15" fill="#e6edf3">Open source contribution hub</text><text x="24" y="74" font-size="30" font-weight="bold" fill="#bc8cff">{merged}</text><text x="24" y="96" font-size="12" fill="#9da7b3">Merged PRs</text><text x="255" y="74" font-size="30" font-weight="bold" fill="#3fb950">{opened}</text><text x="255" y="96" font-size="12" fill="#9da7b3">Open PRs</text><text x="484" y="74" font-size="30" font-weight="bold" fill="#58a6ff">{repos}</text><text x="484" y="96" font-size="12" fill="#9da7b3">Repositories</text><text x="24" y="124" font-size="10" fill="#9da7b3">External upstream contributions · Updated {date}</text></g></svg>'''
 
 if __name__ == "__main__":
     data = collect()
