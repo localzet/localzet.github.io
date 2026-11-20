@@ -346,11 +346,11 @@
     }
   },
   "forecast_source": "Open-Meteo operational snapshots; captured_at != model initialized_at",
-  "generated_at": "2026-11-19T13:52:13+00:00",
+  "generated_at": "2026-11-20T13:34:18+00:00",
   "minimum_distinct_days": 5,
   "minimum_samples": 20,
   "observation_source": "NOAA NCEI GHCNh, temperature QC=1",
   "schema_version": 1,
-  "snapshot_count": 18,
+  "snapshot_count": 20,
   "status": "insufficient_data"
 }
