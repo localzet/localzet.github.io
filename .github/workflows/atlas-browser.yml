@@ -1,0 +1,125 @@
+name: Atlas browser regression
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'academy/**'
+      - '.github/workflows/atlas-browser.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'academy/**'
+      - '.github/workflows/atlas-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-browser-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check browser test syntax
+        run: node --check academy/tests/browser.cjs
+      - name: Verify editorial and source integrity
+        run: node academy/tests/validate.mjs
+      - name: Verify Git fundamentals in disposable repositories
+        run: node academy/tests/git-foundations.mjs
+      - name: Verify Git internals in disposable repositories
+        run: node academy/tests/git-internals.mjs
+      - name: Verify Git branching in disposable repositories
+        run: node academy/tests/git-branching.mjs
+      - name: Verify Git recovery in disposable repositories
+        run: node academy/tests/git-recovery.mjs
+      - name: Verify Git remotes in disposable repositories
+        run: node academy/tests/git-remotes-lab.mjs
+      - name: Verify Git team and internals in disposable repositories
+        run: |
+          command -v ssh-keygen
+          node academy/tests/git-team.mjs
+      - name: Verify guided Git lesson and interactive models
+        run: node academy/tests/git-teaching.mjs
+      - name: Verify guided Git foundations and continuous Junior project
+        run: node academy/tests/git-teaching-start.mjs
+      - name: Verify guided Git history and partial staging
+        run: node academy/tests/git-teaching-history.mjs
+      - name: Verify guided Git ignore, undo and branch history
+        run: node academy/tests/git-teaching-branches.mjs
+      - name: Verify guided Git merges and conflict resolution
+        run: node academy/tests/git-teaching-merge.mjs
+      - name: Verify guided Git remotes and review workflow
+        run: node academy/tests/git-teaching-remotes.mjs
+      - name: Verify guided Git stash, security and reflog
+        run: node academy/tests/git-teaching-safety.mjs
+      - name: Verify guided Git reset, revert and full Junior route
+        run: node academy/tests/git-teaching-reset.mjs
+      - name: Verify Junior Git capstone and negative acceptance cases
+        run: node academy/tests/git-junior-project.mjs
+      - name: Verify guided Git object bytes and guarded refs
+        run: node academy/tests/git-teaching-objects.mjs
+      - name: Verify guided Git binary index, conflict stages and revision ranges
+        run: node academy/tests/git-teaching-index.mjs
+      - name: Verify guided Git rebase, todo and cherry-pick
+        run: node academy/tests/git-teaching-rewrite.mjs
+      - name: Verify guided Git bisect, refspec and explicit lease
+        run: node academy/tests/git-teaching-diagnostics.mjs
+      - name: Verify guided Git releases, hooks and signing trust
+        run: node academy/tests/git-teaching-release.mjs
+      - name: Verify guided Git dependencies and canonical file bytes
+        run: node academy/tests/git-teaching-dependencies.mjs
+      - name: Verify Middle Git capstone and negative acceptance cases
+        run: node academy/tests/git-middle-project.mjs
+      - name: Verify guided Git selectors, recovery and command choices
+        run: node academy/tests/git-teaching-review.mjs
+      - name: Verify guided Git pack binary format and plumbing transactions
+        run: node academy/tests/git-teaching-storage.mjs
+      - name: Verify guided Git rerere cache and worktree isolation
+        run: node academy/tests/git-teaching-worktrees.mjs
+      - name: Verify guided Git wire protocol and clone boundaries
+        run: node academy/tests/git-teaching-transport.mjs
+      - name: Verify guided Git maintenance indexes and recovery
+        run: node academy/tests/git-teaching-maintenance.mjs
+      - name: Verify Senior Git capstone and negative acceptance cases
+        run: node academy/tests/git-senior-project.mjs
+      - name: Verify Git final route and Senior merge-base audit
+        run: node academy/tests/git-final-audit.mjs
+      - name: Install Linux exercise dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends strace liburing-dev cpio libseccomp-dev nftables iproute2 iputils-ping openssh-client clang kmod linux-headers-generic mdadm lvm2 cryptsetup tcpdump fdisk
+      - name: Verify guided Linux foundations and continuous workspace
+        run: node academy/tests/linux-teaching-start.mjs
+      - name: Verify Linux Junior project static contract
+        run: node academy/tests/linux-junior-acceptance.mjs
+      - name: Verify Linux storage exercises on disposable files
+        run: bash academy/tests/linux-storage.sh
+      - name: Compile and execute Linux memory examples from published chapters
+        run: node academy/tests/linux-memory.mjs
+      - name: Verify published Linux boot and maintenance examples
+        run: node academy/tests/linux-boot.mjs
+      - name: Verify Linux networking and security exercises
+        env:
+          ATLAS_NETWORK_VM: '1'
+        run: node academy/tests/linux-security.mjs
+      - name: Compile and verify Linux kernel teaching examples
+        run: node academy/tests/linux-kernel.mjs
+      - name: Verify Linux capstone projects and disposable storage
+        env:
+          ATLAS_STORAGE_VM: '1'
+        run: node academy/tests/linux-projects.mjs
+      - name: Verify Linux review exercises
+        env:
+          ATLAS_REVIEW_VM: '1'
+        run: node academy/tests/linux-review.mjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
+      - name: Install Chromium
+        run: |
+          "$RUNNER_TEMP/atlas-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Test desktop, tablet and phone in both themes
+        run: NODE_PATH="$RUNNER_TEMP/atlas-browser/node_modules" node academy/tests/browser.cjs

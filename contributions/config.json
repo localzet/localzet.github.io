@@ -1,0 +1,9 @@
+{
+  "excluded_owners": [
+    "localzet",
+    "localzet-archive",
+    "localzet-dev",
+    "triangle-org",
+    "tt-university"
+  ]
+}

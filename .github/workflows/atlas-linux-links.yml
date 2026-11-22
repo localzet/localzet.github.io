@@ -1,0 +1,26 @@
+name: Atlas Linux source link audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'academy/subjects/linux*.js'
+      - 'academy/reference.js'
+      - 'academy/tests/linux-links.mjs'
+      - '.github/workflows/atlas-linux-links.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  links:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify Linux chapter sources and detailed reference links
+        run: node academy/tests/linux-links.mjs
+      - name: Preserve link audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-link-audit
+          path: linux-link-audit.json

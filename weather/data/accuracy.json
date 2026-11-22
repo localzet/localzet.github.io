@@ -1,0 +1,356 @@
+{
+  "cities": {
+    "ekaterinburg": {
+      "horizons": {
+        "24": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "48": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "72": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        }
+      },
+      "station": {
+        "status": "not_found",
+        "wmo_id": "28440"
+      }
+    },
+    "karpinsk": {
+      "horizons": {
+        "24": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "48": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "72": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        }
+      },
+      "station": {
+        "ghcnh_id": "RSM00028033",
+        "latitude": 59.75,
+        "longitude": 60.017,
+        "name": "KARPINSK",
+        "status": "no_quality_checked_observations",
+        "wmo_id": "28033"
+      }
+    },
+    "krasnoturyinsk": {
+      "horizons": {
+        "24": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "48": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "72": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        }
+      },
+      "station": {
+        "status": "not_found",
+        "wmo_id": "28041"
+      }
+    },
+    "rostov": {
+      "horizons": {
+        "24": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "48": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "72": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        }
+      },
+      "station": {
+        "status": "not_found",
+        "wmo_id": "34730"
+      }
+    },
+    "severouralsk": {
+      "horizons": {
+        "24": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "48": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        },
+        "72": {
+          "best_model": null,
+          "models": {
+            "ecmwf_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "gfs_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            },
+            "icon_default": {
+              "distinct_days": 0,
+              "samples": 0,
+              "status": "insufficient_samples"
+            }
+          }
+        }
+      },
+      "station": {
+        "status": "not_found",
+        "wmo_id": "23919"
+      }
+    }
+  },
+  "forecast_source": "Open-Meteo operational snapshots; captured_at != model initialized_at",
+  "generated_at": "2026-11-22T12:50:44+00:00",
+  "minimum_distinct_days": 5,
+  "minimum_samples": 20,
+  "observation_source": "NOAA NCEI GHCNh, temperature QC=1",
+  "schema_version": 1,
+  "snapshot_count": 24,
+  "status": "insufficient_data"
+}

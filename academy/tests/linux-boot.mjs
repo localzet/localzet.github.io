@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import vm from 'node:vm';
+const source=readFileSync(new URL('../subjects/linux-boot.js',import.meta.url),'utf8');
+const win={ATLAS_DATA:{lessons:[],sources:{}},ATLAS_LEVELS:{minimum:{},order:{linux:['linux-boot','linux-systemd','linux-packages']},junior:{},juniorTerms:{},juniorDiagrams:{},juniorQuestions:{}},ATLAS_EDITORIAL:{}};
+new vm.Script(source).runInNewContext({window:win});
+const lab=mkdtempSync(join(tmpdir(),'atlas-boot-'));
+const run=(cmd,args)=>{const p=spawnSync(cmd,args,{cwd:lab,encoding:'utf8',timeout:30000,env:{...process.env,LC_ALL:'C'}});if(p.error)throw p.error;return p;};
+const ok=(cmd,args)=>{const p=run(cmd,args);assert.equal(p.status,0,cmd+' '+args.join(' ')+'\n'+p.stderr);return p.stdout;};
+const blocks=(id,lang)=>[...win.ATLAS_DATA.lessons.find(x=>x.id===id).body.matchAll(new RegExp('~~~'+lang+'\\n([\\s\\S]*?)\\n~~~','g'))].map(x=>x[1]);
+try{
+ const envScript='set -euo pipefail\n'+blocks('linux-initramfs','sh')[0].replace('lab=$(mktemp -d)','lab="$PWD"')+'\n';
+ const contents=ok('bash',['-c',envScript]);
+ for(const name of ['init','dev','proc','sys'])assert(contents.split('\n').some(x=>x===name||x==='./'+name),name+' missing from archive');
+ console.log('PASS: initramfs cpio archive contents');
+ writeFileSync(join(lab,'atlas-stage4.service'),blocks('linux-service-dependencies','ini')[0]+'\n');
+ ok('systemd-analyze',['verify','./atlas-stage4.service']);
+ const [service,timer]=blocks('linux-timers','ini');
+ writeFileSync(join(lab,'atlas-check.service'),service+'\n');writeFileSync(join(lab,'atlas-check.timer'),timer+'\n');
+ ok('systemd-analyze',['verify','./atlas-check.service','./atlas-check.timer']);
+ assert.match(ok('systemd-analyze',['calendar','--iterations=3','*-*-* 09:00:00 UTC']),/09:00:00 UTC/);
+ console.log('PASS: service and timer verification, calendar parsing');
+ const apt=ok('bash',['-c','set -e\n'+blocks('linux-package-trust','sh')[0]]);
+ assert.match(apt,/bash/);console.log('PASS: dpkg query and APT simulation');
+ writeFileSync(join(lab,'atlas.fstab'),blocks('linux-recovery','text')[0]+'\n');
+ const p=run('findmnt',['--verify','--verbose','--tab-file','./atlas.fstab']);
+ assert.match(p.stdout+p.stderr,/atlas-nonexistent/);
+ console.log('PASS: alternate fstab inspection (no mount)');
+}finally{rmSync(lab,{recursive:true,force:true});}

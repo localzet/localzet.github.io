@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
+const ids=['git-origins','git-setup','git-lab-config','git-diff-status','git-commit-quality','git-history-reading','git-ignore-attributes','git-undo','git-branch-lab'];
+const window={ATLAS_DATA:{lessons:ids.map(id=>({id}))},ATLAS_LEVELS:{junior:{}},ATLAS_EDITORIAL:Object.fromEntries(ids.map(id=>[id,{}]))};
+const load=p=>new vm.Script(readFileSync(new URL('../'+p,import.meta.url),'utf8')).runInNewContext({window});
+load('subjects/git-teaching-start.js');load('subjects/git-teaching-history.js');load('subjects/git-teaching-branches.js');load('assets/teaching.js');load('assets/teaching-start.js');load('assets/teaching-history.js');load('assets/teaching-branches.js');
+const t=window.ATLAS_TEACHING;
+let s=t.stageInitial();s=t.stageStep(s,'port');assert.equal(t.stagedContent(s),'port=9090\ntimeout=10');s=t.stageStep(s,'commit');assert(t.stageSolved(s));assert(!t.stageSolved(t.stageStep(t.stageInitial(),'commit')));let bad=t.stageStep(t.stageStep(t.stageStep(t.stageInitial(),'port'),'timeout'),'commit');assert(!t.stageSolved(bad));assert.equal(t.history.at(-2).timeout,10);assert.equal(t.history.at(-1).timeout,30);
+assert(t.ignoreRules.find(r=>r.path==='.env').ignored);assert(!t.ignoreRules.find(r=>r.path==='.env.example').ignored);assert(t.undoSolved(t.undoStep(t.undoStart(),'unstage')));assert(!t.undoSolved(t.undoStep(t.undoStart(),'restore')));assert.equal(t.branchSteps.at(-1).main,'C');assert.equal(t.branchSteps.at(-1).feature,'B');
+const lab=mkdtempSync(join(tmpdir(),'atlas-history-'));
+try{
+const env={...process.env,LC_ALL:'C',HOME:lab,GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_NOSYSTEM:'1',TMPDIR:lab};
+for(const key of Object.keys(env))if(/^GIT_(DIR|WORK_TREE|INDEX_FILE|OBJECT_DIRECTORY|ALTERNATE_OBJECT_DIRECTORIES|COMMON_DIR|CONFIG_COUNT|CONFIG_KEY_\d+|CONFIG_VALUE_\d+|CONFIG_PARAMETERS|AUTHOR_.*|COMMITTER_.*)$/.test(key))delete env[key];
+const run=(code,id)=>{const p=spawnSync('bash',['-c',code],{cwd:lab,env,encoding:'utf8',timeout:30000});if(p.error)throw p.error;assert.equal(p.status,0,id+'\n'+p.stdout+'\n'+p.stderr);return p.stdout;};
+const j=window.ATLAS_LEVELS.junior;
+const blocks=id=>[...j[id].body.matchAll(/~~~sh\n([\s\S]*?)\n~~~/g)].map(m=>m[1]==='git add -p -- app.conf'?"printf 'y\\nn\\n' | git add -p -- app.conf":m[1]).join('\n');
+for(const l of window.ATLAS_DATA.lessons.slice(6)){for(const body of [l.body,j[l.id].body]){const keys=[...body.matchAll(/^:::learn (\S+)$/gm)].map(m=>m[1]);assert(keys.length>=3&&keys.every(k=>t.keys.includes(k)),l.id);}assert(run(l.body.match(/~~~sh\n([\s\S]*?)\n~~~/)[1],l.id).includes('PASS:'));}
+run('set -euo pipefail\n'+['git-setup','git-lab-config','git-diff-status','git-commit-quality','git-history-reading','git-ignore-attributes','git-undo','git-branch-lab'].map(blocks).join('\n')+'\ntest "$(git rev-list --count main)" = 11\ntest "$(git rev-list --count --all)" = 12\ntest "$(git branch --show-current)" = main\ntest -z "$(git status --porcelain)"\ntest -f .env\ntest -z "$(git ls-files -- .env)"\ngit show HEAD:app.conf | grep -Fx timeout=30\ngit show feature/search:search.txt\ntest ! -e search.txt\ntest "$(git merge-base main feature/search)" = "$(git rev-parse main^)"','Continuous Junior project through branches');
+console.log('PASS: ignore, undo, branch models and three technical labs; 12-commit Junior project');
+}finally{rmSync(lab,{recursive:true,force:true});}
