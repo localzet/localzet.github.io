@@ -59,11 +59,20 @@ const dockerTeachingKeys = [
   'docker-origin-route','docker-origin-choice','docker-origin-check',
   'docker-isolation-boundaries','docker-isolation-choice','docker-isolation-check',
   'docker-images-cache','docker-images-choice','docker-images-check',
-  'dockerfile-build-flow','dockerfile-cmd-choice','dockerfile-check'
+  'dockerfile-build-flow','dockerfile-cmd-choice','dockerfile-check',
+  'docker-runtime-lifecycle','docker-runtime-choice','docker-runtime-check',
+  'docker-network-route','docker-network-choice','docker-network-check',
+  'docker-volume-lifecycle','docker-volume-choice','docker-volume-check',
+  'docker-compose-flow','docker-compose-choice','docker-compose-check',
+  'docker-health-flow','docker-health-choice','docker-health-check',
+  'docker-diagnostics-flow','docker-diagnostics-choice','docker-diagnostics-check',
+  'docker-command-map','docker-command-choice','docker-command-check'
 ];
 for (const key of dockerTeachingKeys) {
   assert(win.ATLAS_TEACHING.render(key).includes('data-teach="' + key + '"'), 'Docker teaching block renders: ' + key);
 }
+const dockerGuidedIds = win.ATLAS_GUIDED_IDS.filter(id => id.startsWith('docker-'));
+assert.equal(new Set(dockerGuidedIds).size, dockerGuidedIds.length, 'Docker guided chapter IDs must be unique');
 const d = win.ATLAS_DATA;
 for(const id of win.ATLAS_GUIDED_IDS){const l=d.lessons.find(x=>x.id===id);for(const body of [l.body,...(win.ATLAS_LEVELS.minimum[id]===0?[win.ATLAS_LEVELS.junior[id].body]:[])]){
  const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);assert(markers.length>=3&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Guided lesson '+id);
@@ -191,6 +200,8 @@ for (const [key, source] of Object.entries(d.sources)) {
   assert(source.title && source.description, 'Incomplete source: ' + key);
 }
 const html = load('index.html');
+assert(html.includes('./subjects/docker-teaching.js'), 'Docker teaching data is not loaded');
+assert(html.includes('./assets/teaching-docker.js'), 'Docker teaching interactions are not loaded');
 for (const subject of subjects) {
   assert(html.includes('./subjects/' + subject + '.js'), 'Subject is not loaded: ' + subject);
 }

@@ -851,9 +851,34 @@ const base='http://127.0.0.1:8765/academy/';
       await dockerfileCheck.locator('[data-docker-task="0"]').check();
       assert((await dockerfileCheck.locator('[data-docker-progress]').textContent()).includes('1 / 3'));
       await checkWidth();
+
+      const dockerCases=[
+        ['docker-runtime/junior','docker-runtime-lifecycle',1,'главный процесс','docker-runtime-choice',0,1,'docker-runtime-check'],
+        ['docker-networking/junior','docker-network-route',1,'Engine','docker-network-choice',1,0,'docker-network-check'],
+        ['docker-volumes/junior','docker-volume-lifecycle',2,'новому контейнеру','docker-volume-choice',0,2,'docker-volume-check'],
+        ['docker-compose/junior','docker-compose-flow',1,'Переменные','docker-compose-choice',0,1,'docker-compose-check'],
+        ['docker-health/junior','docker-health-flow',2,'Результат','docker-health-choice',0,1,'docker-health-check'],
+        ['docker-diagnostics/junior','docker-diagnostics-flow',1,'status','docker-diagnostics-choice',0,1,'docker-diagnostics-check'],
+        ['docker-command-atlas/middle','docker-command-map',2,'чтение','docker-command-choice',1,0,'docker-command-check']
+      ];
+      for(const [route,flowKey,step,needle,quizKey,wrong,correct,checkKey] of dockerCases){
+        await page.goto(base+'#/lesson/'+route);
+        const flow=page.locator('.reader > .prose > [data-teach="'+flowKey+'"]');
+        await flow.locator('[data-docker-action="step-'+step+'"]').click();
+        assert((await flow.locator('[data-docker-detail]').textContent()).includes(needle));
+        const quiz=page.locator('.reader > .prose > [data-teach="'+quizKey+'"]');
+        await quiz.locator('[data-docker-action="answer-'+wrong+'"]').click();
+        assert.equal(await quiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+        await quiz.locator('[data-docker-action="answer-'+correct+'"]').click();
+        assert.equal(await quiz.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+        const check=page.locator('.reader > .prose > [data-teach="'+checkKey+'"]');
+        await check.locator('[data-docker-task="0"]').check();
+        assert((await check.locator('[data-docker-progress]').textContent()).includes('1 / 3'));
+        await checkWidth();
+      }
     }
     if(view.width===360&&scheme==='dark'){
-      for(const route of ['docker-origin/junior','docker-isolation/senior','docker-images/middle','dockerfile-complete/junior']){
+      for(const route of ['docker-origin/junior','docker-isolation/senior','docker-images/middle','dockerfile-complete/junior','docker-runtime/junior','docker-networking/junior','docker-volumes/junior','docker-compose/junior','docker-health/junior','docker-diagnostics/junior','docker-command-atlas/middle']){
         await page.goto(base+'#/lesson/'+route);
         await page.locator('.reader > .prose > .docker-panel').first().waitFor();
         await checkWidth();

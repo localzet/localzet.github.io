@@ -1,12 +1,14 @@
+:root{--docker-blue:#83c4ff;--docker-violet:#c4a2ff;--docker-amber:#ffc76a;--docker-green:#72dbaa}
+:root[data-theme=light]{--docker-blue:#2f6da4;--docker-violet:#6b3a99;--docker-amber:#805000;--docker-green:#2c704e}
 .docker-panel .teach-label{color:var(--accent)}
 .docker-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .docker-flow-step{min-width:0;display:grid;grid-template-columns:auto 1fr;gap:5px 9px;text-align:left;align-content:start;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text);cursor:pointer}
 .docker-flow-step:hover{border-color:var(--accent)}
 .docker-flow-step[aria-current=step]{border-color:var(--docker-tone,var(--accent));outline:2px solid var(--docker-tone,var(--accent));outline-offset:1px}
-.docker-flow-step.tone-blue{--docker-tone:#3979b8}
-.docker-flow-step.tone-violet{--docker-tone:#8050aa}
-.docker-flow-step.tone-amber{--docker-tone:#986000}
-.docker-flow-step.tone-green{--docker-tone:#2d7a57}
+.docker-flow-step.tone-blue{--docker-tone:var(--docker-blue)}
+.docker-flow-step.tone-violet{--docker-tone:var(--docker-violet)}
+.docker-flow-step.tone-amber{--docker-tone:var(--docker-amber)}
+.docker-flow-step.tone-green{--docker-tone:var(--docker-green)}
 .docker-step-number{grid-row:span 2;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--surface);color:var(--docker-tone,var(--accent));font:700 12px ui-monospace,monospace}
 .docker-flow-step strong{font-size:14px}
 .docker-flow-step small{color:var(--sub);line-height:1.45}
