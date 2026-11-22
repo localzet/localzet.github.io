@@ -800,6 +800,65 @@ const base='http://127.0.0.1:8765/academy/';
       assert.equal(await panel.locator('.linux-visual-node[aria-current="step"]').count(),1);
       await checkWidth();
     }
+    if(view.width===1440&&scheme==='light'){
+      await page.goto(base+'#/lesson/docker-origin/junior');
+      const origin=page.locator('.reader > .prose > [data-teach="docker-origin-route"]');
+      await origin.locator('[data-docker-action="step-1"]').click();
+      assert((await origin.locator('[data-docker-detail]').textContent()).includes('Daemon'));
+      assert.equal(await origin.locator('[aria-current="step"]').count(),1);
+      const originQuiz=page.locator('.reader > .prose > [data-teach="docker-origin-choice"]');
+      await originQuiz.locator('[data-docker-action="answer-0"]').click();
+      assert.equal(await originQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+      await originQuiz.locator('[data-docker-action="answer-1"]').click();
+      assert.equal(await originQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+      const originCheck=page.locator('.reader > .prose > [data-teach="docker-origin-check"]');
+      await originCheck.locator('[data-docker-task="0"]').check();
+      assert((await originCheck.locator('[data-docker-progress]').textContent()).includes('1 / 3'));
+      await checkWidth();
+
+      await page.goto(base+'#/lesson/docker-isolation/senior');
+      const isolation=page.locator('.reader > .prose > [data-teach="docker-isolation-boundaries"]');
+      await isolation.locator('[data-docker-action="step-2"]').click();
+      assert((await isolation.locator('[data-docker-detail]').textContent()).includes('User namespace'));
+      const isolationQuiz=page.locator('.reader > .prose > [data-teach="docker-isolation-choice"]');
+      await isolationQuiz.locator('[data-docker-action="answer-0"]').click();
+      assert.equal(await isolationQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+      await isolationQuiz.locator('[data-docker-action="answer-1"]').click();
+      assert.equal(await isolationQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+      await checkWidth();
+
+      await page.goto(base+'#/lesson/docker-images/middle');
+      const imageFlow=page.locator('.reader > .prose > [data-teach="docker-images-cache"]');
+      await imageFlow.locator('[data-docker-action="next"]').click();
+      assert((await imageFlow.locator('[data-docker-detail]').textContent()).includes('манифест'));
+      const imageQuiz=page.locator('.reader > .prose > [data-teach="docker-images-choice"]');
+      await imageQuiz.locator('[data-docker-action="answer-0"]').click();
+      assert.equal(await imageQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+      await imageQuiz.locator('[data-docker-action="answer-1"]').click();
+      assert.equal(await imageQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+      await checkWidth();
+
+      await page.goto(base+'#/lesson/dockerfile-complete/junior');
+      const dockerfileFlow=page.locator('.reader > .prose > [data-teach="dockerfile-build-flow"]');
+      await dockerfileFlow.locator('[data-docker-action="step-1"]').click();
+      assert((await dockerfileFlow.locator('[data-docker-detail]').textContent()).includes('FROM'));
+      const dockerfileQuiz=page.locator('.reader > .prose > [data-teach="dockerfile-cmd-choice"]');
+      await dockerfileQuiz.locator('[data-docker-action="answer-0"]').click();
+      assert.equal(await dockerfileQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+      await dockerfileQuiz.locator('[data-docker-action="answer-1"]').click();
+      assert.equal(await dockerfileQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+      const dockerfileCheck=page.locator('.reader > .prose > [data-teach="dockerfile-check"]');
+      await dockerfileCheck.locator('[data-docker-task="0"]').check();
+      assert((await dockerfileCheck.locator('[data-docker-progress]').textContent()).includes('1 / 3'));
+      await checkWidth();
+    }
+    if(view.width===360&&scheme==='dark'){
+      for(const route of ['docker-origin/junior','docker-isolation/senior','docker-images/middle','dockerfile-complete/junior']){
+        await page.goto(base+'#/lesson/'+route);
+        await page.locator('.reader > .prose > .docker-panel').first().waitFor();
+        await checkWidth();
+      }
+    }
     for(const [id,key,choice,needle,quiz,levels] of [['linux-middle-project','linux-middle-incident',3,'200 + хеш','linux-middle-acceptance',['middle','senior']],['linux-senior-project','linux-senior-evidence',2,'Корректный frame','linux-senior-acceptance',['senior']]]){
       for(const level of levels){
         await page.goto(base+'#/lesson/'+id+'/'+level);
