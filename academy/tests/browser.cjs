@@ -853,7 +853,7 @@ const base='http://127.0.0.1:8765/academy/';
       await checkWidth();
 
       const dockerCases=[
-        ['docker-runtime/junior','docker-runtime-lifecycle',1,'главный процесс','docker-runtime-choice',0,1,'docker-runtime-quiz'],
+        ['docker-runtime/junior','docker-runtime-lifecycle',1,'главный процесс','docker-runtime-choice',0,1,'docker-runtime-check'],
         ['docker-networking/junior','docker-network-route',1,'Engine','docker-network-choice',1,0,'docker-network-check'],
         ['docker-volumes/junior','docker-volume-lifecycle',2,'новому контейнеру','docker-volume-choice',0,2,'docker-volume-check'],
         ['docker-compose/junior','docker-compose-flow',1,'Переменные','docker-compose-choice',0,1,'docker-compose-check'],
