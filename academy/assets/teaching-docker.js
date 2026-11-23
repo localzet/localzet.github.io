@@ -417,7 +417,7 @@
 
   window.ATLAS_TEACHING = {
     ...previous,
-    keys: [...previous.keys, ...keys],
+    keys: [...new Set([...previous.keys, ...keys])],
     render,
     mount,
     dockerFlows: flows,
