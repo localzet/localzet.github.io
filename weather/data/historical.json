@@ -346,18 +346,18 @@
       }
     }
   },
-  "end_date": "2026-11-13",
+  "end_date": "2026-11-20",
   "errors": [
     "karpinsk: NOAA 2026: HTTP Error 404: Not Found"
   ],
   "forecast_source": "Open-Meteo Previous Runs API",
-  "generated_at": "2026-11-16T10:05:37+00:00",
+  "generated_at": "2026-11-23T11:07:06+00:00",
   "kind": "previous_runs_historical",
   "methodology": "Open-Meteo fixed previous_day1/2/3 predictions at city coordinates, compared only with common quality-checked NOAA GHCNh station temperatures; stations can be outside the city",
   "minimum_distinct_days": 20,
   "minimum_samples": 100,
   "observation_source": "NOAA NCEI GHCNh QC=1",
   "schema_version": 1,
-  "start_date": "2026-08-16",
+  "start_date": "2026-08-23",
   "status": "insufficient_data"
 }
