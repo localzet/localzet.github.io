@@ -620,6 +620,26 @@ docker compose --help
 :::learn docker-command-check
 
 Критерий освоения: подобрать read-only команду для каждого объекта, объяснить разницу save/export и отметить команды, которым нужна проверка побочных эффектов.
+
+## Проект: отклонить нездоровый релиз и восстановить прежний image ID
+
+Лаборатория собирает два автономных образа без загрузки базового image. §stable-v1§ проходит healthcheck; §candidate-v2§ намеренно отвечает §503§. Зафиксируйте image ID исходной версии, проверьте отказ кандидата, затем восстановите исходный image ID на том же loopback-порту и подтвердите §/health§ и §/version§.
+
+~~~sh
+ATLAS_DOCKER_PROJECT=1 bash academy/projects/docker/capstone.sh
+~~~
+
+Скрипт работает только с локальным Unix socket и отказывается от §DOCKER_HOST§, §DOCKER_CONTEXT§ и TCP/SSH contexts; последующие команды закреплены за проверенным endpoint. Он создаёт отдельные образы, контейнеры и bridge с уникальной меткой; контейнеры работают без root, с read-only rootfs, без capabilities и с ограничениями ресурсов. Host port публикуется только на §127.0.0.1§. У этой bridge-сети есть исходящий маршрут, но приложение его не использует; не подключайте к ней другие контейнеры. Доступ к Docker Engine остаётся полномочием хоста, поэтому запускайте только проверенный код на выделенном локальном Engine.
+
+Ожидаемый результат: начальная версия §healthy§, кандидат §unhealthy§ с HTTP §503§, затем прежний image ID снова §healthy§ на том же адресе. При выходе скрипт удаляет только объекты со своей меткой. Разбор ограничений и код проекта находятся в [academy/projects/docker](https://github.com/localzet/localzet.github.io/tree/main/academy/projects/docker).
+
+Упражнение показывает health-gated решение и восстановление контейнера с коротким перерывом. Оно не демонстрирует переключение ingress, zero-downtime, хранение данных или production-ready релиз.
+
+:::learn docker-rollback-flow
+
+:::learn docker-rollback-choice
+
+:::learn docker-rollback-check
 `
     }
   ];
