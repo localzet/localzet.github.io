@@ -118,6 +118,8 @@ jobs:
         env:
           ATLAS_REVIEW_VM: '1'
         run: node academy/tests/linux-review.mjs
+      - name: Verify guided Docker lifecycle on local runner Engine
+        run: node academy/tests/docker-teaching-start.mjs
       - name: Install isolated browser test dependency
         run: npm install --prefix "$RUNNER_TEMP/atlas-browser" --no-audit --no-fund playwright@1.56.1
       - name: Install Chromium

@@ -815,6 +815,21 @@ const base='http://127.0.0.1:8765/academy/';
         await checkWidth();
       }
     }
+    for(const [id,key,choice,a,b,quiz] of [['docker-origin','docker-image-instance',3,'removed','created','docker-origin-check'],['docker-runtime','docker-runtime-data',1,'changed','base','docker-runtime-check']]){
+      for(const level of ['junior','middle','senior']){
+        await page.goto(base+'#/lesson/'+id+'/'+level);
+        const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
+        await panel.locator('[data-docker-next="'+choice+'"]').click();
+        assert.equal(await panel.locator('[data-docker-a]').textContent(),a);
+        assert.equal(await panel.locator('[data-docker-b]').textContent(),b);
+        const q=page.locator('.reader > .prose > [data-teach="'+quiz+'"]');
+        await q.locator('[data-docker-next="0"]').click();
+        assert.equal(await q.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
+        await q.locator('[data-docker-next="1"]').click();
+        assert.equal(await q.locator('[data-docker-feedback]').getAttribute('data-result'),'correct');
+        await checkWidth();
+      }
+    }
     // Exhaustive Linux lesson navigation in one desktop context; other views
     // still exercise all course routes and representative lessons.
     if(view.width===1440&&scheme==='light'){
