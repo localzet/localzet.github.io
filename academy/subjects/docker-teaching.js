@@ -627,16 +627,41 @@ docker compose --help
   const data = window.ATLAS_DATA;
   const levels = window.ATLAS_LEVELS;
   const editorial = window.ATLAS_EDITORIAL;
+  const guidedIds = new Set(window.ATLAS_GUIDED_IDS);
 
-  const pendingRows = rows.filter(row => !window.ATLAS_GUIDED_IDS.includes(row.id));
+  function uniqueMarkers(body) {
+    const seen = new Set();
+    return body
+      .replace(/^:::learn ([a-z0-9-]+)$/gm, (marker, key) => {
+        if (seen.has(key)) return "";
+        seen.add(key);
+        return marker;
+      })
+      .replace(/\n{3,}/g, "\n\n");
+  }
 
-  for (const row of pendingRows) {
+  for (const row of rows) {
     const lesson = data.lessons.find(item => item.id === row.id);
-    lesson.body = row.middle + String.fromCharCode(10, 10) + lesson.body;
+    const alreadyGuided = guidedIds.has(row.id);
+
+    lesson.body = uniqueMarkers(row.middle + String.fromCharCode(10, 10) + lesson.body);
     lesson.summary = row.summary;
     editorial[row.id].intro = row.summary;
 
-    if (row.junior) {
+    if (alreadyGuided && row.junior && levels.junior[row.id]) {
+      const junior = levels.junior[row.id];
+      const existingMarkers = new Set(
+        [...junior.body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(match => match[1])
+      );
+      const missingMarkers = [...new Set(
+        [...row.junior.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(match => match[1])
+      )].filter(key => !existingMarkers.has(key));
+
+      if (missingMarkers.length) {
+        const additions = missingMarkers.map(key => `:::learn ${key}`).join("\n\n");
+        junior.body = uniqueMarkers(`${junior.body}\n\n## Модель и быстрая проверка\n\n${additions}`);
+      }
+    } else if (row.junior) {
       levels.junior[row.id] = {
         ...levels.junior[row.id],
         title: row.juniorTitle,
@@ -645,5 +670,5 @@ docker compose --help
     }
   }
 
-  window.ATLAS_GUIDED_IDS.push(...pendingRows.map(row => row.id));
+  window.ATLAS_GUIDED_IDS.push(...rows.filter(row => !guidedIds.has(row.id)).map(row => row.id));
 })();
