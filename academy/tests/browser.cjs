@@ -859,7 +859,8 @@ const base='http://127.0.0.1:8765/academy/';
         ['docker-compose/junior','docker-compose-flow',1,'Переменные','docker-compose-choice',0,1,'docker-compose-check'],
         ['docker-health/junior','docker-health-flow',2,'Результат','docker-health-choice',0,1,'docker-health-check'],
         ['docker-diagnostics/junior','docker-diagnostics-flow',1,'status','docker-diagnostics-choice',0,1,'docker-diagnostics-check'],
-        ['docker-command-atlas/middle','docker-command-map',2,'чтение','docker-command-choice',1,0,'docker-command-check']
+        ['docker-command-atlas/middle','docker-command-map',2,'чтение','docker-command-choice',1,0,'docker-command-check'],
+        ['docker-command-atlas/middle','docker-rollback-flow',3,'точный image ID','docker-rollback-choice',0,1,'docker-rollback-check']
       ];
       for(const [route,flowKey,step,needle,quizKey,wrong,correct,checkKey] of dockerCases){
         await page.goto(base+'#/lesson/'+route);
