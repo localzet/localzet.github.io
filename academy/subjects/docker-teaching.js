@@ -628,7 +628,9 @@ docker compose --help
   const levels = window.ATLAS_LEVELS;
   const editorial = window.ATLAS_EDITORIAL;
 
-  for (const row of rows) {
+  const pendingRows = rows.filter(row => !window.ATLAS_GUIDED_IDS.includes(row.id));
+
+  for (const row of pendingRows) {
     const lesson = data.lessons.find(item => item.id === row.id);
     lesson.body = row.middle + String.fromCharCode(10, 10) + lesson.body;
     lesson.summary = row.summary;
@@ -643,5 +645,5 @@ docker compose --help
     }
   }
 
-  window.ATLAS_GUIDED_IDS.push(...rows.map(row => row.id));
+  window.ATLAS_GUIDED_IDS.push(...pendingRows.map(row => row.id));
 })();

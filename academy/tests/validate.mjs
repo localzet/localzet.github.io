@@ -73,6 +73,9 @@ for (const key of dockerTeachingKeys) {
 }
 const dockerGuidedIds = win.ATLAS_GUIDED_IDS.filter(id => id.startsWith('docker-'));
 assert.equal(new Set(dockerGuidedIds).size, dockerGuidedIds.length, 'Docker guided chapter IDs must be unique');
+assert.equal(new Set(win.ATLAS_TEACHING.keys).size, win.ATLAS_TEACHING.keys.length, 'Teaching block keys must be unique');
+assert.match(win.ATLAS_LEVELS.junior['docker-origin'].body, /два контейнера из одного собственного образа/i, 'Guided Docker introduction must retain its verified lab');
+assert.match(win.ATLAS_LEVELS.junior['docker-runtime'].body, /PASS: writable layer isolation, restart and graceful SIGTERM/, 'Guided Docker lifecycle must retain its verified lab');
 const d = win.ATLAS_DATA;
 for(const id of win.ATLAS_GUIDED_IDS){const l=d.lessons.find(x=>x.id===id);for(const body of [l.body,...(win.ATLAS_LEVELS.minimum[id]===0?[win.ATLAS_LEVELS.junior[id].body]:[])]){
  const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);assert(markers.length>=3&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Guided lesson '+id);
