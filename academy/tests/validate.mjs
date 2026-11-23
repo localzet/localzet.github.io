@@ -56,11 +56,11 @@ new vm.Script(load('assets/teaching-linux-start.js'),{filename:'assets/teaching-
 new vm.Script(load('assets/teaching-docker-start.js'),{filename:'assets/teaching-docker-start.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-docker.js'),{filename:'assets/teaching-docker.js'}).runInNewContext({window:win});
 const dockerTeachingKeys = [
-  'docker-origin-route','docker-origin-choice','docker-origin-check',
+  'docker-origin-route','docker-origin-choice','docker-origin-check','docker-origin-quiz',
   'docker-isolation-boundaries','docker-isolation-choice','docker-isolation-check',
   'docker-images-cache','docker-images-choice','docker-images-check',
   'dockerfile-build-flow','dockerfile-cmd-choice','dockerfile-check',
-  'docker-runtime-lifecycle','docker-runtime-choice','docker-runtime-check',
+  'docker-runtime-lifecycle','docker-runtime-choice','docker-runtime-check','docker-runtime-quiz',
   'docker-network-route','docker-network-choice','docker-network-check',
   'docker-volume-lifecycle','docker-volume-choice','docker-volume-check',
   'docker-compose-flow','docker-compose-choice','docker-compose-check',
@@ -71,6 +71,10 @@ const dockerTeachingKeys = [
 for (const key of dockerTeachingKeys) {
   assert(win.ATLAS_TEACHING.render(key).includes('data-teach="' + key + '"'), 'Docker teaching block renders: ' + key);
 }
+assert(win.ATLAS_TEACHING.render('docker-origin-check').includes('data-docker-task="0"'), 'Docker origin checklist must retain checklist controls');
+assert(win.ATLAS_TEACHING.render('docker-origin-quiz').includes('data-docker-next="0"'), 'Docker origin quiz must retain its interactive choices');
+assert(win.ATLAS_TEACHING.render('docker-runtime-check').includes('data-docker-task="0"'), 'Docker runtime checklist must retain checklist controls');
+assert(win.ATLAS_TEACHING.render('docker-runtime-quiz').includes('data-docker-next="0"'), 'Docker runtime quiz must retain its interactive choices');
 const dockerGuidedIds = win.ATLAS_GUIDED_IDS.filter(id => id.startsWith('docker-'));
 assert.equal(new Set(dockerGuidedIds).size, dockerGuidedIds.length, 'Docker guided chapter IDs must be unique');
 assert.equal(new Set(win.ATLAS_TEACHING.keys).size, win.ATLAS_TEACHING.keys.length, 'Teaching block keys must be unique');

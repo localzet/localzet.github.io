@@ -853,7 +853,7 @@ const base='http://127.0.0.1:8765/academy/';
       await checkWidth();
 
       const dockerCases=[
-        ['docker-runtime/junior','docker-runtime-lifecycle',1,'главный процесс','docker-runtime-choice',0,1,'docker-runtime-check'],
+        ['docker-runtime/junior','docker-runtime-lifecycle',1,'главный процесс','docker-runtime-choice',0,1,'docker-runtime-quiz'],
         ['docker-networking/junior','docker-network-route',1,'Engine','docker-network-choice',1,0,'docker-network-check'],
         ['docker-volumes/junior','docker-volume-lifecycle',2,'новому контейнеру','docker-volume-choice',0,2,'docker-volume-check'],
         ['docker-compose/junior','docker-compose-flow',1,'Переменные','docker-compose-choice',0,1,'docker-compose-check'],
@@ -899,7 +899,7 @@ const base='http://127.0.0.1:8765/academy/';
         await checkWidth();
       }
     }
-    for(const [id,key,choice,a,b,quiz] of [['docker-origin','docker-image-instance',3,'removed','created','docker-origin-check'],['docker-runtime','docker-runtime-data',1,'changed','base','docker-runtime-check']]){
+    for(const [id,key,choice,a,b,quiz] of [['docker-origin','docker-image-instance',3,'removed','created','docker-origin-quiz'],['docker-runtime','docker-runtime-data',1,'changed','base','docker-runtime-quiz']]){
       for(const level of ['junior','middle','senior']){
         await page.goto(base+'#/lesson/'+id+'/'+level);
         const panel=page.locator('.reader > .prose > [data-teach="'+key+'"]');
