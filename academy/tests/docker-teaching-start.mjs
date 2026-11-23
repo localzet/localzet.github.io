@@ -5,13 +5,15 @@ import {spawnSync} from 'node:child_process';
 const root=new URL('../',import.meta.url);
 const ids=['docker-origin','docker-runtime'];
 const window={ATLAS_DATA:{lessons:ids.map(id=>({id,body:''}))},ATLAS_LEVELS:{junior:{}},ATLAS_EDITORIAL:Object.fromEntries(ids.map(id=>[id,{}])),ATLAS_GUIDED_IDS:[],ATLAS_TEACHING:{keys:[],render(){},mount(){}}};
-for(const file of ['subjects/docker-teaching-start.js','assets/teaching-docker-start.js'])new vm.Script(readFileSync(new URL(file,root),'utf8')).runInNewContext({window});
+for(const file of ['subjects/docker-teaching-start.js','assets/teaching-docker-start.js','assets/teaching-docker.js'])new vm.Script(readFileSync(new URL(file,root),'utf8')).runInNewContext({window});
 assert.deepEqual(Array.from(window.ATLAS_GUIDED_IDS),ids);
 let count=0;
+const trainingKeys=new Set();
 for(const l of window.ATLAS_DATA.lessons){
- for(const body of [l.body,window.ATLAS_LEVELS.junior[l.id].body]){
+ for(const [edition,body] of [['middle',l.body],['junior',window.ATLAS_LEVELS.junior[l.id].body]]){
    const keys=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);
-   assert.equal(keys.length,3);
+   assert.equal(keys.length,edition==='junior'?4:3);
+   for(const key of keys)trainingKeys.add(key);
    for(const key of keys)assert(window.ATLAS_TEACHING.render(key).includes('data-teach="'+key+'"'));
  }
  for(const m of l.body.matchAll(/~~~sh\n([\s\S]*?)\n~~~/g)){
@@ -23,4 +25,5 @@ for(const l of window.ATLAS_DATA.lessons){
  }
 }
 assert.equal(count,2);
-console.log('PASS: two real Docker labs, four edition variants and six training blocks');
+assert.equal(trainingKeys.size,8);
+console.log('PASS: two real Docker labs, four edition variants and eight training blocks');

@@ -28,7 +28,7 @@ let model=labs.gitInitial(); for(const action of ['edit','add','edit','commit'])
 assert.equal(model.head,'V1');assert.equal(model.work,'V2');assert.equal(labs.gitStatus(model),' M');
 let tcp=labs.tcpStep({},'reset');tcp=labs.tcpStep(tcp,'next');tcp=labs.tcpStep(tcp,'drop');assert(tcp.lost);tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,1);assert(!tcp.lost);for(let i=0;i<6;i++)tcp=labs.tcpStep(tcp,'next');assert.equal(tcp.step,7);
 for (const path of ['editorial.js', 'reference.js', 'levels.js', 'figures.js']) new vm.Script(load(path), {filename:path}).runInNewContext({window:win});
-for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','subjects/git-teaching-reset.js','subjects/git-junior-project.js','subjects/git-teaching-objects.js','subjects/git-teaching-index.js','subjects/git-teaching-rewrite.js','subjects/git-teaching-diagnostics.js','subjects/git-teaching-release.js','subjects/git-teaching-dependencies.js','subjects/git-middle-project.js','subjects/git-teaching-review.js','subjects/git-teaching-storage.js','subjects/git-teaching-worktrees.js','subjects/git-teaching-transport.js','subjects/git-teaching-maintenance.js','subjects/git-senior-project.js','subjects/git-teaching-audit.js','subjects/linux-teaching-start.js','subjects/docker-teaching-start.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
+for(const path of ['subjects/programming.js','subjects/linux-admin.js','subjects/linux-memory.js','subjects/linux-boot.js','subjects/linux-security.js','subjects/linux-kernel.js','subjects/linux-projects.js','subjects/linux-review.js','subjects/git-foundations.js','subjects/git-internals.js','subjects/git-branching.js','subjects/git-recovery.js','subjects/git-remotes-lab.js','subjects/git-team.js','subjects/git-teaching-pilot.js','subjects/git-teaching-start.js','subjects/git-teaching-history.js','subjects/git-teaching-branches.js','subjects/git-teaching-merge.js','subjects/git-teaching-remotes.js','subjects/git-teaching-safety.js','subjects/git-teaching-reset.js','subjects/git-junior-project.js','subjects/git-teaching-objects.js','subjects/git-teaching-index.js','subjects/git-teaching-rewrite.js','subjects/git-teaching-diagnostics.js','subjects/git-teaching-release.js','subjects/git-teaching-dependencies.js','subjects/git-middle-project.js','subjects/git-teaching-review.js','subjects/git-teaching-storage.js','subjects/git-teaching-worktrees.js','subjects/git-teaching-transport.js','subjects/git-teaching-maintenance.js','subjects/git-senior-project.js','subjects/git-teaching-audit.js','subjects/linux-teaching-start.js','subjects/docker-teaching-start.js','subjects/docker-teaching.js','articles.js'])new vm.Script(load(path),{filename:path}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching.js'),{filename:'assets/teaching.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-start.js'),{filename:'assets/teaching-start.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-history.js'),{filename:'assets/teaching-history.js'}).runInNewContext({window:win});
@@ -54,7 +54,32 @@ new vm.Script(load('assets/teaching-enterprise.js'),{filename:'assets/teaching-e
 new vm.Script(load('assets/teaching-audit.js'),{filename:'assets/teaching-audit.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-linux-start.js'),{filename:'assets/teaching-linux-start.js'}).runInNewContext({window:win});
 new vm.Script(load('assets/teaching-docker-start.js'),{filename:'assets/teaching-docker-start.js'}).runInNewContext({window:win});
-assert.deepEqual(Array.from(win.ATLAS_GUIDED_IDS.filter(id=>id.startsWith('docker-'))),['docker-origin','docker-runtime']);
+new vm.Script(load('assets/teaching-docker.js'),{filename:'assets/teaching-docker.js'}).runInNewContext({window:win});
+const dockerTeachingKeys = [
+  'docker-origin-route','docker-origin-choice','docker-origin-check','docker-origin-quiz',
+  'docker-isolation-boundaries','docker-isolation-choice','docker-isolation-check',
+  'docker-images-cache','docker-images-choice','docker-images-check',
+  'dockerfile-build-flow','dockerfile-cmd-choice','dockerfile-check',
+  'docker-runtime-lifecycle','docker-runtime-choice','docker-runtime-check','docker-runtime-quiz',
+  'docker-network-route','docker-network-choice','docker-network-check',
+  'docker-volume-lifecycle','docker-volume-choice','docker-volume-check',
+  'docker-compose-flow','docker-compose-choice','docker-compose-check',
+  'docker-health-flow','docker-health-choice','docker-health-check',
+  'docker-diagnostics-flow','docker-diagnostics-choice','docker-diagnostics-check',
+  'docker-command-map','docker-command-choice','docker-command-check'
+];
+for (const key of dockerTeachingKeys) {
+  assert(win.ATLAS_TEACHING.render(key).includes('data-teach="' + key + '"'), 'Docker teaching block renders: ' + key);
+}
+assert(win.ATLAS_TEACHING.render('docker-origin-check').includes('data-docker-task="0"'), 'Docker origin checklist must retain checklist controls');
+assert(win.ATLAS_TEACHING.render('docker-origin-quiz').includes('data-docker-next="0"'), 'Docker origin quiz must retain its interactive choices');
+assert(win.ATLAS_TEACHING.render('docker-runtime-check').includes('data-docker-task="0"'), 'Docker runtime checklist must retain checklist controls');
+assert(win.ATLAS_TEACHING.render('docker-runtime-quiz').includes('data-docker-next="0"'), 'Docker runtime quiz must retain its interactive choices');
+const dockerGuidedIds = win.ATLAS_GUIDED_IDS.filter(id => id.startsWith('docker-'));
+assert.equal(new Set(dockerGuidedIds).size, dockerGuidedIds.length, 'Docker guided chapter IDs must be unique');
+assert.equal(new Set(win.ATLAS_TEACHING.keys).size, win.ATLAS_TEACHING.keys.length, 'Teaching block keys must be unique');
+assert.match(win.ATLAS_LEVELS.junior['docker-origin'].body, /два контейнера из одного собственного образа/i, 'Guided Docker introduction must retain its verified lab');
+assert.match(win.ATLAS_LEVELS.junior['docker-runtime'].body, /PASS: writable layer isolation, restart and graceful SIGTERM/, 'Guided Docker lifecycle must retain its verified lab');
 const d = win.ATLAS_DATA;
 for(const id of win.ATLAS_GUIDED_IDS){const l=d.lessons.find(x=>x.id===id);for(const body of [l.body,...(win.ATLAS_LEVELS.minimum[id]===0?[win.ATLAS_LEVELS.junior[id].body]:[])]){
  const markers=[...body.matchAll(/^:::learn ([a-z0-9-]+)$/gm)].map(m=>m[1]);assert(markers.length>=3&&markers.every(k=>win.ATLAS_TEACHING.keys.includes(k)),'Guided lesson '+id);
@@ -182,6 +207,8 @@ for (const [key, source] of Object.entries(d.sources)) {
   assert(source.title && source.description, 'Incomplete source: ' + key);
 }
 const html = load('index.html');
+assert(html.includes('./subjects/docker-teaching.js'), 'Docker teaching data is not loaded');
+assert(html.includes('./assets/teaching-docker.js'), 'Docker teaching interactions are not loaded');
 for (const subject of subjects) {
   assert(html.includes('./subjects/' + subject + '.js'), 'Subject is not loaded: ' + subject);
 }
