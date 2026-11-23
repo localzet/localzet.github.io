@@ -830,7 +830,7 @@ const base='http://127.0.0.1:8765/academy/';
       await page.goto(base+'#/lesson/docker-images/middle');
       const imageFlow=page.locator('.reader > .prose > [data-teach="docker-images-cache"]');
       await imageFlow.locator('[data-docker-action="next"]').click();
-      assert((await imageFlow.locator('[data-docker-detail]').textContent()).includes('манифест'));
+      assert.match(await imageFlow.locator('[data-docker-detail]').textContent(), /манифест/i);
       const imageQuiz=page.locator('.reader > .prose > [data-teach="docker-images-choice"]');
       await imageQuiz.locator('[data-docker-action="answer-0"]').click();
       assert.equal(await imageQuiz.locator('[data-docker-feedback]').getAttribute('data-result'),'retry');
